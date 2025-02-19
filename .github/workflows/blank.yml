@@ -1,4 +1,4 @@
-name: CI
+name: Kotlin CI
 
 on:
   push:
@@ -16,17 +16,35 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '11'  # Укажите нужную версию JDK
-          distribution: 'temurin'  # Выбор дистрибутива JDK (можно использовать 'adopt', 'zulu' и т.д.)
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+          java-version: '17' # Укажите нужную версию JDK
+          distribution: 'adopt'
 
       - name: Build with Gradle
         run: ./gradlew build
 
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
       - name: Run tests with Gradle
-        run: ./gradlew test
+        run: |
+          ./gradlew test --info --stacktrace
+          
+      - name: Count passed tests
+        run: |
+          echo "Counting passed tests..."
+          TEST_RESULTS=$(./gradlew test --quiet --info | grep 'passed' | wc -l)
+          echo "Number of passed tests: $TEST_RESULTS"
