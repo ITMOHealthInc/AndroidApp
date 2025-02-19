@@ -18,4 +18,9 @@ class ApplicationTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals("Hello World!", response.bodyAsText())
     }
+
+    @Test
+    fun testSum() {
+        assertEquals(1, 1)
+    }
 }
