@@ -22,11 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Build with Gradle
-        run: ./gradlew build
+      - name: Gradle Build Action
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifacts
           path: build
@@ -39,17 +41,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-          path: build
-
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: Restore Gradle Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+          path: build
+
       - name: Run tests with Gradle
-        run: ./gradlew test
+        run: ./gradlew test --info --stacktrace
+
+      - name: Count passed tests
+        run: |
+          echo "Counting passed tests..."
+          TEST_RESULTS=$(./gradlew test --quiet --info | grep 'passed' | wc -l)
+          echo "Number of passed tests: $TEST_RESULTS"
