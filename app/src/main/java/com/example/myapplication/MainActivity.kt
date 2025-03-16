@@ -60,7 +60,7 @@ fun SendRequestComposable(domain: String) {
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
             try {
-                val API_KEY = "-5inGwyK30fxMOSmzNIz5Qntf8CRF6"
+                val API_KEY = ""
                 val client = OkHttpClient()
                 val request = okhttp3.Request.Builder()
                     .addHeader("Authorization", "Bearer $API_KEY")
