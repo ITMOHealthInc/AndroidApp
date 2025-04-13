@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "ru.itmo.se.myapplication"
+    namespace = "ru.itmo.se.mad"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "ru.itmo.se.myapplication"
+        applicationId = "ru.itmo.se.mad"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
