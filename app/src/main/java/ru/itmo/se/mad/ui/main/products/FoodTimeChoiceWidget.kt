@@ -57,15 +57,14 @@ fun FoodTimeChoiceWidget() {
                 .padding(5.dp)
         )
         Row (
-            horizontalArrangement = Arrangement.spacedBy(60.dp),
+            horizontalArrangement = Arrangement.spacedBy(72.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 18.dp, vertical = 16.dp)
         ) {
             Text("Что вы хотите добавить?", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
             Button(onClick = {}, shape = CircleShape, contentPadding = PaddingValues(0.dp), colors = ButtonColors(WidgetGray5, Black, White, White), modifier = Modifier
-                .size(40.dp)
-
+                .size(32.dp)
                 ) {
                 Icon(Icons.Filled.Close, "", tint = WidgetGray80)
             }
