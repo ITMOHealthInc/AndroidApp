@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
@@ -25,12 +25,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.itmo.se.mad.ui.theme.Black
+import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WaterBlue
 import ru.itmo.se.mad.ui.theme.WaterBlue10
 import ru.itmo.se.mad.ui.theme.White
@@ -51,22 +54,28 @@ fun FoodTimeChoiceWidget() {
         ) {
         Box(
             modifier = Modifier
-                .size(height = 7.dp, width = 30.dp)
+                .size(height = 6.dp, width = 40.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(WidgetGray10)
                 .padding(5.dp)
         )
         Row (
-            horizontalArrangement = Arrangement.spacedBy(72.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(horizontal = 18.dp, vertical = 16.dp)
+                .padding(vertical = 16.dp)
+                .width(388.dp)
         ) {
-            Text("Что вы хотите добавить?", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+            Text("Что вы хотите добавить?", style = TextStyle(
+                fontFamily = SFProDisplay,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontStyle = FontStyle.Normal
+            ))
             Button(onClick = {}, shape = CircleShape, contentPadding = PaddingValues(0.dp), colors = ButtonColors(WidgetGray5, Black, White, White), modifier = Modifier
                 .size(32.dp)
                 ) {
-                Icon(Icons.Filled.Close, "", tint = WidgetGray80)
+                Icon(Icons.Rounded.Close, "", tint = WidgetGray80)
             }
         }
         Row (
@@ -102,25 +111,34 @@ fun FoodTimeProgressElement(foodTime: String = "Завтрак", current: Float 
                 .width(240.dp)
                 .padding(horizontal = 18.dp, vertical = 18.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(foodTime, fontSize = 20.sp, fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold)
-            Icon(Icons.Filled.Add, "", tint = WidgetGray70, modifier = Modifier
+            Text(foodTime, style = TextStyle(
+                fontFamily = SFProDisplay,
+                fontWeight = FontWeight.Medium,
+                fontStyle = FontStyle.Normal,
+                fontSize = 20.sp
+            ))
+            Icon(Icons.Rounded.Add, "", tint = WidgetGray70, modifier = Modifier
                 .width(28.dp)
                 .height(28.dp)
                 .clickable {})
         }
 
         LinearProgressIndicator(
+            modifier = Modifier
+                .height(15.dp)
+                .width(200.dp)
+                .padding(horizontal = 18.dp)
+                .clip(RoundedCornerShape(20.dp)),
             color = WaterBlue,
             trackColor = WaterBlue10,
             progress = { percentage },
             gapSize = (-15).dp,
+            strokeCap = StrokeCap.Square,
             drawStopIndicator = {},
-            modifier = Modifier
-                .height(16.dp)
-                .width(200.dp)
-                .padding(horizontal = 18.dp)
+
+
         )
     }
 }
