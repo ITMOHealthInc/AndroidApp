@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +33,7 @@ import androidx.navigation.NavController
 import ru.itmo.se.mad.NavRoutes
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.ui.theme.Black
+import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.White
 import ru.itmo.se.mad.ui.theme.WidgetGray10
 import ru.itmo.se.mad.ui.theme.WidgetGray5
@@ -62,7 +62,7 @@ fun AddItem(navController: NavController) {
             modifier = Modifier
                 .padding(horizontal = 0.dp, vertical = 16.dp)
         ) {
-            Text("Что вы хотите добавить?", fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
+            Text("Что вы хотите добавить?", fontSize = 22.sp, fontFamily = SFProDisplay, fontWeight = FontWeight.SemiBold)
             Button(onClick = {}, shape = CircleShape, contentPadding = PaddingValues(0.dp), colors = ButtonColors(
                 WidgetGray5, Black, White, White
             ), modifier = Modifier
@@ -98,7 +98,7 @@ fun AddItem(navController: NavController) {
                     .width(30.dp)
                     .height(30.dp)
             )
-            Text("Сканировать код", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            Text("Сканировать код", fontFamily = SFProDisplay, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -112,7 +112,6 @@ fun AddItemElement(navController: NavController, thingType: String = "Приём
             .clip(shape = RoundedCornerShape(16.dp))
             .background(WidgetGray5)
             .clickable(onClick = {
-                println("on click!")
                 navController.navigate(NavRoutes.FoodTimeChoiceWidget.route)
             }),
         verticalArrangement = Arrangement.Center
@@ -129,7 +128,8 @@ fun AddItemElement(navController: NavController, thingType: String = "Приём
             text = thingType,
             fontSize = 16.sp,
             color = Color.Black,
-            fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold,
+            fontFamily = SFProDisplay,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 8.dp)
