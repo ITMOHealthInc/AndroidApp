@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -70,15 +72,23 @@ fun MeasureWidget() {
                 Icon(Icons.Filled.Close, "", tint = WidgetGray80)
             }
         }
-        ParameterElement("Вес")
-        ParameterElement("Талия")
-        ParameterElement("Бёдра")
-        ParameterElement("Грудь")
-        ParameterElement("Руки")
-        ParameterElement("Объём жира")
-        ParameterElement("Мышечная масса")
-        ParameterElement("Глюкоза в крови")
-        ParameterElement("Артериальное давление")
+        val parameters = listOf(
+            "Вес",
+            "Талия",
+            "Бёдра",
+            "Грудь",
+            "Руки",
+            "Объём жира",
+            "Мышечная масса",
+            "Глюкоза в крови",
+            "Артериальное давление"
+        )
+
+        LazyColumn {
+            items(parameters) { param ->
+                ParameterElement(param)
+            }
+        }
     }
 }
 
