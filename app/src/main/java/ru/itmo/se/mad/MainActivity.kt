@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,7 +19,7 @@ import ru.itmo.se.mad.ui.main.measure.MeasureWidget
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.products.FoodTimeChoiceWidget
 import ru.itmo.se.mad.ui.theme.MyApplicationTheme
-
+import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +33,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val navController = rememberNavController()
-    Column(Modifier.padding(top = 10.dp)) {
+    Column(Modifier.padding(top = 10.dp).verticalScroll(rememberScrollState())) {
         NavHost(navController, startDestination = NavRoutes.AddItem.route) {
             composable(NavRoutes.AddItem.route) { AddItem(navController) }
             composable(NavRoutes.FoodTimeChoiceWidget.route) { FoodTimeChoiceWidget()  }
             composable(NavRoutes.MeasureWidget.route) { MeasureWidget()  }
         }
+        CalorieWidgetView()
     }
 }
 
