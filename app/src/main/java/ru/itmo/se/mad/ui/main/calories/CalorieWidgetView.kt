@@ -176,7 +176,7 @@ fun MealCard(
         ) {
             Text(
                 title,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
                 modifier = Modifier.padding(vertical = 10.dp),
                 fontFamily = SFProDisplay
@@ -184,7 +184,7 @@ fun MealCard(
             // Кнопка "+"
             IconButton(
                 onClick = {},
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(30.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -217,14 +217,14 @@ fun MealCard(
                 .padding(vertical = 10.dp)){
                 Text("$calories/$goal",
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = Black,
 
                     fontFamily = SFProDisplay
                 )
                 Text(" ккал",
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     color = WidgetGray70,
                     modifier = Modifier.align(Alignment.Bottom),
                     fontFamily = SFProDisplay
@@ -239,7 +239,7 @@ fun MealCard(
                     .fillMaxWidth()
                     .height(12.dp)
                     .clip(RoundedCornerShape(6.dp)),
-                color = WaterBlue40,
+                color = WaterBlue,
                 trackColor = WaterBlue10
             )
         }
@@ -268,7 +268,7 @@ fun MacronutrientBar(name: String, value: Int, goal: Int) {
             Text(
                 text = "$value",
                 fontSize = 21.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = WidgetGray70,
                 fontFamily = SFProDisplay
             )
@@ -276,13 +276,13 @@ fun MacronutrientBar(name: String, value: Int, goal: Int) {
                 text = "/$goal г",
                 fontSize = 21.sp,
                 fontFamily = SFProDisplay,
-                color = WidgetGray10 //TODO: sync color with figma (darker than 10, lighter than 45)
+                color = WidgetGray4560
             )
         }
         Text(
             text = name,
             fontSize = 12.sp,
-            color = WidgetGray45//TODO: sync color with figma (darker than 10, darker than macronutrient goal color, lighter than 45)
+            color = WidgetGray0060
         )
     }
 }
@@ -299,14 +299,14 @@ fun CalorieStatBlockAccent(
             fontFamily = SFProDisplay,
             text = "$value $unit",
             fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = CalorieGreen
         )
         Text(
             fontFamily = SFProDisplay,
             text = label,
             fontSize = 12.sp,
-            color = WidgetGray45
+            color = WidgetGray0060,
         )
     }
 }
@@ -323,14 +323,14 @@ fun CalorieStatBlock(
         Text(
             text = value,
             fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
             color = Black,
             fontFamily = SFProDisplay
         )
         Text(
             text = "$label$unit",
             fontSize = 12.sp,
-            color = WidgetGray45, //TODO: sync color with figma (darker than 10, darker than macronutrient goal color, lighter than 45)
+            color = WidgetGray0060,
             fontFamily = SFProDisplay
         )
     }
