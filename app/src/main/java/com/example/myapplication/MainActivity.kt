@@ -42,7 +42,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.ui.theme.Black
+import com.example.myapplication.ui.theme.CalorieGreen
+import com.example.myapplication.ui.theme.CalorieGreen15
+import com.example.myapplication.ui.theme.CalorieGreen30
+import com.example.myapplication.ui.theme.CalorieGreenMenu
+import com.example.myapplication.ui.theme.LightGreen80
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.ui.theme.WaterBlue10
+import com.example.myapplication.ui.theme.WaterBlue40
+import com.example.myapplication.ui.theme.WidgetGray10
+import com.example.myapplication.ui.theme.WidgetGray3
+import com.example.myapplication.ui.theme.WidgetGray45
+import com.example.myapplication.ui.theme.WidgetGray5
+import com.example.myapplication.ui.theme.WidgetGray70
+import com.example.myapplication.ui.theme.WidgetGray80
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -53,13 +67,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column(modifier = Modifier.padding(innerPadding)) {
-                        Greeting(name = "Android")
-                        SendRequestComposable("https://data-api.oxilor.com/rest/countries")
-                    }
+                //Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                   // Column(modifier = Modifier.padding(innerPadding)) {
+                   //     Greeting(name = "Android")
+                    //    SendRequestComposable("https://data-api.oxilor.com/rest/countries")
+                   // }
                     CalorieWidgetView()
-                }
+               // }
             }
         }
     }
@@ -69,7 +83,7 @@ fun CalorieWidgetView(
     caloriesEaten: Int = 1820,
     caloriesBurned: Int = 618,
     calorieGoal: Int = 2366,
-    protein: Int = 16,
+    protein: Int = 50,
     fat: Int = 6,
     carbs: Int = 38
 ) {
@@ -79,7 +93,7 @@ fun CalorieWidgetView(
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(Color(0xFFE0FFE0), shape = RoundedCornerShape(16.dp))
+                .background(CalorieGreen15, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -90,7 +104,8 @@ fun CalorieWidgetView(
             // Калории
             LinearProgressIndicator(
                 progress = { caloriesEaten.toFloat() / calorieGoal.toFloat() },
-                color = Color(0xFF01E30B),
+                color = CalorieGreen,
+                trackColor = CalorieGreen15,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(30.dp)
@@ -138,7 +153,7 @@ fun CalorieWidgetView(
 
         }
         Row(
-            modifier = Modifier.padding(horizontal = 8.dp).horizontalScroll(ScrollState(0)),
+            modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             MealCard(
@@ -190,7 +205,7 @@ fun MealCard(
     Column(
         modifier = Modifier
             .height(350.dp)
-            .background(Color(0xFFEEEEEE), RoundedCornerShape(16.dp))
+            .background(WidgetGray5, RoundedCornerShape(16.dp))
             .padding(16.dp)
             .width(200.dp)
 
@@ -215,7 +230,7 @@ fun MealCard(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Добавить",
-                    tint = Color.Black
+                    tint = WidgetGray80
                 )
             }
         }
@@ -229,7 +244,7 @@ fun MealCard(
                 }
         }
         HorizontalDivider(
-            color = Color.Gray.copy(alpha = 0.3f),
+            color = WidgetGray10,
             thickness = 1.dp,
             modifier = Modifier.fillMaxWidth().padding(6.dp)
         )
@@ -244,14 +259,14 @@ fun MealCard(
                 Text("$calories/$goal",
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = Black,
 
                     fontFamily = interFontFamily
                 )
                 Text(" ккал",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Gray,
+                    color = WidgetGray70,
                     modifier = Modifier.align(Alignment.Bottom),
                     fontFamily = interFontFamily
                 )}
@@ -261,9 +276,11 @@ fun MealCard(
                         .fillMaxWidth()
                         .height(12.dp)
                         .clip(RoundedCornerShape(6.dp)),
-                    color = Color.Blue.copy(red = 0.1f, green = 0.7f, blue = 1f)
+                    color = WaterBlue40,
+                    trackColor = WaterBlue10
                 )
             }
+
         }
     }
 
@@ -277,27 +294,28 @@ fun MacronutrientBar(name: String, value: Int, goal: Int) {
                 .width(100.dp)
                 .height(12.dp)
                 .clip(RoundedCornerShape(6.dp)),
-            color = Color.DarkGray,
+            color = WidgetGray70,
+            trackColor = WidgetGray5,
         )
         Row {
             Text(
                 text = "$value",
                 fontSize = 21.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = WidgetGray70,
                 fontFamily = interFontFamily
             )
             Text(
                 text = "/$goal г",
                 fontSize = 21.sp,
                 fontFamily = interFontFamily,
-                color = Color.Gray
+                color = WidgetGray10 //TODO: sync color with figma (darker than 10, lighter than 45)
             )
         }
         Text(
             text = "$name",
             fontSize = 12.sp,
-            color = Color.Gray
+            color = WidgetGray45//TODO: sync color with figma (darker than 10, darker than macronutrient goal color, lighter than 45)
         )
     }
 }
@@ -319,13 +337,13 @@ fun CalorieStatBlockAccent(
             text = "$value $unit",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF01E30B)
+            color = CalorieGreen
         )
         Text(
             fontFamily = interFontFamily,
             text = label,
             fontSize = 12.sp,
-            color = Color.Gray
+            color = WidgetGray45
         )
     }
 }
@@ -343,43 +361,15 @@ fun CalorieStatBlock(
             text = value,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = Black,
             fontFamily = interFontFamily
         )
         Text(
             text = "$label$unit",
             fontSize = 12.sp,
-            color = Color.Gray,
+            color = WidgetGray45, //TODO: sync color with figma (darker than 10, darker than macronutrient goal color, lighter than 45)
             fontFamily = interFontFamily
         )
-    }
-}
-
-@Composable
-fun MealSection(title: String, calories: Int, goal: Int, items: List<String>) {
-    val ratio = calories.toFloat() / goal
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White, RoundedCornerShape(12.dp))
-            .padding(12.dp)
-            .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
-    ) {
-        Text(title, fontWeight = FontWeight.Bold)
-        items.forEach {
-            Text(it, fontSize = 14.sp)
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        LinearProgressIndicator(
-            progress = { calories.toFloat()/goal.toFloat()},
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(4.dp)),
-            color = Color.Blue,
-
-        )
-        Text("$calories / $goal ккал", fontSize = 12.sp, color = Color.Gray)
     }
 }
 
