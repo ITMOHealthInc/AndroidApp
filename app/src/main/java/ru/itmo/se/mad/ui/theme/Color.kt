@@ -2,11 +2,14 @@ package ru.itmo.se.mad.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+
 val WaterBlue = Color(0xFF019EFF)
 val WaterBlue70 = Color(0xFF84CAFE)
 val WaterBlue40 = Color(0x66019EFF)
 val WaterBlue10 = Color(0x2601B9FF)
 
+val WidgetGray60 = Color(0x99FFFFFF)
+val WidgetGray20 = Color(0x33FFFFFF)
 val WidgetGray80 = Color(0xCC000000)
 val WidgetGray70 = Color(0xB2000000)
 val WidgetGrayFF60 = Color(0x99FFFFFF)
