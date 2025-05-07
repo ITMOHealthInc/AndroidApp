@@ -27,6 +27,7 @@ import ru.itmo.se.mad.ui.theme.MyApplicationTheme
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
+import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.MainScreen
 import ru.itmo.se.mad.ui.main.water.WaterItem
 import ru.itmo.se.mad.ui.main.water.WaterSlider
@@ -83,9 +84,7 @@ fun Main() {
                         onExpandCollapseClick = { isExpanded = true },
                         expandable = false
                     )
-
-
-
+                    StepsActivityWidget()
                 }
             }
             composable(NavRoutes.AddItem.route) {
