@@ -72,7 +72,7 @@ fun BottomNavBar(navController: NavController) {
         ) {
             items.forEach { item ->
                 val alpha by animateFloatAsState(
-                    targetValue = if (selectedItemIndex == items.indexOf(item)) 1f else 0.35f,
+                    targetValue = if (selectedItemIndex == items.indexOf(item)) 1f else 0.6f,
                     label = "alpha"
                 )
                 NavigationBarItem(
@@ -90,7 +90,7 @@ fun BottomNavBar(navController: NavController) {
                                 Icon(
                                     painter = item.icon,
                                     contentDescription = null,
-                                    modifier = Modifier.size(18.dp).alpha(alpha),
+                                    modifier = Modifier.size(18.dp),
                                     tint = Color.Black
                                 )
                             }
