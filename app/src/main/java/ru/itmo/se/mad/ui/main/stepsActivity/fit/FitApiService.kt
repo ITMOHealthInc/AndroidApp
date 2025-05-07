@@ -32,7 +32,7 @@ class FitApiService {
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .method(original.method(), original.body())
-            
+
             chain.proceed(requestBuilder.build())
         }
         .build()
@@ -48,7 +48,7 @@ class FitApiService {
     suspend fun getUserSteps(): Int = withContext(Dispatchers.IO) {
         val call = activityApi.getSteps()
         var steps = 0
-        
+
         try {
             val response = call.execute()
             if (response.isSuccessful && response.body() != null) {
@@ -57,13 +57,13 @@ class FitApiService {
         } catch (e: Exception) {
             Log.e("FitApiService", "Error getting steps", e)
         }
-        
+
         steps
     }
 
     suspend fun setDailyGoal(goal: Int): Boolean = withContext(Dispatchers.IO) {
         val call = activityApi.setDailyGoal(GoalRequest(goal))
-        
+
         try {
             val response = call.execute()
             response.isSuccessful
@@ -75,7 +75,7 @@ class FitApiService {
 
     suspend fun setSteps(steps: Int): Boolean = withContext(Dispatchers.IO) {
         val call = activityApi.setSteps(StepsRequest(steps))
-        
+
         try {
             val response = call.execute()
             response.isSuccessful
@@ -88,8 +88,8 @@ class FitApiService {
     suspend fun getUserStepsAndGoal(): Pair<Int, Int> = withContext(Dispatchers.IO) {
         val call = activityApi.getSteps()
         var steps = 0
-        var goal = 5000 // Default goal
-        
+        var goal = 5000
+
         try {
             val response = call.execute()
             if (response.isSuccessful && response.body() != null) {
@@ -101,7 +101,7 @@ class FitApiService {
         } catch (e: Exception) {
             Log.e("FitApiService", "Error getting steps and goal", e)
         }
-        
+
         Pair(steps, goal)
     }
 }
