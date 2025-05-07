@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Home
@@ -68,11 +69,31 @@ fun BottomNavBar(navController: NavController) {
             items.forEach { item ->
                 NavigationBarItem(
                     icon = {
-                        Icon(
-                            painter = item.icon,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                        )
+                        if (item.route == NavRoutes.AddItem.route) {
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 67.dp, height = 40.dp)
+                                    .background(
+                                        color = Color(0xFFEFEFEF),
+                                        shape = RoundedCornerShape(50)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    painter = item.icon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp),
+                                    tint = Color.Black
+                                )
+                            }
+                        } else {
+                            Icon(
+                                painter = item.icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.Black
+                            )
+                        }
                     },
                     selected = false,
                     onClick = {
