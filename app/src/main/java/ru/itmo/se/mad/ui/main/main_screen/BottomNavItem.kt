@@ -18,8 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -52,14 +55,18 @@ fun BottomNavBar(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color.White.copy(alpha = 0f),
-                            Color.White
-                        )
+                .graphicsLayer { alpha = 0.99f }
+                .drawWithContent {
+                    val colors = listOf(
+                        Color.Transparent,
+                        Color.White
                     )
-                ),
+                    drawContent()
+                    drawRect(
+                        brush = Brush.verticalGradient(colors),
+                        blendMode = BlendMode.Color
+                    )
+                },
             containerColor = Color.Transparent
         ) {
             items.forEach { item ->
