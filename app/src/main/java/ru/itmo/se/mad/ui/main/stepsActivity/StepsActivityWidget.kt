@@ -64,7 +64,8 @@ fun StepsActivityWidget(
     }
 
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = WidgetGray5),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
