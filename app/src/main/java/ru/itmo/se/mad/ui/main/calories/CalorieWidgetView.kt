@@ -1,17 +1,19 @@
 package ru.itmo.se.mad.ui.main.calories
 
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -20,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,13 +48,10 @@ fun CalorieWidgetView(
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(CalorieGreen15, shape = RoundedCornerShape(16.dp))
+                .background(CalorieGreen15, shape = RoundedCornerShape(32.dp))
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 26.dp)
         ) {
-
-
-            Spacer(modifier = Modifier.height(8.dp))
 
             // Калории
             LinearProgressIndicator(
@@ -97,7 +97,7 @@ fun CalorieWidgetView(
             HorizontalDivider(
                 color = WidgetGray10,
                 thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 20.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 20.dp)
             )
 
 
@@ -111,37 +111,54 @@ fun CalorieWidgetView(
             }
 
         }
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
         ) {
-            MealCard(
-                title = "Завтрак",
-                calories = 328,
-                goal = 425,
-                items = listOf("Овсянка с клубникой", "Зелёный чай")
-            )
+            Row(
+                modifier = Modifier
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                VerticalDivider(
+                    thickness = 2.dp,
+                    modifier = Modifier.fillMaxHeight()
+                )
 
-            MealCard(
-                title = "Обед",
-                calories = 516,
-                goal = 630,
-                items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
-            )
+                MealCard(
+                    title = "Завтрак",
+                    calories = 328,
+                    goal = 425,
+                    items = listOf("Овсянка с клубникой", "Зелёный чай")
+                )
 
-            MealCard(
-                title = "Ужин",
-                calories = 320,
-                goal = 500,
-                items = listOf("Гречка с рыбой", "Салат")
-            )
+                MealCard(
+                    title = "Обед",
+                    calories = 516,
+                    goal = 630,
+                    items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
+                )
 
-            MealCard(
-                title = "Перекус",
-                calories = 180,
-                goal = 250,
-                items = listOf("Йогурт", "Орехи")
-            )
+                MealCard(
+                    title = "Ужин",
+                    calories = 320,
+                    goal = 500,
+                    items = listOf("Гречка с рыбой", "Салат")
+                )
+
+                MealCard(
+                    title = "Перекус",
+                    calories = 180,
+                    goal = 250,
+                    items = listOf("Йогурт", "Орехи")
+                )
+
+                VerticalDivider(
+                    thickness = 2.dp,
+                    modifier = Modifier.fillMaxHeight()
+                )
+            }
         }
     }
 }
@@ -164,21 +181,21 @@ fun MealCard(
     Column(
         modifier = Modifier
             .height(350.dp)
-            .background(WidgetGray5, RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .background(WidgetGray5, RoundedCornerShape(24.dp))
+            .padding(20.dp)
             .width(200.dp)
 
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 title,
                 fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
-                modifier = Modifier.padding(vertical = 10.dp),
+                modifier = Modifier.padding(bottom = 12.dp),
                 fontFamily = SFProDisplay
             )
             // Кнопка "+"
@@ -198,19 +215,18 @@ fun MealCard(
             items.forEach { item ->
                 Text(item, fontSize = 16.sp,
                     fontFamily = SFProDisplay)
-                Spacer(modifier = Modifier.height(2.dp)
+                Spacer(modifier = Modifier.height(6.dp)
                 )
             }
         }
         HorizontalDivider(
             color = WidgetGray10,
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth().padding(6.dp)
+            modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp)
         )
 
         Column(
             modifier = Modifier
-                .padding(6.dp)
         ){
 
             Row(modifier = Modifier
