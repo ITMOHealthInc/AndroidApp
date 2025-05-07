@@ -94,7 +94,7 @@ fun AddItem(navController: NavController) {
             modifier = Modifier.padding(vertical = 5.dp)
         ) {
             AddItemElement(navController, "Измерение", R.drawable.image_ruler, NavRoutes.MeasureWidget.route)
-            AddItemElement(navController, "Вода", R.drawable.image_water)
+            AddItemElement(navController, "Вода", R.drawable.image_water, NavRoutes.AddWaterWidget.route)
         }
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp),

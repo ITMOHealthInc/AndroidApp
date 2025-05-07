@@ -10,6 +10,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +27,10 @@ import ru.itmo.se.mad.ui.theme.MyApplicationTheme
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
+import ru.itmo.se.mad.ui.main.water.MainScreen
+import ru.itmo.se.mad.ui.main.water.WaterItem
+import ru.itmo.se.mad.ui.main.water.WaterSlider
+import ru.itmo.se.mad.ui.theme.AddWaterWidget
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +55,9 @@ fun Main() {
 //        CalorieWidgetView()
 //    }
     val navController = rememberNavController()
+    var isExpanded by remember { mutableStateOf(false) }
+    var totalWater by remember { mutableStateOf(0.5f) }
+    val maxWater = 2.25f
 
 
     Scaffold(
@@ -65,6 +76,16 @@ fun Main() {
                         // TODO: логика при нажатии на календарь
                     })
                     CalorieWidgetView()
+                    WaterSlider(
+                        totalWater = totalWater,
+                        onWaterAmountChange = { newAmount -> totalWater = newAmount },
+                        maxWater = maxWater,
+                        onExpandCollapseClick = { isExpanded = true },
+                        expandable = false
+                    )
+
+
+
                 }
             }
             composable(NavRoutes.AddItem.route) {
@@ -76,14 +97,21 @@ fun Main() {
             composable("measure") {
                 MeasureWidget()
             }
+            composable(NavRoutes.AddWaterWidget.route) { AddWaterWidget(
+                darkTheme = false,
+                content = {
+                    MainScreen()
+                }
+            ) }
         }
     }
 }
 
 sealed class NavRoutes(val route: String) {
-    object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
-    object AddItem : NavRoutes("AddItem")
-    object MeasureWidget : NavRoutes("MeasureWidget")
+    data object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
+    data object AddItem : NavRoutes("AddItem")
+    data object AddWaterWidget : NavRoutes("AddWaterWidget")
+    data object MeasureWidget : NavRoutes("MeasureWidget")
 }
 
 @Composable
