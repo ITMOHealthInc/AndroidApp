@@ -1,6 +1,11 @@
 package ru.itmo.se.mad.ui.main.main_screen
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -13,11 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.itmo.se.mad.R
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
-import ru.itmo.se.mad.R
+import java.util.Locale
 
 
 @Preview

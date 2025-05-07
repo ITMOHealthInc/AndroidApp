@@ -28,7 +28,18 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.itmo.se.mad.ui.theme.*
+import ru.itmo.se.mad.ui.theme.Black
+import ru.itmo.se.mad.ui.theme.CalorieGreen
+import ru.itmo.se.mad.ui.theme.CalorieGreen15
+import ru.itmo.se.mad.ui.theme.SFProDisplay
+import ru.itmo.se.mad.ui.theme.WaterBlue
+import ru.itmo.se.mad.ui.theme.WaterBlue10
+import ru.itmo.se.mad.ui.theme.WidgetGray0060
+import ru.itmo.se.mad.ui.theme.WidgetGray10
+import ru.itmo.se.mad.ui.theme.WidgetGray4560
+import ru.itmo.se.mad.ui.theme.WidgetGray5
+import ru.itmo.se.mad.ui.theme.WidgetGray70
+import ru.itmo.se.mad.ui.theme.WidgetGray80
 
 @Composable
 fun CalorieWidgetView(
