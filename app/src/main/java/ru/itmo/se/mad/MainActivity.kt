@@ -107,7 +107,7 @@ fun Main() {
                             disabledContentColor = Color.Black),
                         onClick = {},
                         modifier = Modifier
-                            .padding(vertical = 20.dp)
+                            .padding(vertical = 40.dp)
                     ) {
                         Text("Изменить порядок", style = TextStyle(
                             fontFamily = SFProDisplay,

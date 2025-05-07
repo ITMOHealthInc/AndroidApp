@@ -59,6 +59,7 @@ fun BottomNavBar(navController: NavController) {
                 .drawWithContent {
                     val colors = listOf(
                         Color.Transparent,
+                        Color.White,
                         Color.White
                     )
                     drawContent()
