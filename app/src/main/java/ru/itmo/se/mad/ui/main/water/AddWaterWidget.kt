@@ -355,7 +355,7 @@ fun WaterSlider(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(RoundedCornerShape(28.dp))
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures(
                             onDragStart = {
@@ -387,7 +387,7 @@ fun WaterSlider(
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 26.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -457,7 +457,7 @@ fun WaterSlider(
                                     painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
                                     contentDescription = null,
                                     tint = Color.White,
-                                    modifier = Modifier.size(24.dp),
+                                    modifier = Modifier.size(22.dp),
 
                                 )
                                 Text(
@@ -469,7 +469,7 @@ fun WaterSlider(
                                             append("/%.2f л".format(maxWater))
                                         }
                                     },
-                                    fontSize = 34.sp,
+                                    fontSize = 32.sp,
                                     fontWeight = FontWeight.SemiBold,
                                     fontFamily = SFProDisplay
 
