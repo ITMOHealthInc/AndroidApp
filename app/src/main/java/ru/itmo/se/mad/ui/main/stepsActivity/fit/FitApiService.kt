@@ -3,9 +3,9 @@ package ru.itmo.se.mad.ui.main.stepsActivity.fit
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.OkHttpClient
 
 
 class FitApiService {
