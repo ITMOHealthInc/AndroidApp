@@ -119,28 +119,6 @@ fun MainScreen() {
 }
 
 @Composable
-fun ExpandCollapseButton(isExpanded: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(32.dp)
-            .clip(CircleShape)
-            .background(Color.White)
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = painterResource(
-                id = if (isExpanded) R.drawable.ic_collapse else R.drawable.ic_expand
-
-            ),
-            contentDescription = if (isExpanded) "Collapse" else "Expand",
-            tint = Color.Black,
-            modifier = Modifier.size(18.dp)
-        )
-    }
-}
-
-@Composable
 fun WaterCard(
     totalWater: Float,
     onTotalWaterChange: (Float) -> Unit,
@@ -490,5 +468,27 @@ fun WaterSlider(
                     .offset(x = 12.dp, y = (-12).dp)
             )
         }
+    }
+}
+
+@Composable
+fun ExpandCollapseButton(isExpanded: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(32.dp)
+            .clip(CircleShape)
+            .background(Color.White)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(
+                id = if (isExpanded) R.drawable.ic_collapse else R.drawable.ic_expand
+
+            ),
+            contentDescription = if (isExpanded) "Collapse" else "Expand",
+            tint = Color.Black,
+            modifier = Modifier.size(18.dp)
+        )
     }
 }

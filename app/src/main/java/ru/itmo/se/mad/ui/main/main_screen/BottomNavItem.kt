@@ -2,6 +2,7 @@ package ru.itmo.se.mad.ui.main.main_screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,10 +26,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import ru.itmo.se.mad.NavRoutes
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.ui.theme.WidgetGray80EA
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.ui.semantics.Role
+
 
 data class BottomNavItem(
     val route: String,
@@ -37,7 +39,7 @@ data class BottomNavItem(
 )
 
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(onAddItemClick: () -> Unit, onNavigate: (String) -> Unit) {
     val items = listOf(
         BottomNavItem("home", painterResource(id = R.drawable.image_home)),
         BottomNavItem(NavRoutes.AddItem.route, painterResource(id = R.drawable.image_plus)),
@@ -75,40 +77,54 @@ fun BottomNavBar(navController: NavController) {
                     targetValue = if (selectedItemIndex == items.indexOf(item)) 1f else 0.6f,
                     label = "alpha"
                 )
-                NavigationBarItem(
-                    icon = {
-                        if (item.route == NavRoutes.AddItem.route) {
-                            Box(
-                                modifier = Modifier
-                                    .size(width = 67.dp, height = 40.dp)
-                                    .background(
-                                        color = WidgetGray80EA,
-                                        shape = RoundedCornerShape(50)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    painter = item.icon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp),
-                                    tint = Color.Black
-                                )
+
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            role = Role.Button
+                        ) {
+                            selectedItemIndex = items.indexOf(item)
+                            if (item.route == NavRoutes.AddItem.route) {
+                                onAddItemClick()
+                            } else {
+                                onNavigate(item.route)
                             }
-                        } else {
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (item.route == NavRoutes.AddItem.route) {
+                        Box(
+                            modifier = Modifier
+                                .size(width = 67.dp, height = 40.dp)
+                                .background(
+                                    color = WidgetGray80EA,
+                                    shape = RoundedCornerShape(50)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Icon(
                                 painter = item.icon,
                                 contentDescription = null,
-                                modifier = Modifier.size(24.dp).alpha(alpha),
+                                modifier = Modifier.size(18.dp),
                                 tint = Color.Black
                             )
                         }
-                    },
-                    selected = false,
-                    onClick = {
-                        selectedItemIndex = items.indexOf(item)
-                        navController.navigate(item.route)
+                    } else {
+                        Icon(
+                            painter = item.icon,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .alpha(alpha),
+                            tint = Color.Black
+                        )
                     }
-                )
+                }
+
+
             }
         }
     }

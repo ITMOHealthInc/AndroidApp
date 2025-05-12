@@ -56,14 +56,10 @@ fun CalorieWidgetView(
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .background(CalorieGreen15, shape = RoundedCornerShape(16.dp))
+                .background(CalorieGreen15, shape = RoundedCornerShape(32.dp))
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
-
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             // Калории
             LinearProgressIndicator(
                 progress = { caloriesEaten.toFloat() / calorieGoal.toFloat() },
@@ -88,27 +84,29 @@ fun CalorieWidgetView(
                 CalorieStatBlockAccent(
                     value = caloriesEaten.toString(),
                     label = "Съедено",
-                    unit = "ккал"
+                    unit = "ккал",
                 )
 
                 // Сожжено
                 CalorieStatBlock(
                     value = caloriesBurned.toString(),
                     label = "Сожжено",
-                    unit = ""
+                    unit = "",
+                    hAlignment = Alignment.End
                 )
 
                 // Остаток
                 CalorieStatBlock(
                     value = caloriesRemaining.toString(),
                     label = "Остаток",
-                    unit = ""
+                    unit = "",
+                    hAlignment = Alignment.End
                 )
             }
             HorizontalDivider(
                 color = WidgetGray10,
                 thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 20.dp)
+                modifier = Modifier.fillMaxWidth().padding(top = 14.dp, bottom = 14.dp)
             )
 
 
@@ -174,22 +172,21 @@ fun MealCard(
 ) {
     Column(
         modifier = Modifier
-            .height(350.dp)
-            .background(WidgetGray5, RoundedCornerShape(16.dp))
-            .padding(16.dp)
+            .height(325.dp)
+            .background(WidgetGray5, RoundedCornerShape(24.dp))
+            .padding(20.dp)
             .width(200.dp)
-
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.Top
         ) {
             Text(
                 title,
                 fontWeight = FontWeight.Medium,
                 fontSize = 24.sp,
-                modifier = Modifier.padding(vertical = 10.dp),
+                modifier = Modifier.padding(bottom = 10.dp),
                 fontFamily = SFProDisplay
             )
             // Кнопка "+"
@@ -209,20 +206,17 @@ fun MealCard(
             items.forEach { item ->
                 Text(item, fontSize = 16.sp,
                     fontFamily = SFProDisplay)
-                Spacer(modifier = Modifier.height(2.dp)
+                Spacer(modifier = Modifier.height(4.dp)
                 )
             }
         }
         HorizontalDivider(
             color = WidgetGray10,
             thickness = 1.dp,
-            modifier = Modifier.fillMaxWidth().padding(6.dp)
+            modifier = Modifier.fillMaxWidth().padding(vertical = 18.dp)
         )
 
-        Column(
-            modifier = Modifier
-                .padding(6.dp)
-        ){
+        Column{
 
             Row(modifier = Modifier
                 .padding(vertical = 10.dp)){
@@ -290,10 +284,12 @@ fun MacronutrientBar(name: String, value: Int, goal: Int) {
                 color = WidgetGray4560
             )
         }
+        Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = name,
             fontSize = 12.sp,
-            color = WidgetGray0060
+            color = WidgetGray0060,
+            fontWeight = FontWeight.Normal,
         )
     }
 }
@@ -327,9 +323,10 @@ fun CalorieStatBlock(
     value: String,
     label: String,
     unit: String,
+    hAlignment: Alignment.Horizontal
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = hAlignment
     ) {
         Text(
             text = value,
@@ -342,7 +339,8 @@ fun CalorieStatBlock(
             text = "$label$unit",
             fontSize = 12.sp,
             color = WidgetGray0060,
-            fontFamily = SFProDisplay
+            fontFamily = SFProDisplay,
+            fontWeight = FontWeight.Normal
         )
     }
 }
