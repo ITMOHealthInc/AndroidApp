@@ -60,10 +60,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val navController = rememberNavController()
-    var isExpanded by remember { mutableStateOf(false) }
-    var totalWater by remember { mutableFloatStateOf(0.5f) }
 
-    var currentWater by remember { mutableStateOf(0.5f) }
+    var currentWater by remember { mutableFloatStateOf(0.5f) }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
@@ -94,13 +92,6 @@ fun Main() {
                             // TODO: логика при нажатии на календарь
                         })
                         CalorieWidgetView()
-//                        WaterSlider(
-//                            totalWater = totalWater,
-//                            onWaterAmountChange = { newAmount -> totalWater = newAmount },
-//                            maxWater = maxWater,
-//                            onExpandCollapseClick = { isExpanded = true },
-//                            expandable = false
-//                        )
                         NewWaterSlider(
                             totalDrunk = currentWater,
                             maxWater = maxWater,
@@ -146,7 +137,7 @@ fun Main() {
 
             if (isAddItemDialogShown) {
                 Popup(
-                    isVisible = isAddItemDialogShown,
+                    isVisible = true,
                     onDismissRequest = {
                         isAddItemDialogShown = false
                         popupContent = null
