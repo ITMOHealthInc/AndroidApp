@@ -17,7 +17,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,21 +28,26 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.ui.initialSetup.Step1Screen
+import ru.itmo.se.mad.ui.initialSetup.Step2Screen
+import ru.itmo.se.mad.ui.initialSetup.Step3Screen
+import ru.itmo.se.mad.ui.initialSetup.Step4Screen
+import ru.itmo.se.mad.ui.initialSetup.Step5Screen
+import ru.itmo.se.mad.ui.initialSetup.Step6Screen
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
-import ru.itmo.se.mad.ui.main.measure.MeasureWidget
 import ru.itmo.se.mad.ui.main.products.AddItem
-import ru.itmo.se.mad.ui.main.products.FoodTimeChoiceWidget
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
-import ru.itmo.se.mad.ui.main.water.MainScreen
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
-import ru.itmo.se.mad.ui.theme.WaterTrackerTheme
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 class MainActivity : ComponentActivity() {
@@ -69,20 +73,72 @@ fun Main() {
         mutableStateOf<(@Composable () -> Unit)?>(null)
     }
 
+    val onboardingViewModel: OnboardingViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val showBottomBar = currentRoute == "home"
+
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
-            BottomNavBar(
-                onAddItemClick = { isAddItemDialogShown = true },
-                onNavigate = { navController.navigate(it) }
-            )
+            if (showBottomBar) {
+                BottomNavBar(
+                    onAddItemClick = { isAddItemDialogShown = true },
+                    onNavigate = { navController.navigate(it) }
+                )
+            }
         }
     ) { _ ->
         Box {
             NavHost(
                 navController,
-                startDestination = "home"
+                startDestination = "step1"
             ) {
+                composable("step1") {
+                    Step1Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("step2") }
+                    )
+                }
+                composable("step2") {
+                    Step2Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("step3") }
+                    )
+                }
+                composable("step3") {
+                    Step3Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("step4") }
+                    )
+                }
+                composable("step4") {
+                    Step4Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("step5") },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable("step5") {
+                    Step5Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("step6") },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+                composable("step5") {
+                    Step6Screen(
+                        viewModel = onboardingViewModel,
+                        onNext = {
+                            navController.navigate("home") {
+                                popUpTo("step2") { inclusive = true }
+                            }
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                }
+
                 composable("home") {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -118,19 +174,6 @@ fun Main() {
                             ))
                         }
                         Spacer(modifier = Modifier.height(60.dp))
-                    }
-                }
-                composable(NavRoutes.FoodTimeChoiceWidget.route) {
-                    FoodTimeChoiceWidget()
-                }
-                composable("measure") {
-                    MeasureWidget()
-                }
-                composable(NavRoutes.AddWaterWidget.route) {
-                    WaterTrackerTheme(
-                        darkTheme = false
-                    ) {
-                        MainScreen()
                     }
                 }
             }

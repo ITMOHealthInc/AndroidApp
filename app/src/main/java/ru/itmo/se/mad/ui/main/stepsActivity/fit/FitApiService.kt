@@ -31,7 +31,7 @@ class FitApiService {
                 .header("Authorization", "Bearer $token")
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
-                .method(original.method(), original.body())
+                .method(original.method, original.body)
 
             chain.proceed(requestBuilder.build())
         }
