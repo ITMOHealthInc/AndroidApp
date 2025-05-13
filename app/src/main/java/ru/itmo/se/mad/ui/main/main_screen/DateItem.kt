@@ -49,7 +49,7 @@ fun DateItem(
         ) {
             Column {
                 Text(
-                    text = "$dayOfWeek, $dayMonth",
+                    text = "${dayOfWeek.uppercase()}, $dayMonth",
                     fontFamily = SFProDisplay,
                     fontWeight = FontWeight.Medium,
                     fontSize = 14.sp,

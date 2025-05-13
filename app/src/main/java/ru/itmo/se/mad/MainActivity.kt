@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
@@ -39,7 +41,7 @@ import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.products.FoodTimeChoiceWidget
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.MainScreen
-import ru.itmo.se.mad.ui.main.water.WaterSlider
+import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WaterTrackerTheme
 import ru.itmo.se.mad.ui.theme.WidgetGray5
@@ -54,86 +56,98 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
 @Composable
 fun Main() {
-//    val navController = rememberNavController()
-//    Column(Modifier.padding(top = 10.dp).verticalScroll(rememberScrollState())) {
-//        NavHost(navController, startDestination = NavRoutes.AddItem.route) {
-//            composable(NavRoutes.AddItem.route) { AddItem(navController) }
-//            composable(NavRoutes.FoodTimeChoiceWidget.route) { FoodTimeChoiceWidget()  }
-//            composable(NavRoutes.MeasureWidget.route) { MeasureWidget()  }
-//        }
-//        CalorieWidgetView()
-//    }
     val navController = rememberNavController()
-    var isExpanded by remember { mutableStateOf(false) }
-    var totalWater by remember { mutableFloatStateOf(0.5f) }
+
+    var currentWater by remember { mutableFloatStateOf(0.5f) }
     val maxWater = 2.25f
 
+    var isAddItemDialogShown by remember { mutableStateOf(false) }
+    var popupContent by remember {
+        mutableStateOf<(@Composable () -> Unit)?>(null)
+    }
 
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
-            BottomNavBar(navController)
+            BottomNavBar(
+                onAddItemClick = { isAddItemDialogShown = true },
+                onNavigate = { navController.navigate(it) }
+            )
         }
     ) { _ ->
-        NavHost(
-            navController,
-            startDestination = "home"
-        ) {
-            composable("home") {
-                Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    DateItem(onCalendarClick = {
-                        // TODO: логика при нажатии на календарь
-                    })
-                    CalorieWidgetView()
-                    WaterSlider(
-                        totalWater = totalWater,
-                        onWaterAmountChange = { newAmount -> totalWater = newAmount },
-                        maxWater = maxWater,
-                        onExpandCollapseClick = { isExpanded = true },
-                        expandable = false
-                    )
-                    StepsActivityWidget()
-                    Button(
-                        colors = ButtonColors(
-                            containerColor = WidgetGray5,
-                            contentColor = Color.Black,
-                            disabledContainerColor = Color.Unspecified,
-                            disabledContentColor = Color.Black),
-                        onClick = {},
-                        modifier = Modifier
-                            .padding(vertical = 40.dp)
+        Box {
+            NavHost(
+                navController,
+                startDestination = "home"
+            ) {
+                composable("home") {
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Изменить порядок", style = TextStyle(
-                            fontFamily = SFProDisplay,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal,
-                            fontStyle = FontStyle.Normal
-                        ) )
+                        DateItem(onCalendarClick = {
+                            // TODO: логика при нажатии на календарь
+                        })
+                        CalorieWidgetView()
+                        NewWaterSlider(
+                            totalDrunk = currentWater,
+                            maxWater = maxWater,
+                            onAddWater = { added ->
+                                currentWater = (currentWater + added).coerceAtMost(maxWater)
+                            }
+                        )
+                        StepsActivityWidget()
+                        Button(
+                            colors = ButtonColors(
+                                containerColor = WidgetGray5,
+                                contentColor = Color.Black,
+                                disabledContainerColor = Color.Unspecified,
+                                disabledContentColor = Color.Black),
+                            onClick = {},
+                            modifier = Modifier
+                                .padding(vertical = 40.dp)
+                        ) {
+                            Text("Изменить порядок", style = TextStyle(
+                                fontFamily = SFProDisplay,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Normal,
+                                fontStyle = FontStyle.Normal
+                            ))
+                        }
+                        Spacer(modifier = Modifier.height(60.dp))
                     }
-                    Spacer(modifier = Modifier.height(60.dp))
+                }
+                composable(NavRoutes.FoodTimeChoiceWidget.route) {
+                    FoodTimeChoiceWidget()
+                }
+                composable("measure") {
+                    MeasureWidget()
+                }
+                composable(NavRoutes.AddWaterWidget.route) {
+                    WaterTrackerTheme(
+                        darkTheme = false
+                    ) {
+                        MainScreen()
+                    }
                 }
             }
-            composable(NavRoutes.AddItem.route) {
-                AddItem(navController)
-            }
-            composable(NavRoutes.FoodTimeChoiceWidget.route) {
-                FoodTimeChoiceWidget()
-            }
-            composable("measure") {
-                MeasureWidget()
-            }
-            composable(NavRoutes.AddWaterWidget.route) { WaterTrackerTheme (
-                darkTheme = false,
-                content = {
-                    MainScreen()
+
+            if (isAddItemDialogShown) {
+                Popup(
+                    isVisible = true,
+                    onDismissRequest = {
+                        isAddItemDialogShown = false
+                        popupContent = null
+                    },
+                    title = "Что вы хотите добавить?",
+                ) {
+                    popupContent?.invoke() ?: AddItem(
+                        onSelect = { popupContent = it }
+                    )
                 }
-            )
             }
         }
     }
