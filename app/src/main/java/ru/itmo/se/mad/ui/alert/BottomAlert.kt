@@ -3,9 +3,7 @@ package ru.itmo.se.mad.ui.alert
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,21 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DismissDirection
-import androidx.compose.material.DismissValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.SwipeToDismiss
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.rememberDismissState
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.itmo.se.mad.ui.theme.AlertError
@@ -44,7 +38,6 @@ fun getAlertColor(type: AlertType): Color {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomAlert(
     visible: Boolean,
@@ -53,63 +46,53 @@ fun BottomAlert(
     onDismiss: () -> Unit
 ) {
     val backgroundColor = getAlertColor(type)
+
     val transition = updateTransition(targetState = visible, label = "AlertTransition")
-
     val offsetY by transition.animateDp(
-        transitionSpec = { tween(durationMillis = 300) },
+        transitionSpec = { tween(250) },
         label = "OffsetY"
-    ) { isVisible -> if (isVisible) 0.dp else 200.dp }
+    ) { isVisible -> if (isVisible) 0.dp else 150.dp }
 
+    val alpha by transition.animateFloat(
+        transitionSpec = { tween(250) },
+        label = "Alpha"
+    ) { isVisible -> if (isVisible) 1f else 0f }
+
+    // Показываем только во время анимации появления/исчезновения
     if (visible || transition.currentState || transition.targetState) {
         Box(
-            Modifier
+            modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(12.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            val dismissState = rememberDismissState()
-
-            if (dismissState.isDismissed(DismissDirection.StartToEnd) ||
-                dismissState.isDismissed(DismissDirection.EndToStart)
+            Surface(
+                color = backgroundColor,
+                shape = RoundedCornerShape(16.dp),
+                modifier = Modifier
+                    .offset(y = offsetY)
+                    .alpha(alpha)
+                    .fillMaxWidth()
             ) {
-                onDismiss()
-            }
-
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(
-                    DismissDirection.StartToEnd,
-                    DismissDirection.EndToStart
-                ),
-                background = {},
-                dismissContent = {
-                    Box(
-                        modifier = Modifier
-                            .offset(y = offsetY)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(backgroundColor)
-                            .padding(horizontal = 16.dp, vertical = 12.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = message,
-                                color = Color.White,
-                                modifier = Modifier.weight(1f)
-                            )
-                            IconButton(onClick = onDismiss) {
-                                Icon(
-                                    imageVector = Icons.Default.Close,
-                                    contentDescription = "Закрыть",
-                                    tint = Color.White
-                                )
-                            }
-                        }
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = message,
+                        color = Color.White,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = onDismiss) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Закрыть",
+                            tint = Color.White
+                        )
                     }
                 }
-            )
+            }
         }
     }
 }

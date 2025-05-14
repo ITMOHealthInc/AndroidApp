@@ -179,13 +179,9 @@ fun Main() {
         }
     ) { _ ->
         Box {
-            BottomAlert(
-                visible = AlertManager.visible,
-                message = AlertManager.message,
-                type = AlertManager.type,
-                onDismiss = { AlertManager.hide() }
-            )
+
             NavHost(
+
                 navController = navController,
                 startDestination = "oauth",
                 enterTransition = {
@@ -214,10 +210,18 @@ fun Main() {
                 }
             ) {
                 composable("oauth") {
+
                     OauthScreen(
                         viewModel = oauthViewModel,
                         onNext = { navController.navigate("home") },
                         onSignupNext = { navController.navigate("oauthNameInput") }
+
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
                     )
                 }
                 composable("oauthNameInput") {
@@ -226,11 +230,23 @@ fun Main() {
                         onNext = { navController.navigate("step1") },
                         onBack = { navController.popBackStack() }
                     )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
                 }
                 composable("step1") {
                     Step1Screen(
                         viewModel = onboardingViewModel,
                         onNext = { navController.navigate("step3") }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
                     )
                 }
                 composable("step3") {
@@ -240,6 +256,12 @@ fun Main() {
                         onNext = { navController.navigate("step4") },
                         onBack = { navController.popBackStack() }
                     )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
                 }
                 composable("step4") {
                     Step4Screen(
@@ -247,12 +269,24 @@ fun Main() {
                         onNext = { navController.navigate("step5") },
                         onBack = { navController.popBackStack() }
                     )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
                 }
                 composable("step5") {
                     Step5Screen(
                         viewModel = onboardingViewModel,
                         onNext = { navController.navigate("step6") },
                         onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
                     )
                 }
                 composable("step6") {
@@ -263,6 +297,12 @@ fun Main() {
                             }
                         },
                         onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
                     )
                 }
                 composable("doneOnboarding") {
@@ -275,8 +315,16 @@ fun Main() {
                         },
                         onBack = { navController.popBackStack() }
                     )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
                 }
+
                 composable("home") {
+
                     Box(Modifier.fillMaxSize()) {
                         Box(
                             modifier = Modifier
@@ -380,6 +428,12 @@ fun Main() {
                             Spacer(modifier = Modifier.height(60.dp))
                         }
                     }
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
                 }
             }
         }
