@@ -30,6 +30,7 @@ class OnboardingViewModel : ViewModel() {
     var height: String by mutableStateOf("")
     var weight: String by mutableStateOf("")
     var gender: Gender by mutableStateOf(Gender.NOT_SELECTED)
+}
 
     fun complete(
         name: String,
