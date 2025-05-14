@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import ru.itmo.se.mad.storage.OauthViewModel
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
+import ru.itmo.se.mad.ui.layout.ModalSlideUpContainer
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
@@ -58,12 +59,22 @@ fun Main() {
     var isAddItemDialogShown by remember { mutableStateOf(false) }
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
+    var showCalendarModal by remember { mutableStateOf(false) }
+
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val oauthViewModel: OauthViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomBar = currentRoute == "home"
+
+    ModalSlideUpContainer(
+        isVisible = showCalendarModal,
+        title = "Календарь",
+        onClose = { showCalendarModal = false }
+    ) {
+        CalendarScreen()
+    }
 
     Scaffold(
         containerColor = Color.White,
@@ -172,7 +183,7 @@ fun Main() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         DateItem(onCalendarClick = {
-                            navController.navigate(NavRoutes.CalendarWidget.route)
+                            showCalendarModal = true
                         })
                         CalorieWidgetView()
                         NewWaterSlider(
@@ -203,9 +214,6 @@ fun Main() {
                         }
                         Spacer(modifier = Modifier.height(60.dp))
                     }
-                }
-                composable(NavRoutes.CalendarWidget.route){
-                    CalendarScreen(navController)
                 }
             }
 

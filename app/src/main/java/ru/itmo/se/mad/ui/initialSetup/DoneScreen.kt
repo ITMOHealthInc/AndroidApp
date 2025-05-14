@@ -31,7 +31,7 @@ fun DoneScreen(
         HeaderWithBack(title = "Всё готово", label = "Мы подготовили ваш индивидуальный план.\nВы можете изменить его позже в Профиле", showBack = true, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
-        if (viewModel.gender !== "") PrimaryButton(text = "Приступим", onClick = onNext)
+        PrimaryButton(text = "Приступим", onClick = onNext)
         Spacer(Modifier.height(16.dp))
     }
 }
