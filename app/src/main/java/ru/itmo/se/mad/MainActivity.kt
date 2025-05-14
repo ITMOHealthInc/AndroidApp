@@ -56,6 +56,10 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.ui.secondaryScreens.NameInputScreen
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.exception.VisibleException
+import ru.itmo.se.mad.ui.alert.AlertManager
+import ru.itmo.se.mad.ui.alert.AlertType
+import ru.itmo.se.mad.ui.alert.BottomAlert
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
 
@@ -96,7 +100,7 @@ fun Main() {
 
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-
+            AlertManager.show(VisibleException(AlertType.WARNING, "Ошибка при загрузке"))
         }
     }
     val maxWater = 2.25f
@@ -170,6 +174,12 @@ fun Main() {
         }
     ) { _ ->
         Box {
+            BottomAlert(
+                visible = AlertManager.visible,
+                message = AlertManager.message,
+                type = AlertManager.type,
+                onDismiss = { AlertManager.hide() }
+            )
             NavHost(
                 navController = navController,
                 startDestination = "oauth",

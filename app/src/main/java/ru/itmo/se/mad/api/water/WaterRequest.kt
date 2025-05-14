@@ -3,6 +3,9 @@ package ru.itmo.se.mad.api.water
 import android.util.Log
 import kotlinx.serialization.Serializable
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.exception.VisibleException
+import ru.itmo.se.mad.ui.alert.AlertManager
+import ru.itmo.se.mad.ui.alert.AlertType
 
 
 @Serializable
@@ -24,8 +27,6 @@ suspend fun sendWaterMeal(milliliters: Float) {
     try {
         ApiClient.waterApi.sendWaterMeal(bearerToken, request)
     } catch (e: Exception) {
-        Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-
+        AlertManager.show(VisibleException(AlertType.WARNING, "Ошибка при отправке, проверьте соединение с интернетом"))
     }
-    Log.d("WaterSlider", "Запрос успешно отправлен")
 }
