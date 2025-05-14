@@ -7,5 +7,8 @@ import ru.itmo.se.mad.api.MessageResponse
 
 interface AuthApiService {
     @POST("auth/registration")
-    suspend fun register(@Body request: RegisterRequest) : Response<MessageResponse>
+    fun register(@Body request: RegisterRequest) : Response<MessageResponse>
+
+    @POST("auth/login")
+    suspend fun login(@Body request: LoginRequest) : Response<TokenResponse>
 }

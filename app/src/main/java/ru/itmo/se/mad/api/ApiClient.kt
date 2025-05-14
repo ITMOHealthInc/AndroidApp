@@ -7,7 +7,7 @@ import ru.itmo.se.mad.api.auth.AuthApiService
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
-    private const val BASE_URL = "http://localhost/"
+    private const val BASE_URL = "http://10.0.2.2/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(5, TimeUnit.SECONDS)
@@ -23,7 +23,7 @@ object ApiClient {
             .build()
     }
 
-    val authService: AuthApiService by lazy {
+    val authApi: AuthApiService by lazy {
         retrofit.create(AuthApiService::class.java)
     }
 }
