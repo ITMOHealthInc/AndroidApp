@@ -49,7 +49,7 @@ fun Step5Screen(
             labelRight = "кг"
         )
         Spacer(Modifier.height(40.dp))
-        PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.height !== "" && viewModel.height.toDouble() > 50 && viewModel.weight !== "" && viewModel.weight.toDouble() > 20) PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(24.dp))
     }
 }

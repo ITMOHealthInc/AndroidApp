@@ -41,7 +41,7 @@ fun Step4Screen(
             Spacer(Modifier.height(8.dp))
         }
         Spacer(Modifier.height(40.dp))
-        PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.goal !== "") PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(24.dp))
     }
 }
