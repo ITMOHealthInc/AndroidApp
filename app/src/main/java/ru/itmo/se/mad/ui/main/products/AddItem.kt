@@ -1,5 +1,6 @@
 package ru.itmo.se.mad.ui.main.products
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,14 +25,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
-import ru.itmo.se.mad.ui.main.water.MainScreen
+import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 @Composable
 fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
+    var currentWater by remember { mutableFloatStateOf(0f) }
+    val maxWater by remember { mutableFloatStateOf(2.25f) }
+
+    val jwtToken: String =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0"
+
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiClient.summaryApi.getDailySummary("Bearer $jwtToken")
+            currentWater = response.totalWater
+
+        } catch (e: Exception) {
+            Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+
+        }
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -62,7 +87,13 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
             AddItemElement(
                 "Вода",
                 R.drawable.image_water,
-                onClick = { onSelect { MainScreen() } }
+                onClick = { onSelect { NewWaterSlider(
+                    totalDrunk = currentWater,
+                    maxWater = maxWater,
+                    onAddWater = { added ->
+                        currentWater = (currentWater + added).coerceAtMost(maxWater)
+                    }
+                ) } }
             )
         }
     }

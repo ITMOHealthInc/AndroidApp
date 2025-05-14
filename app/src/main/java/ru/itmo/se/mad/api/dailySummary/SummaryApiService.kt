@@ -5,7 +5,7 @@ import retrofit2.http.Header
 
 interface SummaryApiService {
 
-    @GET("meals/daily-summary")
+    @GET("products/meals/daily-summary")
     suspend fun getDailySummary(
         @Header("Authorization") token: String
     ): DailySummaryResponse

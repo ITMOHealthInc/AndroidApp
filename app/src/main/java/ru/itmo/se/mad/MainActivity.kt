@@ -81,23 +81,24 @@ fun Main() {
     val caloriesBurned by remember { mutableFloatStateOf(0f) }
     val calorieGoal by remember { mutableFloatStateOf(3242f) }
 
-    val jwtToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0"
+    val jwtToken: String =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0"
 
 
-        LaunchedEffect(Unit) {
-            try {
-                val response = ApiClient.summaryApi.getDailySummary("Bearer $jwtToken")
-                currentWater = response.totalWater
-                calories = response.totalKbzhu.calories
-                proteins = response.totalKbzhu.proteins
-                fats = response.totalKbzhu.fats
-                carbohydrates = response.totalKbzhu.carbohydrates
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiClient.summaryApi.getDailySummary("Bearer $jwtToken")
+            currentWater = response.totalWater
+            calories = response.totalKbzhu.calories
+            proteins = response.totalKbzhu.proteins
+            fats = response.totalKbzhu.fats
+            carbohydrates = response.totalKbzhu.carbohydrates
 
-            } catch (e: Exception) {
-                Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+        } catch (e: Exception) {
+            Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
 
-            }
         }
+    }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
@@ -142,7 +143,11 @@ fun Main() {
             bottomOffset = 0.dp,
             horizontalMargin = 0.dp,
         ) {
-            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel, oauthViewModel)
+            ProfilePopup(
+                onClose = { isProfilePopupShown = false },
+                onboardingViewModel,
+                oauthViewModel
+            )
         }
     }
 
@@ -194,7 +199,7 @@ fun Main() {
                     )
                 }
                 composable("oauthNameInput") {
-                    NameInputScreen (
+                    NameInputScreen(
                         viewModel = oauthViewModel,
                         onNext = { navController.navigate("step1") },
                         onBack = { navController.popBackStack() }
@@ -302,56 +307,56 @@ fun Main() {
                                     )
                                 }
                             }
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .verticalScroll(rememberScrollState())
-                                    .fillMaxSize()
-                                    .padding(top = 44.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Spacer(modifier = Modifier.height(80.dp))
-                                DateItem(onCalendarClick = {
-                                    showCalendarModal = true
-                                })
-                                CalorieWidgetView(
-                                    caloriesEaten = calories,
-                                    caloriesBurned = caloriesBurned,
-                                    calorieGoal = calorieGoal,
-                                    protein = proteins,
-                                    fat = fats,
-                                    carbs = carbohydrates
-                                )
-                                NewWaterSlider(
-                                    totalDrunk = currentWater,
-                                    maxWater = maxWater,
-                                    onAddWater = { added ->
-                                        currentWater = (currentWater + added).coerceAtMost(maxWater)
-                                    }
-                                )
-                                StepsActivityWidget()
-                                Button(
-                                    colors = ButtonColors(
-                                        containerColor = WidgetGray5,
-                                        contentColor = Color.Black,
-                                        disabledContainerColor = Color.Unspecified,
-                                        disabledContentColor = Color.Black
-                                    ),
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .padding(vertical = 40.dp)
-                                ) {
-                                    Text(
-                                        "Изменить порядок", style = TextStyle(
-                                            fontFamily = SFProDisplay,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Normal,
-                                            fontStyle = FontStyle.Normal
-                                        )
-                                    )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .fillMaxSize()
+                                .padding(top = 44.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.height(80.dp))
+                            DateItem(onCalendarClick = {
+                                showCalendarModal = true
+                            })
+                            CalorieWidgetView(
+                                caloriesEaten = calories,
+                                caloriesBurned = caloriesBurned,
+                                calorieGoal = calorieGoal,
+                                protein = proteins,
+                                fat = fats,
+                                carbs = carbohydrates
+                            )
+                            NewWaterSlider(
+                                totalDrunk = currentWater,
+                                maxWater = maxWater,
+                                onAddWater = { added ->
+                                    currentWater = (currentWater + added).coerceAtMost(maxWater)
                                 }
-                                Spacer(modifier = Modifier.height(60.dp))
+                            )
+                            StepsActivityWidget()
+                            Button(
+                                colors = ButtonColors(
+                                    containerColor = WidgetGray5,
+                                    contentColor = Color.Black,
+                                    disabledContainerColor = Color.Unspecified,
+                                    disabledContentColor = Color.Black
+                                ),
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(vertical = 40.dp)
+                            ) {
+                                Text(
+                                    "Изменить порядок", style = TextStyle(
+                                        fontFamily = SFProDisplay,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Normal,
+                                        fontStyle = FontStyle.Normal
+                                    )
+                                )
                             }
+                            Spacer(modifier = Modifier.height(60.dp))
+                        }
                     }
                 }
             }
