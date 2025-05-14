@@ -1,6 +1,7 @@
 package ru.itmo.se.mad.ui.main.main_screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -28,7 +29,8 @@ fun ProfilePopup(onClose: () -> Unit, storage:  OnboardingViewModel) {
     Box(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(32.dp))
     ) {
         Column(
             Modifier
@@ -114,7 +116,7 @@ fun ProfilePopup(onClose: () -> Unit, storage:  OnboardingViewModel) {
             ) {
                 Text("Ваши данные", color = Black, fontSize = 16.sp,  fontWeight = FontWeight.W500)
                 Spacer(Modifier.height(12.dp))
-                Text("177 см · 77.1 кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400)
+                Text("${storage.height} см · ${storage.weight} кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400)
                 Spacer(Modifier.height(6.dp))
                 Text("Полный рацион", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400)
             }
@@ -151,7 +153,7 @@ fun ProfileMenuItem(title: String) {
         Icon(
             painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
             contentDescription = null,
-            tint = WidgetGrayFF60,
+            tint = Black,
             modifier = Modifier.size(20.dp)
         )
     }

@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -57,8 +60,19 @@ import ru.itmo.se.mad.ui.theme.WidgetGray5
 import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.ui.layout.CustomDialogPosition
+import ru.itmo.se.mad.ui.theme.ActivityOrange15
+import ru.itmo.se.mad.ui.theme.ActivityOrange85
+import ru.itmo.se.mad.ui.theme.ProfileDarkGray
+import ru.itmo.se.mad.ui.theme.ProfileLightGray
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -151,56 +165,94 @@ fun Main() {
                 }
 
                 composable("home") {
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.height(44.dp)) // To avoid overlap with profile icon
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp)
-                        ) {
-                            AsyncImage(
-                                model = onboardingViewModel.photoUri,
-                                placeholder = painterResource(id = R.drawable.bshvevgn),
-                                error = painterResource(id = R.drawable.icon_user),
-                                contentDescription = "Profile image",
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clip(CircleShape)
-                                    .clickable(onClick = { isProfilePopupShown = true })
-                            )
-                        }
-                        DateItem(onCalendarClick = {
-                            // TODO: логика при нажатии на календарь
-                        })
-                        CalorieWidgetView()
-                        NewWaterSlider(
-                            totalDrunk = currentWater,
-                            maxWater = maxWater,
-                            onAddWater = { added ->
-                                currentWater = (currentWater + added).coerceAtMost(maxWater)
-                            }
-                        )
-                        StepsActivityWidget()
-                        Button(
-                            colors = ButtonColors(
-                                containerColor = WidgetGray5,
-                                contentColor = Color.Black,
-                                disabledContainerColor = Color.Unspecified,
-                                disabledContentColor = Color.Black),
-                            onClick = {},
+                    Box(Modifier.fillMaxSize()) {
+                        Box(
                             modifier = Modifier
-                                .padding(vertical = 40.dp)
+                                .fillMaxWidth()
+                                .background(Brush.verticalGradient(
+                                    listOf(Color.White, Color.White, Color.Transparent),
+                                    startY = 20.0f
+                                    ))
+                                .padding(16.dp, 50.dp)
+                                .align(Alignment.TopStart)
+                                .zIndex(1f)
                         ) {
-                            Text("Изменить порядок", style = TextStyle(
-                                fontFamily = SFProDisplay,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Normal,
-                                fontStyle = FontStyle.Normal
-                            ))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                AsyncImage(
+                                    model = onboardingViewModel.photoUri,
+                                    placeholder = painterResource(id = R.drawable.bshvevgn),
+                                    error = painterResource(id = R.drawable.icon_user),
+                                    contentDescription = "Profile image",
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clip(CircleShape)
+                                        .clickable(onClick = { isProfilePopupShown = true })
+                                )
+                                Row(
+                                    Modifier
+                                    .clip(RoundedCornerShape(25.dp))
+                                    .background(ActivityOrange15)
+                                    .padding(10.dp,  5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_activity),
+                                        contentDescription = null,
+                                        tint = ActivityOrange85,
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                    )
+                                    Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W600, fontSize = 16.sp)
+                                }
+                            }
+
+
+
                         }
-                        Spacer(modifier = Modifier.height(60.dp))
+                        // Main content
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .fillMaxSize()
+                                .padding(top = 44.dp), // Padding to avoid overlap with profile icon
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.height(80.dp))
+                            DateItem(onCalendarClick = {
+                                // TODO: логика при нажатии на календарь
+                            })
+                            CalorieWidgetView()
+                            NewWaterSlider(
+                                totalDrunk = currentWater,
+                                maxWater = maxWater,
+                                onAddWater = { added ->
+                                    currentWater = (currentWater + added).coerceAtMost(maxWater)
+                                }
+                            )
+                            StepsActivityWidget()
+                            Button(
+                                colors = ButtonColors(
+                                    containerColor = WidgetGray5,
+                                    contentColor = Color.Black,
+                                    disabledContainerColor = Color.Unspecified,
+                                    disabledContentColor = Color.Black),
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(vertical = 40.dp)
+                            ) {
+                                Text("Изменить порядок", style = TextStyle(
+                                    fontFamily = SFProDisplay,
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Normal,
+                                    fontStyle = FontStyle.Normal
+                                ))
+                            }
+                            Spacer(modifier = Modifier.height(60.dp))
+                        }
                     }
                 }
             }
@@ -224,7 +276,8 @@ fun Main() {
                     isVisible = true,
                     onDismissRequest = { isProfilePopupShown = false },
                     title = "",
-                    position = CustomDialogPosition.TOP
+                    bottomOffset = 0.dp,
+                    horizontalMargin = 0.dp,
                 ) {
                     ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
                 }
