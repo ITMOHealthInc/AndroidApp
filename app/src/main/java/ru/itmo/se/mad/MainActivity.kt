@@ -44,6 +44,7 @@ import ru.itmo.se.mad.ui.initialSetup.Step6Screen
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
+import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
@@ -146,7 +147,7 @@ fun Main() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         DateItem(onCalendarClick = {
-                            // TODO: логика при нажатии на календарь
+                            navController.navigate(NavRoutes.CalendarWidget.route)
                         })
                         CalorieWidgetView()
                         NewWaterSlider(
@@ -177,6 +178,9 @@ fun Main() {
                         Spacer(modifier = Modifier.height(60.dp))
                     }
                 }
+                composable(NavRoutes.CalendarWidget.route){
+                    CalendarScreen(navController)
+                }
             }
 
             if (isAddItemDialogShown) {
@@ -203,4 +207,5 @@ sealed class NavRoutes(val route: String) {
     data object AddWaterWidget : NavRoutes("AddWaterWidget")
     data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
+    data object CalendarWidget : NavRoutes("CalendarWidget")
 }

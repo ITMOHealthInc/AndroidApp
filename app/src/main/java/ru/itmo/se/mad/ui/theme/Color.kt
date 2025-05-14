@@ -20,6 +20,7 @@ val WidgetGray80EA = Color(0xCCEAEAEA)
 val WidgetGray10 = Color(0x1A000000)
 val WidgetGray5 = Color(0x0D000000)
 val WidgetGray3 = Color(0x08000000)
+val WidgetGrayF2F2F2 = Color(0xFFF2F2F2)
 
 val BackgroundGray4560 = Color(0x99454545)
 val BackgroundGray14 = Color(0xFF141414)
