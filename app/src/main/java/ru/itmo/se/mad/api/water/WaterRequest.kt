@@ -1,4 +1,4 @@
-package ru.itmo.se.mad.ui.main.water
+package ru.itmo.se.mad.api.water
 
 import android.util.Log
 import kotlinx.serialization.Serializable
@@ -22,7 +22,7 @@ suspend fun sendWaterMeal(milliliters: Float) {
 
     val bearerToken = "Bearer $jwtToken"
     try {
-        ApiClient.mealApi.sendWaterMeal(bearerToken, request)
+        ApiClient.waterApi.sendWaterMeal(bearerToken, request)
     } catch (e: Exception) {
         Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
 

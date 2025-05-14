@@ -1,4 +1,4 @@
-package ru.itmo.se.mad.ui.main.water
+package ru.itmo.se.mad.api.dailySummary
 
 data class DailySummaryResponse(
     val date: String,

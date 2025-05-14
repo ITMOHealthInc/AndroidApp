@@ -54,6 +54,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.api.water.sendWaterMeal
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WaterTrackerTheme
 import ru.itmo.se.mad.ui.theme.White

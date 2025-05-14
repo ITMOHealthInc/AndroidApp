@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.api.water.sendWaterMeal
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import kotlin.math.round
 
