@@ -7,13 +7,8 @@ import retrofit2.http.POST
 
 interface ProductsApiService {
     @GET("products/meals/daily-summary")
-    suspend fun getDailySummary(
-        @Header("Authorization") token: String
-    ): DailySummaryResponse
+    suspend fun getDailySummary(): DailySummaryResponse
 
     @POST("products/meals")
-    suspend fun sendWaterMeal(
-        @Header("Authorization") token: String,
-        @Body request: MealRequest
-    )
+    suspend fun sendWaterMeal(@Body request: MealRequest)
 }

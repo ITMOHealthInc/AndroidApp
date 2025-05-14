@@ -18,12 +18,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import ru.itmo.se.mad.ui.theme.AlertError
 import ru.itmo.se.mad.ui.theme.AlertInfo
 import ru.itmo.se.mad.ui.theme.AlertSuccess
@@ -43,22 +45,30 @@ fun BottomAlert(
     visible: Boolean,
     message: String,
     type: AlertType,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    durationMillis: Int = 5000
 ) {
     val backgroundColor = getAlertColor(type)
 
     val transition = updateTransition(targetState = visible, label = "AlertTransition")
     val offsetY by transition.animateDp(
-        transitionSpec = { tween(250) },
+        transitionSpec = { tween(1000) },
         label = "OffsetY"
     ) { isVisible -> if (isVisible) 0.dp else 150.dp }
 
     val alpha by transition.animateFloat(
-        transitionSpec = { tween(250) },
+        transitionSpec = { tween(1000) },
         label = "Alpha"
     ) { isVisible -> if (isVisible) 1f else 0f }
 
-    // Показываем только во время анимации появления/исчезновения
+    // Автоматическое закрытие через timeout
+    LaunchedEffect(visible) {
+        if (visible) {
+            delay(durationMillis.toLong())
+            onDismiss()
+        }
+    }
+
     if (visible || transition.currentState || transition.targetState) {
         Box(
             modifier = Modifier
