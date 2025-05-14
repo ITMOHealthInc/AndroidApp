@@ -65,7 +65,7 @@ fun ProfilePopup(
                     }
                 )
             }
-            composable("account") { AccountScreen(storage, oauthStorage) }
+            composable("account") { AccountScreen() }
             composable("goals") { GoalsScreen() }
         }
     }

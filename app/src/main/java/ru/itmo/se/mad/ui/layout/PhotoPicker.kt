@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,24 +59,14 @@ fun PhotoPicker(
                 .offset(x = 45.dp, y = (-45).dp)
                 .border(width = 5.dp, color = Color.White, shape = CircleShape)
                 .background(Color(0xFF3B82F6), shape = CircleShape)
-                .size(40.dp),
-            contentAlignment = Alignment.Center
+                .padding(8.dp)
         ) {
-            if (imageUri !== null){
-                androidx.compose.material3.Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "Редактировать",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(18.dp)
+            )
         }
     }
 }
