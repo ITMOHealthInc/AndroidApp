@@ -299,7 +299,7 @@ fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInst
             day,
         )
         val daySteps = stepsData.find { it.date == dateStr }
-        val activityLevel = when {
+        var activityLevel = when {
             daySteps == null  -> ActivityLevel.ALERT
             else -> ActivityLevel.HIGH
         }
@@ -312,13 +312,15 @@ fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInst
         val isToday = calendarToday.get(Calendar.DAY_OF_MONTH) == day &&
                 calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH) &&
                 calendarToday.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
-
         val isFuture = calendarToday.before(calendar)
+        if(isFuture&&!isToday)
+            activityLevel = ActivityLevel.HIGH
+
 
         days.add(DayData(
             dayNumber = day,
-            activityLevel = if (isFuture) ActivityLevel.HIGH else activityLevel,
-            activity = if (activityLevel == ActivityLevel.ALERT && !isFuture) 1.0f else progress,
+            activityLevel = activityLevel,
+            activity = if (activityLevel == ActivityLevel.ALERT ) 1.0f else progress,
             today = isToday
         ))
     }

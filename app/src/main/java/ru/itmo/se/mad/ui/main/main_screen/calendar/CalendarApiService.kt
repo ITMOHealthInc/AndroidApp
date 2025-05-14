@@ -34,6 +34,7 @@ class CalendarApiService{
 
                 if (response.isSuccessful) {
                     response.body()
+
                 } else {
                     Log.e("CalendarApiService", "Error: ${response.code()} - ${response.message()}")
                     null
