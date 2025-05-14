@@ -78,7 +78,7 @@ fun Main() {
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
     var isProfilePopupShown by remember { mutableStateOf(false) }
-    
+
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
     var showCalendarModal by remember { mutableStateOf(false) }
@@ -204,10 +204,12 @@ fun Main() {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Brush.verticalGradient(
-                                    listOf(Color.White, Color.White, Color.Transparent),
-                                    startY = 20.0f
-                                    ))
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(Color.White, Color.White, Color.Transparent),
+                                        startY = 20.0f
+                                    )
+                                )
                                 .padding(16.dp, 50.dp)
                                 .align(Alignment.TopStart)
                                 .zIndex(1f)
@@ -229,9 +231,9 @@ fun Main() {
                                 )
                                 Row(
                                     Modifier
-                                    .clip(RoundedCornerShape(25.dp))
-                                    .background(ActivityOrange15)
-                                    .padding(10.dp,  5.dp),
+                                        .clip(RoundedCornerShape(25.dp))
+                                        .background(ActivityOrange15)
+                                        .padding(10.dp, 5.dp),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(
@@ -241,73 +243,82 @@ fun Main() {
                                         modifier = Modifier
                                             .size(16.dp)
                                     )
-                                    Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W600, fontSize = 16.sp)
+                                    Text(
+                                        " 12",
+                                        color = ActivityOrange85,
+                                        fontWeight = FontWeight.W600,
+                                        fontSize = 16.sp
+                                    )
                                 }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .fillMaxSize()
-                                .padding(top = 44.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(modifier = Modifier.height(80.dp))
-                            DateItem(onCalendarClick = {
-                                showCalendarModal = true
-                            })
-                            CalorieWidgetView()
-                            NewWaterSlider(
-                                totalDrunk = currentWater,
-                                maxWater = maxWater,
-                                onAddWater = { added ->
-                                    currentWater = (currentWater + added).coerceAtMost(maxWater)
-                                }
-                            )
-                            StepsActivityWidget()
-                            Button(
-                                colors = ButtonColors(
-                                    containerColor = WidgetGray5,
-                                    contentColor = Color.Black,
-                                    disabledContainerColor = Color.Unspecified,
-                                    disabledContentColor = Color.Black),
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(vertical = 40.dp)
-                            ) {
-                                Text("Изменить порядок", style = TextStyle(
-                                    fontFamily = SFProDisplay,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Normal,
-                                    fontStyle = FontStyle.Normal
-                                ))
                             }
-                            Spacer(modifier = Modifier.height(60.dp))
+                            Column(
+                                modifier = Modifier
+                                    .verticalScroll(rememberScrollState())
+                                    .fillMaxSize()
+                                    .padding(top = 44.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.height(80.dp))
+                                DateItem(onCalendarClick = {
+                                    showCalendarModal = true
+                                })
+                                CalorieWidgetView()
+                                NewWaterSlider(
+                                    totalDrunk = currentWater,
+                                    maxWater = maxWater,
+                                    onAddWater = { added ->
+                                        currentWater = (currentWater + added).coerceAtMost(maxWater)
+                                    }
+                                )
+                                StepsActivityWidget()
+                                Button(
+                                    colors = ButtonColors(
+                                        containerColor = WidgetGray5,
+                                        contentColor = Color.Black,
+                                        disabledContainerColor = Color.Unspecified,
+                                        disabledContentColor = Color.Black
+                                    ),
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .padding(vertical = 40.dp)
+                                ) {
+                                    Text(
+                                        "Изменить порядок", style = TextStyle(
+                                            fontFamily = SFProDisplay,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Normal,
+                                            fontStyle = FontStyle.Normal
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(60.dp))
+                            }
                         }
                     }
-                }
-            }
 
-            if (isAddItemDialogShown) {
-                Popup(
-                    isVisible = true,
-                    onDismissRequest = {
-                        isAddItemDialogShown = false
-                        popupContent = null
-                    },
-                    title = "Что вы хотите добавить?",
-                ) {
-                    popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
-                }
-            }
-            if (isProfilePopupShown) {
-                Popup(
-                    isVisible = true,
-                    onDismissRequest = { isProfilePopupShown = false },
-                    title = "",
-                    bottomOffset = 0.dp,
-                    horizontalMargin = 0.dp,
-                ) {
-                    ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
+                    if (isAddItemDialogShown) {
+                        Popup(
+                            isVisible = true,
+                            onDismissRequest = {
+                                isAddItemDialogShown = false
+                                popupContent = null
+                            },
+                            title = "Что вы хотите добавить?",
+                        ) {
+                            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
+                        }
+                    }
+                    if (isProfilePopupShown) {
+                        Popup(
+                            isVisible = true,
+                            onDismissRequest = { isProfilePopupShown = false },
+                            title = "",
+                            bottomOffset = 0.dp,
+                            horizontalMargin = 0.dp,
+                        ) {
+                            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
+                        }
+                    }
                 }
             }
         }
