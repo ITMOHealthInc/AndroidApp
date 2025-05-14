@@ -9,6 +9,7 @@ import ru.itmo.se.mad.api.auth.AuthApiService
 import ru.itmo.se.mad.api.products.ProductsApiService
 import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.alert.AlertManager
+import ru.itmo.se.mad.ui.main.main_screen.calendar.CalendarRepository
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
@@ -36,6 +37,9 @@ object ApiClient {
 
     val productsApi: ProductsApiService by lazy {
         retrofit.create(ProductsApiService::class.java)
+    }
+    val calendarApi: CalendarRepository by lazy {
+        retrofit.create(CalendarRepository::class.java)
     }
 }
 

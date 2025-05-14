@@ -3,10 +3,7 @@ package ru.itmo.se.mad.ui.main.main_screen.calendar
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import ru.itmo.se.mad.storage.ApiClient
+import ru.itmo.se.mad.api.ApiClient
 
 
 class CalendarApiService{
@@ -25,15 +22,11 @@ class CalendarApiService{
         val goal: Int
     )
 
-    val retrofit = ApiClient.getApiClient()
-
-
-    val calendarApi = retrofit.create(CalendarRepository::class.java)
 
     suspend fun getMonthSteps(month: Int, year: Int): MonthStepsResponse? =
         withContext(Dispatchers.IO) {
             try {
-                val response = calendarApi.getMonthSteps(
+                val response = ApiClient.calendarApi.getMonthSteps(
                     month = month,
                     year = year,
                     authHeader = "Bearer $token"
