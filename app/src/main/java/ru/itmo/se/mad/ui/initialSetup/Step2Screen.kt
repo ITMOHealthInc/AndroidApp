@@ -20,6 +20,7 @@ import ru.itmo.se.mad.ui.layout.TextField
 @Composable
 fun Step2Screen(
     viewModel: OnboardingViewModel,
+    onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val context = LocalContext.current
@@ -33,7 +34,7 @@ fun Step2Screen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Давайте познакомимся", label = "Как вас зовут?", showBack = false)
+        HeaderWithBack(title = "Давайте познакомимся", label = "Как вас зовут?", showBack = false, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
 

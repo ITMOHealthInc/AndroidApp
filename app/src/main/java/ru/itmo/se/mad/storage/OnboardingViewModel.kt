@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModel
 class OnboardingViewModel : ViewModel() {
     var name: String by mutableStateOf("")
     var photoUri: Uri? by mutableStateOf(null)
-    var goal: String by mutableStateOf("Сбросить вес")
+    var goal: String by mutableStateOf("")
     var height: String by mutableStateOf("")
     var weight: String by mutableStateOf("")
-    var gender: String by mutableStateOf("Не указан")
+    var gender: String by mutableStateOf("")
 }
 

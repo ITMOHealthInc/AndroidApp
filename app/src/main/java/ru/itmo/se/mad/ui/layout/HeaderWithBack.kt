@@ -31,7 +31,7 @@ fun HeaderWithBack(
             .fillMaxWidth()
             .padding(top = 32.dp),
     ) {
-        Box(
+        if (showBack) Box(
             modifier = Modifier
                 .background(
                     color = Color(0x01B9FF),

@@ -16,13 +16,11 @@ import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.layout.SelectableOption
 
 @Composable
-fun Step6Screen(
+fun DoneScreen(
     viewModel: OnboardingViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    val selected = viewModel.gender
-    val options = listOf("Мужской", "Женский")
 
     Column(
         modifier = Modifier
@@ -30,21 +28,10 @@ fun Step6Screen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Последний штрих", label = "Укажите ваш пол", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Всё готово", label = "Мы подготовили ваш индивидуальный план.\nВы можете изменить его позже в Профиле", showBack = true, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
-        options.forEach {
-            SelectableOption(
-                text = it,
-                selected = selected == it,
-                onClick = { viewModel.gender = it }
-            )
-            Spacer(Modifier.height(8.dp))
-        }
-        Spacer(Modifier.height(40.dp))
-        if (viewModel.gender !== "") PrimaryButton(text = "Далее", onClick = onNext)
-        Spacer(Modifier.height(4.dp))
-        if (viewModel.gender == "") SecondaryButton(text = "Пропустить", onClick = onNext)
+        if (viewModel.gender !== "") PrimaryButton(text = "Приступим", onClick = onNext)
         Spacer(Modifier.height(16.dp))
     }
 }

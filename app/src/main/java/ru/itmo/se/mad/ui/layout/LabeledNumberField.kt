@@ -38,7 +38,7 @@ fun LabeledTextField(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(WidgetGray5, RoundedCornerShape(16.dp))
+            .background(WidgetGray5, RoundedCornerShape(20.dp))
             .padding(top = 10.dp, end = 20.dp, bottom = 10.dp, start = 8.dp)
     ) {
         TextField(
