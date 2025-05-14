@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -48,17 +47,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
-import ru.itmo.se.mad.ui.layout.CustomDialogPosition
+import ru.itmo.se.mad.ui.secondaryScreens.NameInputScreen
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
-import ru.itmo.se.mad.ui.theme.ProfileDarkGray
-import ru.itmo.se.mad.ui.theme.ProfileLightGray
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +115,7 @@ fun Main() {
             bottomOffset = 0.dp,
             horizontalMargin = 0.dp,
         ) {
-            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
+            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel, oauthViewModel)
         }
     }
 
@@ -165,25 +162,27 @@ fun Main() {
                 composable("oauth") {
                     OauthScreen(
                         viewModel = oauthViewModel,
-                        onNext = { navController.navigate("step1") }
+                        onNext = { navController.navigate("home") },
+                        onSignupNext = { navController.navigate("oauthNameInput") }
+                    )
+                }
+                composable("oauthNameInput") {
+                    NameInputScreen (
+                        viewModel = oauthViewModel,
+                        onNext = { navController.navigate("step1") },
+                        onBack = { navController.popBackStack() }
                     )
                 }
                 composable("step1") {
                     Step1Screen(
                         viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step2") }
-                    )
-                }
-                composable("step2") {
-                    Step2Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step3") },
-                        onBack = { navController.popBackStack() }
+                        onNext = { navController.navigate("step3") }
                     )
                 }
                 composable("step3") {
                     Step3Screen(
                         viewModel = onboardingViewModel,
+                        oauthViewModel = oauthViewModel,
                         onNext = { navController.navigate("step4") },
                         onBack = { navController.popBackStack() }
                     )
@@ -251,7 +250,8 @@ fun Main() {
                                     modifier = Modifier
                                         .size(50.dp)
                                         .clip(CircleShape)
-                                        .clickable(onClick = { isProfilePopupShown = true })
+                                        .clickable(onClick = { isProfilePopupShown = true }),
+                                    contentScale = ContentScale.Crop
                                 )
                                 Row(
                                     Modifier

@@ -14,18 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.storage.OauthViewModel
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 
 
 @Composable
-fun ProfilePopup(onClose: () -> Unit, storage:  OnboardingViewModel) {
+fun ProfilePopup(onClose: () -> Unit, storage:  OnboardingViewModel, oauthStorage: OauthViewModel) {
     Box(
         Modifier
             .fillMaxWidth()
@@ -45,11 +47,12 @@ fun ProfilePopup(onClose: () -> Unit, storage:  OnboardingViewModel) {
                 contentDescription = "Profile image",
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(CircleShape)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = storage.name,
+                text = oauthStorage.name,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.W500,
                 fontFamily = SFProDisplay,

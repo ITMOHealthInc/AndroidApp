@@ -13,6 +13,7 @@ import ru.itmo.se.mad.api.auth.LoginRequest
 class OauthViewModel(
     private val authApi: AuthApiService = ApiClient.authApi
 ) : ViewModel() {
+    var name: String by mutableStateOf("")
     var login: String by mutableStateOf("")
     var password: String by mutableStateOf("")
 
@@ -24,7 +25,7 @@ class OauthViewModel(
         onSuccess()
     }
 
-    fun register(login: String, password: String, onSuccess: () -> Unit) {
+    fun register(name: String, login: String, password: String, onSuccess: () -> Unit) {
         // TODO: сделать запрос к бэку
         println("Регистрация: $login, Пароль: $password")
         onSuccess()
