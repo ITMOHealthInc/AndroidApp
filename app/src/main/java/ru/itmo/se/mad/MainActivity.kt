@@ -68,7 +68,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Main() {
     val navController = rememberNavController()
@@ -82,18 +81,23 @@ fun Main() {
     val caloriesBurned by remember { mutableFloatStateOf(0f) }
     val calorieGoal by remember { mutableFloatStateOf(3242f) }
 
-    LaunchedEffect(Unit) {
-        try {
-            val response = ApiClient.mealApi.getDailySummary("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0")
-            currentWater = response.totalWater
-            calories = response.totalKbzhu.calories
-            proteins = response.totalKbzhu.proteins
-            fats = response.totalKbzhu.fats
-            carbohydrates = response.totalKbzhu.carbohydrates
-        } catch (e: Exception) {
-            Log.e("WaterTracker", "Ошибка при загрузке: ${e.localizedMessage}", e)
+    val jwtToken: String = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0"
+
+
+        LaunchedEffect(Unit) {
+            try {
+                val response = ApiClient.mealApi.getDailySummary("Bearer $jwtToken")
+                currentWater = response.totalWater
+                calories = response.totalKbzhu.calories
+                proteins = response.totalKbzhu.proteins
+                fats = response.totalKbzhu.fats
+                carbohydrates = response.totalKbzhu.carbohydrates
+
+            } catch (e: Exception) {
+                Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+
+            }
         }
-    }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
@@ -356,10 +360,6 @@ fun Main() {
 }
 
 sealed class NavRoutes(val route: String) {
-    data object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
     data object AddItem : NavRoutes("AddItem")
-    data object AddWaterWidget : NavRoutes("AddWaterWidget")
-    data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
-    data object CalendarWidget : NavRoutes("CalendarWidget")
 }

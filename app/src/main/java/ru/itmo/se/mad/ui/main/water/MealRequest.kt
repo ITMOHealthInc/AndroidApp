@@ -21,6 +21,11 @@ suspend fun sendWaterMeal(milliliters: Float) {
     )
 
     val bearerToken = "Bearer $jwtToken"
-    ApiClient.mealApi.sendWaterMeal(bearerToken, request)
+    try {
+        ApiClient.mealApi.sendWaterMeal(bearerToken, request)
+    } catch (e: Exception) {
+        Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+
+    }
     Log.d("WaterSlider", "Запрос успешно отправлен")
 }
