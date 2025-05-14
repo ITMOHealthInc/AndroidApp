@@ -1,5 +1,6 @@
 package ru.itmo.se.mad.ui.main.main_screen.calendar
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -22,14 +23,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import ru.itmo.se.mad.ui.theme.*
 import java.util.Calendar
 import kotlin.math.ceil
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitApiService
 
 
 @Composable
-fun CalendarScreen() {
+fun CalendarScreen(
+    active: Int = 13,
+    daysAmount: Int = 245,
+    calendarApiService: CalendarApiService = CalendarApiService()
+
+) {
+    val scope = rememberCoroutineScope()
+    var monthStepsData by remember { mutableStateOf<Map<Pair<Int, Int>, CalendarApiService.MonthStepsResponse>>(emptyMap()) }
+    suspend fun refreshStepsData(month: Int, year: Int) {
+        try {
+            val data = calendarApiService.getMonthSteps(month, year)
+            data?.let {
+                monthStepsData = monthStepsData + (Pair(month, year) to it)
+            }
+        } catch (e: Exception) {
+            Log.e("CalendarScreen", "Error refreshing data", e)
+        }
+    }
+    fun loadVisibleMonths(visibleMonth: Int, year: Int) {
+        scope.launch {
+            if (!monthStepsData.containsKey(Pair(visibleMonth, year))) {
+                refreshStepsData(visibleMonth, year)
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -37,25 +65,32 @@ fun CalendarScreen() {
 
     ) {
         val calendarT = Calendar.getInstance()
+        val currentYear = calendarT.get(Calendar.YEAR)
         val currentMonth = calendarT.get(Calendar.MONTH)
-        Box(
-            modifier = Modifier.weight(1f)
-        ) {
+
+        Box(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.height(600.dp)
-                    .verticalScroll(rememberScrollState(440 * calendarT.get(Calendar.MONTH)))
+                    .verticalScroll(rememberScrollState(440 * currentMonth))
             ) {
-                calendarT.set(Calendar.MONTH, (currentMonth+12-3)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+12-2)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+12-1)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, currentMonth)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+1)%12)
-                CalendarGrid(calendarT)
+                // Отображение последних 3 месяцев и следующих 2
+                val monthsToShow = listOf(
+                    (currentMonth+12-3)%12 to currentYear,
+                    (currentMonth+12-2)%12 to currentYear,
+                    (currentMonth+12-1)%12 to currentYear,
+                    currentMonth to currentYear,
+                    (currentMonth+1)%12 to if (currentMonth == 11) currentYear+1 else currentYear
+                )
 
+                monthsToShow.forEach { (month, year) ->
+                    loadVisibleMonths(month+1, year)
+                    calendarT.set(Calendar.MONTH, month)
+                    calendarT.set(Calendar.YEAR, year)
+                    CalendarGrid(
+                        month = calendarT,
+                        stepsData = monthStepsData[Pair(month+1, year)]?.days ?: emptyList()
+                    )
+                }
             }
             Box(
                 modifier = Modifier
@@ -88,13 +123,14 @@ fun CalendarScreen() {
 }
 
 @Composable
-fun CalendarGrid( month: Calendar) {
+fun CalendarGrid( month: Calendar,
+                  stepsData: List<CalendarApiService.DaySteps>) {
     val monthNames = arrayOf(
         "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     )
 
-    val days: List<DayData> = generateDaysForMonth(month.getActualMaximum(Calendar.DAY_OF_MONTH), month)
+    val days: List<DayData> = generateDaysForMonth(month.getActualMaximum(Calendar.DAY_OF_MONTH), month, stepsData)
     val monthId: Int = month.get(Calendar.MONTH)
     val rows = ceil(days.size / 7f).toInt()
     month.set(Calendar.DAY_OF_MONTH, 1)
@@ -247,7 +283,7 @@ data class DayData(
 
 )
 
-fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInstance()): List<DayData> {
+fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInstance(),  stepsData: List<CalendarApiService.DaySteps>): List<DayData> {
     val days = mutableListOf<DayData>()
     calendar.set(Calendar.DAY_OF_MONTH, 1)
     val blankDaysAtStart = if (calendar.get(Calendar.DAY_OF_WEEK) == 1) 6 else calendar.get(Calendar.DAY_OF_WEEK)-2
@@ -256,19 +292,36 @@ fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInst
     for( i in 1..blankDaysAtStart) {
         days.add(DayData(dayNumber = 0, activityLevel = ActivityLevel.NONE, 0f, false))
     }
-
-    for (i in 1..daysInMonth) {
-        val activity = when {
-            i == 8 -> ActivityLevel.ALERT
+    for (day in 1..daysInMonth) {
+        val dateStr = String.format(
+            "%04d-%02d-%02d",
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1, // Месяцы в Calendar начинаются с 0
+            day,
+        )
+        val daySteps = stepsData.find { it.date == dateStr }
+        val activityLevel = when {
+            daySteps == null  -> ActivityLevel.ALERT
             else -> ActivityLevel.HIGH
         }
-        calendar.set(Calendar.DAY_OF_MONTH, i)
-        if(calendarToday.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) && calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH))
-            days.add(DayData(dayNumber = i, activityLevel = activity, if(activity == ActivityLevel.ALERT) 1.0f else Math.random().toFloat(), today = true))
-        else if (calendarToday.after(calendar))
-            days.add(DayData(dayNumber = i, activityLevel = activity, if(activity == ActivityLevel.ALERT) 1.0f else Math.random().toFloat(), today = false))
-        else
-            days.add(DayData(dayNumber = i, activityLevel = activity, 0f, today = false))
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+
+        val progress = daySteps?.let {
+            (it.steps.toFloat() / it.goal).coerceAtMost(1f)
+        } ?: 0f
+
+        val isToday = calendarToday.get(Calendar.DAY_OF_MONTH) == day &&
+                calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH) &&
+                calendarToday.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
+
+        val isFuture = calendarToday.before(calendar)
+
+        days.add(DayData(
+            dayNumber = day,
+            activityLevel = if (isFuture) ActivityLevel.HIGH else activityLevel,
+            activity = if (activityLevel == ActivityLevel.ALERT && !isFuture) 1.0f else progress,
+            today = isToday
+        ))
     }
     return days
 }

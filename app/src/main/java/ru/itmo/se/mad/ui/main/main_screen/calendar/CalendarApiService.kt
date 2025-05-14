@@ -12,17 +12,17 @@ import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitRepository
 class CalendarApiService{
     private val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0"
 
-    data class StepsResponse(
+    data class MonthStepsResponse(
+        val totalSteps: Int,
+        val averageSteps: Double,
+        val maxSteps: Int,
+        val days: List<DaySteps>
+    )
+
+    data class DaySteps(
+        val date: String,
         val steps: Int,
         val goal: Int
-    )
-
-    data class GoalRequest(
-        val goal: Int
-    )
-
-    data class StepsRequest(
-        val steps: Int
     )
 
     val okHttpClient = OkHttpClient.Builder()
@@ -39,46 +39,32 @@ class CalendarApiService{
         .build()
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:5013")
+        .baseUrl("http://10.0.2.2/")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val activityApi = retrofit.create(FitRepository::class.java)
+    val calendarApi = retrofit.create(CalendarRepository::class.java)
 
-    suspend fun getUserSteps(): Int = withContext(Dispatchers.IO) {
-        val call = activityApi.getSteps()
-        var steps = 0
-        try {
-            val response = call.execute()
-            if (response.isSuccessful && response.body() != null) {
-                steps = response.body()!!.steps
+    suspend fun getMonthSteps(month: Int, year: Int): MonthStepsResponse? =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = calendarApi.getMonthSteps(
+                    month = month,
+                    year = year,
+                    authHeader = "Bearer $token"
+                ).execute()
+
+                if (response.isSuccessful) {
+                    response.body()
+                } else {
+                    Log.e("CalendarApiService", "Error: ${response.code()} - ${response.message()}")
+                    null
+                }
+            } catch (e: Exception) {
+                Log.e("CalendarApiService", "Network error", e)
+                null
             }
-        } catch (e: Exception) {
-            Log.e("FitApiService", "Error getting steps", e)
         }
 
-        steps
-    }
-
-
-    suspend fun getUserStepsAndGoal(): Pair<Int, Int> = withContext(Dispatchers.IO) {
-        val call = activityApi.getSteps()
-        var steps = 0
-        var goal = 5000
-
-        try {
-            val response = call.execute()
-            if (response.isSuccessful && response.body() != null) {
-                steps = response.body()!!.steps
-                goal = response.body()!!.goal
-                Log.v("getUserStepsAndGoal", response.toString())
-            }
-            Log.v("getUserStepsAndGoal", response.toString())
-        } catch (e: Exception) {
-            Log.e("FitApiService", "Error getting steps and goal", e)
-        }
-
-        Pair(steps, goal)
-    }
 }

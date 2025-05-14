@@ -4,7 +4,6 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitApiService
 
 interface FitRepository {
     @GET("activity/steps")
