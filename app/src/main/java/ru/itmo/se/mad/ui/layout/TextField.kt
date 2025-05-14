@@ -33,8 +33,8 @@ fun TextField(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(WidgetGray5, RoundedCornerShape(16.dp))
-            .padding(top = 10.dp, end = 20.dp, bottom = 10.dp, start = 8.dp)
+            .background(WidgetGray5, RoundedCornerShape(18.dp))
+            .padding(top = 8.dp, end = 20.dp, bottom = 8.dp, start = 8.dp)
     ) {
         TextField(
             value = value,
@@ -44,7 +44,7 @@ fun TextField(
             placeholder = {
                 Text(
                     text = placeholder,
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontFamily = SFProDisplay,
                     fontWeight = FontWeight.Medium
                 )
@@ -61,7 +61,7 @@ fun TextField(
                 imeAction = ImeAction.Done
             ),
             textStyle = TextStyle(
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontFamily = SFProDisplay,
                 color = Color.Black,
                 fontWeight = FontWeight.Medium

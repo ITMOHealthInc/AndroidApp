@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import ru.itmo.se.mad.storage.Gender
+import ru.itmo.se.mad.storage.Goal
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
@@ -21,7 +23,7 @@ fun Step4Screen(
     onNext: () -> Unit
 ) {
     val selected = viewModel.goal
-    val options = listOf("Сбросить вес", "Поддержать вес", "Набрать вес")
+    val options = listOf(Goal.LOSE, Goal.MAINTAIN, Goal.GAIN)
 
     Column(
         modifier = Modifier
@@ -34,14 +36,14 @@ fun Step4Screen(
         Spacer(Modifier.weight(1f))
         options.forEach {
             SelectableOption(
-                text = it,
+                text = it.displayName,
                 selected = selected == it,
                 onClick = { viewModel.goal = it }
             )
             Spacer(Modifier.height(8.dp))
         }
         Spacer(Modifier.height(40.dp))
-        PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.goal !== Goal.NOT_SELECTED) PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(24.dp))
     }
 }

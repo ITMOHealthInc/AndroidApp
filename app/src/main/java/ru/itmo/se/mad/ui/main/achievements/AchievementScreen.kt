@@ -50,11 +50,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import ru.itmo.se.mad.NavRoutes
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.ui.theme.BackgroundGray14
 import ru.itmo.se.mad.ui.theme.BackgroundGray53
 import ru.itmo.se.mad.ui.theme.Black
+import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.White
 import ru.itmo.se.mad.ui.theme.WidgetGray10
 import ru.itmo.se.mad.ui.theme.WidgetGray5
@@ -93,7 +93,7 @@ fun AchievementScreen() {
             ) {
                 Text(
                     "Ваши награды", style = TextStyle(
-//                fontFamily = SFProDisplay,
+                        fontFamily = SFProDisplay,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Medium,
                         fontStyle = FontStyle.Normal,
@@ -133,7 +133,7 @@ fun AchievementScreen() {
             ) {
                 Text(
                     "Получено", style = TextStyle(
-//                fontFamily = SFProDisplay,
+                        fontFamily = SFProDisplay,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         fontStyle = FontStyle.Normal,
@@ -150,7 +150,7 @@ fun AchievementScreen() {
                     Text(
                         "Смотреть все", style = TextStyle(
                             color = WidgetGray60,
-//                    fontFamily = SFProDisplay,
+                            fontFamily = SFProDisplay,
                             fontWeight = FontWeight.Normal,
                             fontStyle = FontStyle.Normal,
                             fontSize = 14.sp
@@ -201,7 +201,7 @@ fun AchievementScreen() {
                     Text(
                         "Идеальная неделя", style = TextStyle(
                             color = White,
-//                    fontFamily = SFProDisplay,
+                            fontFamily = SFProDisplay,
                             fontWeight = FontWeight.Medium,
                             fontStyle = FontStyle.Normal,
                             fontSize = 18.sp
@@ -212,7 +212,7 @@ fun AchievementScreen() {
                         textAlign = TextAlign.Center,
                         style = TextStyle(
                             color = White,
-//                    fontFamily = SFProDisplay,
+                            fontFamily = SFProDisplay,
                             fontWeight = FontWeight.Normal,
                             fontStyle = FontStyle.Normal,
                             fontSize = 15.sp
@@ -221,7 +221,7 @@ fun AchievementScreen() {
                     Text(
                         "Получено 25.03.2025", style = TextStyle(
                             color = WidgetGray60,
-//                    fontFamily = SFProDisplay,
+                            fontFamily = SFProDisplay,
                             fontWeight = FontWeight.Normal,
                             fontStyle = FontStyle.Normal,
                             fontSize = 12.sp
@@ -322,4 +322,12 @@ fun AchievementScreen() {
             }
         }
     }
+}
+
+sealed class NavRoutes(val route: String) {
+    data object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
+    data object AddItem : NavRoutes("AddItem")
+    data object AddWaterWidget : NavRoutes("AddWaterWidget")
+    data object MeasureWidget : NavRoutes("MeasureWidget")
+    data object AchievementDetails : NavRoutes("AchievementDetails")
 }

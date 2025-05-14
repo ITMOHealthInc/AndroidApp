@@ -68,6 +68,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
