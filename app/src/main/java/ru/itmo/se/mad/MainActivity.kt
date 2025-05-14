@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -13,7 +15,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +43,22 @@ import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.secondaryScreens.OauthScreen
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
+import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.zIndex
+import coil3.compose.AsyncImage
+import ru.itmo.se.mad.ui.layout.CustomDialogPosition
+import ru.itmo.se.mad.ui.theme.ActivityOrange15
+import ru.itmo.se.mad.ui.theme.ActivityOrange85
+import ru.itmo.se.mad.ui.theme.ProfileDarkGray
+import ru.itmo.se.mad.ui.theme.ProfileLightGray
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +77,8 @@ fun Main() {
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
+    var isProfilePopupShown by remember { mutableStateOf(false) }
+    
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
     var showCalendarModal by remember { mutableStateOf(false) }
@@ -178,41 +200,89 @@ fun Main() {
                     )
                 }
                 composable("home") {
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        DateItem(onCalendarClick = {
-                            showCalendarModal = true
-                        })
-                        CalorieWidgetView()
-                        NewWaterSlider(
-                            totalDrunk = currentWater,
-                            maxWater = maxWater,
-                            onAddWater = { added ->
-                                currentWater = (currentWater + added).coerceAtMost(maxWater)
-                            }
-                        )
-                        StepsActivityWidget()
-                        Button(
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = WidgetGray5,
-                                contentColor = Color.Black
-                            ),
-                            onClick = {},
-                            modifier = Modifier.padding(vertical = 40.dp)
+                    Box(Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Brush.verticalGradient(
+                                    listOf(Color.White, Color.White, Color.Transparent),
+                                    startY = 20.0f
+                                    ))
+                                .padding(16.dp, 50.dp)
+                                .align(Alignment.TopStart)
+                                .zIndex(1f)
                         ) {
-                            Text(
-                                "Изменить порядок",
-                                style = TextStyle(
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                AsyncImage(
+                                    model = onboardingViewModel.photoUri,
+                                    placeholder = painterResource(id = R.drawable.bshvevgn),
+                                    error = painterResource(id = R.drawable.icon_user),
+                                    contentDescription = "Profile image",
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .clip(CircleShape)
+                                        .clickable(onClick = { isProfilePopupShown = true })
+                                )
+                                Row(
+                                    Modifier
+                                    .clip(RoundedCornerShape(25.dp))
+                                    .background(ActivityOrange15)
+                                    .padding(10.dp,  5.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_activity),
+                                        contentDescription = null,
+                                        tint = ActivityOrange85,
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                    )
+                                    Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W600, fontSize = 16.sp)
+                                }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .fillMaxSize()
+                                .padding(top = 44.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.height(80.dp))
+                            DateItem(onCalendarClick = {
+                                showCalendarModal = true
+                            })
+                            CalorieWidgetView()
+                            NewWaterSlider(
+                                totalDrunk = currentWater,
+                                maxWater = maxWater,
+                                onAddWater = { added ->
+                                    currentWater = (currentWater + added).coerceAtMost(maxWater)
+                                }
+                            )
+                            StepsActivityWidget()
+                            Button(
+                                colors = ButtonColors(
+                                    containerColor = WidgetGray5,
+                                    contentColor = Color.Black,
+                                    disabledContainerColor = Color.Unspecified,
+                                    disabledContentColor = Color.Black),
+                                onClick = {},
+                                modifier = Modifier
+                                    .padding(vertical = 40.dp)
+                            ) {
+                                Text("Изменить порядок", style = TextStyle(
                                     fontFamily = SFProDisplay,
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Normal,
                                     fontStyle = FontStyle.Normal
-                                )
-                            )
+                                ))
+                            }
+                            Spacer(modifier = Modifier.height(60.dp))
                         }
-                        Spacer(modifier = Modifier.height(60.dp))
                     }
                 }
             }
@@ -227,6 +297,17 @@ fun Main() {
                     title = "Что вы хотите добавить?",
                 ) {
                     popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
+                }
+            }
+            if (isProfilePopupShown) {
+                Popup(
+                    isVisible = true,
+                    onDismissRequest = { isProfilePopupShown = false },
+                    title = "",
+                    bottomOffset = 0.dp,
+                    horizontalMargin = 0.dp,
+                ) {
+                    ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
                 }
             }
         }
