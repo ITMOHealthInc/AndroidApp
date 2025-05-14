@@ -1,10 +1,21 @@
-package ru.itmo.se.mad.api.water
+package ru.itmo.se.mad.api.products
 
 import kotlinx.serialization.Serializable
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.alert.AlertManager
-import ru.itmo.se.mad.ui.alert.AlertType
 
+data class DailySummaryResponse(
+    val date: String,
+    val totalWater: Float,
+    val totalKbzhu: Kbzhu
+)
+
+data class Kbzhu(
+    val calories: Float,
+    val proteins: Float,
+    val fats: Float,
+    val carbohydrates: Float
+)
 
 @Serializable
 data class MealRequest(
@@ -23,7 +34,7 @@ suspend fun sendWaterMeal(milliliters: Float) {
 
     val bearerToken = "Bearer $jwtToken"
     try {
-        ApiClient.waterApi.sendWaterMeal(bearerToken, request)
+        ApiClient.productsApi.sendWaterMeal(bearerToken, request)
     } catch (e: Exception) {
         AlertManager.error("Ошибка при отправке, проверьте соединение с интернетом")
     }

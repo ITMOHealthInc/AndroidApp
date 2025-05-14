@@ -92,7 +92,7 @@ fun Main() {
 
     LaunchedEffect(Unit) {
         try {
-            val response = ApiClient.summaryApi.getDailySummary("Bearer $jwtToken")
+            val response = ApiClient.productsApi.getDailySummary("Bearer $jwtToken")
             currentWater = response.totalWater
             calories = response.totalKbzhu.calories
             proteins = response.totalKbzhu.proteins

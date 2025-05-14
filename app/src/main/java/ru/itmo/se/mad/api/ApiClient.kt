@@ -6,11 +6,9 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.itmo.se.mad.api.auth.AuthApiService
-import ru.itmo.se.mad.api.dailySummary.SummaryApiService
-import ru.itmo.se.mad.api.water.WaterApiService
+import ru.itmo.se.mad.api.products.ProductsApiService
 import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.alert.AlertManager
-import ru.itmo.se.mad.ui.alert.AlertType
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
@@ -36,12 +34,8 @@ object ApiClient {
         retrofit.create(AuthApiService::class.java)
     }
 
-    val waterApi: WaterApiService by lazy {
-        retrofit.create(WaterApiService::class.java)
-    }
-
-    val summaryApi: SummaryApiService by lazy {
-        retrofit.create(SummaryApiService::class.java)
+    val productsApi: ProductsApiService by lazy {
+        retrofit.create(ProductsApiService::class.java)
     }
 }
 

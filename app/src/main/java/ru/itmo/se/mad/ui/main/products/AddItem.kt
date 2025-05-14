@@ -50,7 +50,7 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
 
     LaunchedEffect(Unit) {
         try {
-            val response = ApiClient.summaryApi.getDailySummary("Bearer $jwtToken")
+            val response = ApiClient.productsApi.getDailySummary("Bearer $jwtToken")
             currentWater = response.totalWater
 
         } catch (e: Exception) {
