@@ -51,6 +51,7 @@ import ru.itmo.se.mad.ui.initialSetup.Step6Screen
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
+import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
@@ -208,17 +209,12 @@ fun Main() {
                                     )
                                     Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W600, fontSize = 16.sp)
                                 }
-                            }
-
-
-
                         }
-                        // Main content
                         Column(
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                                 .fillMaxSize()
-                                .padding(top = 44.dp), // Padding to avoid overlap with profile icon
+                                .padding(top = 44.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.height(80.dp))
@@ -254,6 +250,9 @@ fun Main() {
                             Spacer(modifier = Modifier.height(60.dp))
                         }
                     }
+                }
+                composable(NavRoutes.CalendarWidget.route){
+                    CalendarScreen(navController)
                 }
             }
 
@@ -292,4 +291,5 @@ sealed class NavRoutes(val route: String) {
     data object AddWaterWidget : NavRoutes("AddWaterWidget")
     data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
+    data object CalendarWidget : NavRoutes("CalendarWidget")
 }
