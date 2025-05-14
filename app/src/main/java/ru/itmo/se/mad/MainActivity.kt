@@ -102,7 +102,11 @@ fun Main() {
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
+
     var isProfilePopupShown by remember { mutableStateOf(false) }
+    var profilePopupTitle = remember { mutableStateOf("") }
+
+    val popupNavController = rememberNavController()
 
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
@@ -118,7 +122,9 @@ fun Main() {
     ModalSlideUpContainer(
         isVisible = showCalendarModal,
         title = "Календарь",
-        onClose = { showCalendarModal = false }
+        onClose = { showCalendarModal = false },
+        isBackButton = false,
+        navController = popupNavController
     ) {
         CalendarScreen()
     }
@@ -136,17 +142,18 @@ fun Main() {
         }
     }
     if (isProfilePopupShown) {
-        Popup(
-            isVisible = true,
-            onDismissRequest = { isProfilePopupShown = false },
-            title = "",
-            bottomOffset = 0.dp,
-            horizontalMargin = 0.dp,
+        ModalSlideUpContainer(
+            isVisible = isProfilePopupShown,
+            title = profilePopupTitle.value,
+            onClose = { isProfilePopupShown = false },
+            isBackButton = profilePopupTitle.value.isNotEmpty(),
+            navController = popupNavController
         ) {
             ProfilePopup(
                 onClose = { isProfilePopupShown = false },
                 onboardingViewModel,
-                oauthViewModel
+                oauthViewModel,
+                profilePopupTitle, popupNavController = popupNavController
             )
         }
     }
@@ -199,7 +206,7 @@ fun Main() {
                     )
                 }
                 composable("oauthNameInput") {
-                    NameInputScreen(
+                    NameInputScreen (
                         viewModel = oauthViewModel,
                         onNext = { navController.navigate("step1") },
                         onBack = { navController.popBackStack() }

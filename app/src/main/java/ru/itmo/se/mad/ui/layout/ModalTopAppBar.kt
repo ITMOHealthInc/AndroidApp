@@ -22,12 +22,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGrayF2F2F2
 
 @Composable
 fun ModalTopAppBar(
     title: String,
+    isBackButton: Boolean,
+    navController: NavHostController,
     onClose: () -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
@@ -39,16 +42,16 @@ fun ModalTopAppBar(
         )
         Spacer(modifier = Modifier.weight(1f))
         Button(
-            onClick = { onClose() },
+            onClick = { if (!isBackButton) onClose() else navController.popBackStack() },
             colors = ButtonDefaults.buttonColors(
                 containerColor = WidgetGrayF2F2F2
             ),
             shape = RoundedCornerShape(50),
-            contentPadding = PaddingValues(start = 14.dp, top = 4.dp, end = 10.dp, bottom = 4.dp),
+            contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 14.dp, bottom = 0.dp),
             elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
         ) {
             Text(
-                text = "Закрыть",
+                text = if (!isBackButton) "Закрыть" else "Назад",
                 color = Color.Black,
                 fontFamily = SFProDisplay,
                 fontSize = 16.sp

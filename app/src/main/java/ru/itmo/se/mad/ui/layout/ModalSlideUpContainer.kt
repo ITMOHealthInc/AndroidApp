@@ -7,16 +7,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.zIndex
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -24,8 +23,11 @@ fun ModalSlideUpContainer(
     isVisible: Boolean,
     title: String,
     onClose: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    isBackButton: Boolean,
+    navController: NavHostController,
+    content: @Composable (ColumnScope.() -> Unit)
 ) {
+
     if (isVisible) {
         Dialog(
             onDismissRequest = onClose,
@@ -33,7 +35,7 @@ fun ModalSlideUpContainer(
                 usePlatformDefaultWidth = false
             )
         ) {
-            val topPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+            val topPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 20.dp
 
             AnimatedVisibility(
                 visible = isVisible,
@@ -53,8 +55,8 @@ fun ModalSlideUpContainer(
                         .zIndex(1f),
                     color = Color.White,
                     shape = RoundedCornerShape(
-                        topStart = 26.dp,
-                        topEnd = 26.dp,
+                        topStart = 30.dp,
+                        topEnd = 30.dp,
                         bottomStart = 0.dp,
                         bottomEnd = 0.dp
                     )
@@ -64,7 +66,9 @@ fun ModalSlideUpContainer(
                     ) {
                         ModalTopAppBar(
                             title = title,
-                            onClose = onClose
+                            onClose = onClose,
+                            isBackButton = isBackButton,
+                            navController = navController
                         )
                         Column(
                             modifier = Modifier
