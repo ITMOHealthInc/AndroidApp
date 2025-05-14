@@ -1,4 +1,4 @@
-package ru.itmo.se.mad.ui.initialSetup
+package ru.itmo.se.mad.ui.secondaryScreens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,21 +12,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import ru.itmo.se.mad.storage.OauthViewModel
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 import ru.itmo.se.mad.ui.layout.TextField
 
 @Composable
-fun Step2Screen(
-    viewModel: OnboardingViewModel,
+fun NameInputScreen(
+    viewModel: OauthViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val context = LocalContext.current
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        viewModel.photoUri = uri
-    }
 
     Column(
         modifier = Modifier
@@ -44,7 +42,14 @@ fun Step2Screen(
             placeholder = "Имя"
         )
         Spacer(Modifier.height(40.dp))
-        if (viewModel.name !== "") PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.name !== "") PrimaryButton(text = "Далее", onClick = {
+            viewModel.register(
+                name = viewModel.name,
+                login = viewModel.login,
+                password = viewModel.password,
+                onSuccess = onNext
+            )
+        })
         Spacer(Modifier.height(24.dp))
 
     }

@@ -24,7 +24,6 @@ enum class Goal(val displayName: String) {
 }
 
 class OnboardingViewModel : ViewModel() {
-    var name: String by mutableStateOf("")
     var photoUri: Uri? by mutableStateOf(null)
     var goal: Goal by mutableStateOf(Goal.NOT_SELECTED)
     var height: String by mutableStateOf("")
@@ -32,15 +31,15 @@ class OnboardingViewModel : ViewModel() {
     var gender: Gender by mutableStateOf(Gender.NOT_SELECTED)
 }
 
-fun complete(
-    name: String,
-    photoUri: Uri,
-    goal: String,
-    height: String,
-    weight: String,
-    gender: Gender,
-    onSuccess: () -> Unit
-) {
-    // TODO: сделать запрос к бэку
-    onSuccess()
-}
+    fun complete(
+        photoUri: Uri,
+        goal: String,
+        height: String,
+        weight: String,
+        gender: Gender,
+        onSuccess: () -> Unit
+    ) {
+        // TODO: сделать запрос к бэку
+        onSuccess()
+    }
+

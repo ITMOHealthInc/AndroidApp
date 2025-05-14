@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ru.itmo.se.mad.storage.OauthViewModel
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PhotoPicker
@@ -25,6 +26,7 @@ import ru.itmo.se.mad.ui.theme.SFProDisplay
 @Composable
 fun Step3Screen(
     viewModel: OnboardingViewModel,
+    oauthViewModel: OauthViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -33,7 +35,7 @@ fun Step3Screen(
         viewModel.photoUri = uri
     }
 
-    val name = viewModel.name
+    val name = oauthViewModel.name
 
     Column(
         modifier = Modifier

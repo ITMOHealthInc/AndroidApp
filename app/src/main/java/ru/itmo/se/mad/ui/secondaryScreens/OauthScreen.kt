@@ -23,7 +23,8 @@ import ru.itmo.se.mad.ui.layout.TextField
 @Composable
 fun OauthScreen(
     viewModel: OauthViewModel,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onSignupNext: () -> Unit
 ) {
     var isRegisterMode by remember { mutableStateOf(false) }
 
@@ -49,13 +50,15 @@ fun OauthScreen(
         TextField(
             value = viewModel.login,
             onValueChange = { viewModel.login = it },
-            placeholder = "Имя пользователя"
+            placeholder = "Имя пользователя",
         )
         Spacer(Modifier.height(8.dp))
         TextField(
             value = viewModel.password,
             onValueChange = { viewModel.password = it },
-            placeholder = "Пароль"
+            placeholder = "Пароль",
+            isPassword = true,
+            regex = Regex("^.{0,8}$")
         )
 
         Spacer(Modifier.height(40.dp))
@@ -65,11 +68,7 @@ fun OauthScreen(
                 text = if (isRegisterMode) "Зарегистрироваться" else "Войти",
                 onClick = {
                     if (isRegisterMode) {
-                        viewModel.register(
-                            login = viewModel.login,
-                            password = viewModel.password,
-                            onSuccess = onNext
-                        )
+                        onSignupNext()
                     } else {
                         viewModel.login(
                             login = viewModel.login,

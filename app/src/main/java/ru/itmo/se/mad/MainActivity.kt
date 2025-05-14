@@ -51,8 +51,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
+import ru.itmo.se.mad.ui.secondaryScreens.NameInputScreen
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
@@ -66,6 +68,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Main() {
     val navController = rememberNavController()
@@ -115,6 +118,30 @@ fun Main() {
         CalendarScreen()
     }
 
+    if (isAddItemDialogShown) {
+        Popup(
+            isVisible = true,
+            onDismissRequest = {
+                isAddItemDialogShown = false
+                popupContent = null
+            },
+            title = "Что вы хотите добавить?",
+        ) {
+            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
+        }
+    }
+    if (isProfilePopupShown) {
+        Popup(
+            isVisible = true,
+            onDismissRequest = { isProfilePopupShown = false },
+            title = "",
+            bottomOffset = 0.dp,
+            horizontalMargin = 0.dp,
+        ) {
+            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel, oauthViewModel)
+        }
+    }
+
     Scaffold(
         containerColor = Color.White,
         bottomBar = {
@@ -158,25 +185,27 @@ fun Main() {
                 composable("oauth") {
                     OauthScreen(
                         viewModel = oauthViewModel,
-                        onNext = { navController.navigate("step1") }
+                        onNext = { navController.navigate("home") },
+                        onSignupNext = { navController.navigate("oauthNameInput") }
+                    )
+                }
+                composable("oauthNameInput") {
+                    NameInputScreen (
+                        viewModel = oauthViewModel,
+                        onNext = { navController.navigate("step1") },
+                        onBack = { navController.popBackStack() }
                     )
                 }
                 composable("step1") {
                     Step1Screen(
                         viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step2") }
-                    )
-                }
-                composable("step2") {
-                    Step2Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step3") },
-                        onBack = { navController.popBackStack() }
+                        onNext = { navController.navigate("step3") }
                     )
                 }
                 composable("step3") {
                     Step3Screen(
                         viewModel = onboardingViewModel,
+                        oauthViewModel = oauthViewModel,
                         onNext = { navController.navigate("step4") },
                         onBack = { navController.popBackStack() }
                     )
@@ -244,7 +273,8 @@ fun Main() {
                                     modifier = Modifier
                                         .size(50.dp)
                                         .clip(CircleShape)
-                                        .clickable(onClick = { isProfilePopupShown = true })
+                                        .clickable(onClick = { isProfilePopupShown = true }),
+                                    contentScale = ContentScale.Crop
                                 )
                                 Row(
                                     Modifier
@@ -267,6 +297,7 @@ fun Main() {
                                         fontSize = 16.sp
                                     )
                                 }
+                            }
                             }
                             Column(
                                 modifier = Modifier
@@ -317,31 +348,6 @@ fun Main() {
                                 }
                                 Spacer(modifier = Modifier.height(60.dp))
                             }
-                        }
-                    }
-
-                    if (isAddItemDialogShown) {
-                        Popup(
-                            isVisible = true,
-                            onDismissRequest = {
-                                isAddItemDialogShown = false
-                                popupContent = null
-                            },
-                            title = "Что вы хотите добавить?",
-                        ) {
-                            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
-                        }
-                    }
-                    if (isProfilePopupShown) {
-                        Popup(
-                            isVisible = true,
-                            onDismissRequest = { isProfilePopupShown = false },
-                            title = "",
-                            bottomOffset = 0.dp,
-                            horizontalMargin = 0.dp,
-                        ) {
-                            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
-                        }
                     }
                 }
             }
@@ -350,6 +356,10 @@ fun Main() {
 }
 
 sealed class NavRoutes(val route: String) {
+    data object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
     data object AddItem : NavRoutes("AddItem")
+    data object AddWaterWidget : NavRoutes("AddWaterWidget")
+    data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
+    data object CalendarWidget : NavRoutes("CalendarWidget")
 }
