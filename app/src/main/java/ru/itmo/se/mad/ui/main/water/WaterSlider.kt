@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import kotlin.math.round
@@ -36,6 +37,8 @@ fun NewWaterSlider(
     var dragAmount by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
     var sliderWidthPx by remember { mutableStateOf(1f) }
+    val coroutineScope = rememberCoroutineScope()
+
 
     val rawProgress = (dragAmount / sliderWidthPx).coerceIn(0f, 1f)
     val snappedValue = (round(rawProgress / 0.05f) * 0.05f).coerceIn(0f, 1f)
@@ -77,7 +80,12 @@ fun NewWaterSlider(
                                     1f
                                 ) / 0.05f
                             ) * 0.05f).coerceIn(0f, 1f)
-                            if (finalValue > 0f) onAddWater(finalValue)
+                            if (finalValue > 0f) {
+                                onAddWater(finalValue)
+                                coroutineScope.launch {
+                                    sendWaterMeal(finalValue * 1000f) // перевод в мл
+                                }
+                            }
                             dragAmount = 0f
                         },
                         onDragCancel = {

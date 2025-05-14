@@ -4,6 +4,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.itmo.se.mad.api.auth.AuthApiService
+import ru.itmo.se.mad.ui.main.water.MealApiService
 import java.util.concurrent.TimeUnit
 
 object ApiClient {
@@ -25,5 +26,9 @@ object ApiClient {
 
     val authApi: AuthApiService by lazy {
         retrofit.create(AuthApiService::class.java)
+    }
+
+    val mealApi: MealApiService by lazy {
+        retrofit.create(MealApiService::class.java)
     }
 }

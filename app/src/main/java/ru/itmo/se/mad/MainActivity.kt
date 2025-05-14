@@ -2,10 +2,10 @@ package ru.itmo.se.mad
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -48,17 +48,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
-import ru.itmo.se.mad.ui.layout.CustomDialogPosition
+import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
-import ru.itmo.se.mad.ui.theme.ProfileDarkGray
-import ru.itmo.se.mad.ui.theme.ProfileLightGray
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,12 +66,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedBoxWithConstraintsScope")
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Main() {
     val navController = rememberNavController()
 
-    var currentWater by remember { mutableFloatStateOf(0.5f) }
+    var currentWater by remember { mutableFloatStateOf(0f) }
+    var calories by remember { mutableFloatStateOf(0f) }
+    var proteins by remember { mutableFloatStateOf(0f) }
+    var fats by remember { mutableFloatStateOf(0f) }
+    var carbohydrates by remember { mutableFloatStateOf(0f) }
+
+    val caloriesBurned by remember { mutableFloatStateOf(0f) }
+    val calorieGoal by remember { mutableFloatStateOf(3242f) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiClient.mealApi.getDailySummary("Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJodHRwOi8vMC4wLjAuMDo1MDAwIiwiaXNzIjoiaHR0cDovLzAuMC4wLjA6NTAwMCIsInVzZXJuYW1lIjoidXNlciJ9.PXFU57PS94Da36MEVmnbSUIdo9UrJuRCP496Bipn8a0")
+            currentWater = response.totalWater
+            calories = response.totalKbzhu.calories
+            proteins = response.totalKbzhu.proteins
+            fats = response.totalKbzhu.fats
+            carbohydrates = response.totalKbzhu.carbohydrates
+        } catch (e: Exception) {
+            Log.e("WaterTracker", "Ошибка при загрузке: ${e.localizedMessage}", e)
+        }
+    }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
@@ -262,7 +279,14 @@ fun Main() {
                                 DateItem(onCalendarClick = {
                                     showCalendarModal = true
                                 })
-                                CalorieWidgetView()
+                                CalorieWidgetView(
+                                    caloriesEaten = calories,
+                                    caloriesBurned = caloriesBurned,
+                                    calorieGoal = calorieGoal,
+                                    protein = proteins,
+                                    fat = fats,
+                                    carbs = carbohydrates
+                                )
                                 NewWaterSlider(
                                     totalDrunk = currentWater,
                                     maxWater = maxWater,
@@ -326,10 +350,6 @@ fun Main() {
 }
 
 sealed class NavRoutes(val route: String) {
-    data object FoodTimeChoiceWidget : NavRoutes("FoodTimeChoiceWidget")
     data object AddItem : NavRoutes("AddItem")
-    data object AddWaterWidget : NavRoutes("AddWaterWidget")
-    data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
-    data object CalendarWidget : NavRoutes("CalendarWidget")
 }

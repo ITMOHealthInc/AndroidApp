@@ -2,6 +2,7 @@ package ru.itmo.se.mad.ui.main.water
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateDpAsState
@@ -30,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -74,9 +76,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
+
     var isExpanded by remember { mutableStateOf(false) }
-    var totalWater by remember { mutableFloatStateOf(0.5f) }
+    var totalWater by remember { mutableFloatStateOf(0f) }
     val maxWater = 2.25f
+    var waterDeltaToSend by remember {  mutableFloatStateOf(0f) }
+    LaunchedEffect(waterDeltaToSend) {
+        if (waterDeltaToSend > 0) {
+            sendWaterMeal(waterDeltaToSend)
+            waterDeltaToSend = 0f
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
@@ -96,7 +106,15 @@ fun MainScreen() {
         ) {
             WaterCard(
                 totalWater = totalWater,
-                onTotalWaterChange = { newAmount -> totalWater = newAmount },
+                onTotalWaterChange = { newAmount ->
+                    if (newAmount > totalWater) {
+                        val deltaMl = ((newAmount - totalWater) * 1000)
+                        waterDeltaToSend = deltaMl
+                        Log.d("DebugTag", waterDeltaToSend.toString())
+
+                    }
+                    totalWater = newAmount
+                },
                 maxWater = maxWater,
                 onExpandCollapseClick = { isExpanded = false }
             )
@@ -109,7 +127,16 @@ fun MainScreen() {
         ) {
             WaterSlider(
                 totalWater = totalWater,
-                onWaterAmountChange = { newAmount -> totalWater = newAmount },
+                onWaterAmountChange = {
+
+                    newAmount ->
+                    if (newAmount > totalWater) {
+                        val deltaMl = ((newAmount - totalWater) * 1000)
+                        waterDeltaToSend = deltaMl
+                    }
+
+                    totalWater = newAmount
+                },
                 maxWater = maxWater,
                 onExpandCollapseClick = { isExpanded = true },
                 expandable = true
