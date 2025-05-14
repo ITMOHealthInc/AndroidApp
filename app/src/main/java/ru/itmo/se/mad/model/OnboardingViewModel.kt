@@ -1,4 +1,4 @@
-package ru.itmo.se.mad.storage
+package ru.itmo.se.mad.model
 
 import android.net.Uri
 import androidx.compose.runtime.getValue

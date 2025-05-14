@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.LabeledTextField
 import ru.itmo.se.mad.ui.layout.PrimaryButton

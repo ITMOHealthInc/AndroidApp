@@ -1,10 +1,8 @@
-package ru.itmo.se.mad.ui.secondaryScreens
+package ru.itmo.se.mad.ui.initialSetup
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.with
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -13,13 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.storage.OauthViewModel
+import ru.itmo.se.mad.model.OauthViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.layout.TextField
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun OauthScreen(
     viewModel: OauthViewModel,
@@ -68,13 +65,9 @@ fun OauthScreen(
                 text = if (isRegisterMode) "Зарегистрироваться" else "Войти",
                 onClick = {
                     if (isRegisterMode) {
-                        onSignupNext()
+                        viewModel.register(onSuccess = onSignupNext)
                     } else {
-                        viewModel.login(
-                            login = viewModel.login,
-                            password = viewModel.password,
-                            onSuccess = onNext
-                        )
+                        viewModel.login(onSuccess = onNext)
                     }
                 }
             )

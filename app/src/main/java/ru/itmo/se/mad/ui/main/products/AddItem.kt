@@ -32,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
-import ru.itmo.se.mad.exception.VisibleException
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.AlertType
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
@@ -56,8 +55,7 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
 
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-            AlertManager.show(VisibleException(AlertType.WARNING, "Ошибка при загрузке"))
-
+            AlertManager.error("Ошибка при загрузке")
         }
     }
 

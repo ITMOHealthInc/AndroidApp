@@ -25,8 +25,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
-import ru.itmo.se.mad.storage.OauthViewModel
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
 

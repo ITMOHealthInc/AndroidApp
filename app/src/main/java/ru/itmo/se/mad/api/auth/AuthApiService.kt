@@ -6,9 +6,9 @@ import retrofit2.http.POST
 import ru.itmo.se.mad.api.MessageResponse
 
 interface AuthApiService {
-    @POST("auth/registration")
-    fun register(@Body request: RegisterRequest) : Response<MessageResponse>
+    @POST("auth/register")
+    suspend fun register(@Body request: AuthRequest) : Response<MessageResponse>
 
     @POST("auth/login")
-    suspend fun login(@Body request: LoginRequest) : Response<TokenResponse>
+    suspend fun login(@Body request: AuthRequest) : Response<TokenResponse>
 }

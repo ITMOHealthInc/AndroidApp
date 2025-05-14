@@ -1,7 +1,5 @@
-package ru.itmo.se.mad.ui.secondaryScreens
+package ru.itmo.se.mad.ui.initialSetup
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,10 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.storage.OauthViewModel
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OauthViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 import ru.itmo.se.mad.ui.layout.TextField
@@ -24,8 +20,6 @@ fun NameInputScreen(
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -43,12 +37,7 @@ fun NameInputScreen(
         )
         Spacer(Modifier.height(40.dp))
         if (viewModel.name !== "") PrimaryButton(text = "Далее", onClick = {
-            viewModel.register(
-                name = viewModel.name,
-                login = viewModel.login,
-                password = viewModel.password,
-                onSuccess = onNext
-            )
+            viewModel.saveName(onSuccess = onNext)
         })
         Spacer(Modifier.height(24.dp))
 

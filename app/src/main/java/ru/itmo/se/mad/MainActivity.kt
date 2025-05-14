@@ -28,8 +28,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.itmo.se.mad.storage.OauthViewModel
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
 import ru.itmo.se.mad.ui.layout.ModalSlideUpContainer
 import ru.itmo.se.mad.ui.layout.Popup
@@ -40,7 +40,7 @@ import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
-import ru.itmo.se.mad.ui.secondaryScreens.OauthScreen
+import ru.itmo.se.mad.ui.initialSetup.OauthScreen
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
@@ -54,12 +54,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
-import ru.itmo.se.mad.ui.secondaryScreens.NameInputScreen
+import ru.itmo.se.mad.ui.initialSetup.NameInputScreen
 import ru.itmo.se.mad.api.ApiClient
-import ru.itmo.se.mad.exception.VisibleException
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.AlertType
 import ru.itmo.se.mad.ui.alert.BottomAlert
+import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
 
@@ -67,6 +67,7 @@ import ru.itmo.se.mad.ui.theme.ActivityOrange85
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LocalStorage.initialize(this)
         setContent { Main() }
     }
 }
@@ -100,7 +101,11 @@ fun Main() {
 
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-            AlertManager.show(VisibleException(AlertType.WARNING, "Ошибка при загрузке"))
+            AlertManager.error("Ошибка при загрузке")
+        }
+
+        if (LocalStorage.hasToken()) {
+            navController.navigate("home")
         }
     }
     val maxWater = 2.25f

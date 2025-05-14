@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.itmo.se.mad.storage.OauthViewModel
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PhotoPicker
 import ru.itmo.se.mad.ui.layout.PrimaryButton

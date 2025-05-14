@@ -74,6 +74,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
 
     implementation("com.google.accompanist:accompanist-navigation-animation:0.34.0")
+    implementation(libs.androidx.security.crypto.ktx)
 
 
     testImplementation(libs.junit)
