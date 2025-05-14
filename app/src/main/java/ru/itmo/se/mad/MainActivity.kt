@@ -27,9 +27,11 @@ import androidx.navigation.compose.composable
 import ru.itmo.se.mad.storage.OauthViewModel
 import ru.itmo.se.mad.storage.OnboardingViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
+import ru.itmo.se.mad.ui.layout.ModalSlideUpContainer
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
+import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
@@ -51,11 +53,13 @@ class MainActivity : ComponentActivity() {
 fun Main() {
     val navController = rememberNavController()
 
-    var currentWater by remember { mutableStateOf(0.5f) }
+    var currentWater by remember { mutableFloatStateOf(0.5f) }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+
+    var showCalendarModal by remember { mutableStateOf(false) }
 
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val oauthViewModel: OauthViewModel = viewModel()
@@ -63,6 +67,14 @@ fun Main() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomBar = currentRoute == "home"
+
+    ModalSlideUpContainer(
+        isVisible = showCalendarModal,
+        title = "Календарь",
+        onClose = { showCalendarModal = false }
+    ) {
+        CalendarScreen()
+    }
 
     Scaffold(
         containerColor = Color.White,
@@ -171,7 +183,7 @@ fun Main() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         DateItem(onCalendarClick = {
-                            // TODO: логика при нажатии на календарь
+                            showCalendarModal = true
                         })
                         CalorieWidgetView()
                         NewWaterSlider(
@@ -207,7 +219,7 @@ fun Main() {
 
             if (isAddItemDialogShown) {
                 Popup(
-                    isVisible = isAddItemDialogShown,
+                    isVisible = true,
                     onDismissRequest = {
                         isAddItemDialogShown = false
                         popupContent = null
@@ -227,4 +239,5 @@ sealed class NavRoutes(val route: String) {
     data object AddWaterWidget : NavRoutes("AddWaterWidget")
     data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
+    data object CalendarWidget : NavRoutes("CalendarWidget")
 }

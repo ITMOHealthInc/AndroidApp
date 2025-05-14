@@ -32,53 +32,13 @@ import ru.itmo.se.mad.R
 
 
 @Composable
-fun CalendarScreen(navController: NavController) { //TODO: take info about activity from server
+fun CalendarScreen() {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
 
     ) {
-        Column(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Календарь",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = SFProDisplay
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = {navController.popBackStack()},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = WidgetGrayF2F2F2
-                    ),
-                    shape = RoundedCornerShape(50),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
-                ) {
-                    Text(
-                        text = "Закрыть",
-                        color = Color.Black,
-                        fontFamily = SFProDisplay,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Закрыть",
-                        tint = Color.Black
-                    )
-                }
-            }
-            HorizontalDivider(
-                color = WidgetGray10,
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            )
-        }
         val calendarT = Calendar.getInstance()
         val currentMonth = calendarT.get(Calendar.MONTH)
         Box(
@@ -86,7 +46,6 @@ fun CalendarScreen(navController: NavController) { //TODO: take info about activ
         ) {
             Column(
                 modifier = Modifier.height(600.dp)
-                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState(440 * calendarT.get(Calendar.MONTH)))
             ) {
                 calendarT.set(Calendar.MONTH, (currentMonth+12-3)%12)
@@ -154,7 +113,7 @@ fun CalendarGrid( month: Calendar) {
         columns = GridCells.Fixed(7),
         modifier = Modifier
             .fillMaxWidth()
-            .height((48.dp * rows).coerceAtLeast(48.dp)) // Фиксированная высота для сетки в зависимости от количества строк
+            .height((48.dp * rows).coerceAtLeast(48.dp))
     ) {
         items(days) { day ->
             CalendarDay(day)
@@ -167,31 +126,27 @@ fun CalendarDay(day: DayData) {
     val progressColor = when (day.activityLevel) {
         ActivityLevel.HIGH -> CalorieGreen
         ActivityLevel.NONE -> Color.Transparent
-        ActivityLevel.ALERT -> CalorieOverflow  // Оранжевый
+        ActivityLevel.ALERT -> CalorieOverflow
     }
-    val backgroundColor = when (day.today){
-        true -> CalorieGreen15
-        false -> Color.Transparent
-    }
+    val backgroundColor = if (day.today) CalorieGreen15 else Color.Transparent
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .padding(4.dp)
-            .size(40.dp)
-            .clip(RoundedCornerShape(8.dp)) // Закругленные углы квадрата
-            .background(backgroundColor) // Фон квадрата
+            .size(44.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(vertical = 4.dp)
-                .size(40.dp)
-        ) {
-            // Прогресс-бар сверху
-            if (day.dayNumber != 0) {
+        if (day.dayNumber != 0) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 LinearProgressIndicator(
-                    progress = {day.activity},
+                    progress = { day.activity },
                     color = progressColor,
                     drawStopIndicator = {},
                     gapSize = 0.dp,
@@ -209,15 +164,16 @@ fun CalendarDay(day: DayData) {
                     fontWeight = FontWeight.Normal
                 )
             }
-        }}
+        }
+    }
 }
+
 
 @Composable
 fun SummaryInfo() {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
 
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
