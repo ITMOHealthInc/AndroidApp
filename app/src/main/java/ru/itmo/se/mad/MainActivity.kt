@@ -30,6 +30,7 @@ import ru.itmo.se.mad.ui.initialSetup.*
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
+import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
@@ -51,7 +52,7 @@ class MainActivity : ComponentActivity() {
 fun Main() {
     val navController = rememberNavController()
 
-    var currentWater by remember { mutableStateOf(0.5f) }
+    var currentWater by remember { mutableFloatStateOf(0.5f) }
     val maxWater = 2.25f
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
@@ -171,7 +172,7 @@ fun Main() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         DateItem(onCalendarClick = {
-                            // TODO: логика при нажатии на календарь
+                            navController.navigate(NavRoutes.CalendarWidget.route)
                         })
                         CalorieWidgetView()
                         NewWaterSlider(
@@ -203,11 +204,14 @@ fun Main() {
                         Spacer(modifier = Modifier.height(60.dp))
                     }
                 }
+                composable(NavRoutes.CalendarWidget.route){
+                    CalendarScreen(navController)
+                }
             }
 
             if (isAddItemDialogShown) {
                 Popup(
-                    isVisible = isAddItemDialogShown,
+                    isVisible = true,
                     onDismissRequest = {
                         isAddItemDialogShown = false
                         popupContent = null
@@ -227,4 +231,5 @@ sealed class NavRoutes(val route: String) {
     data object AddWaterWidget : NavRoutes("AddWaterWidget")
     data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
+    data object CalendarWidget : NavRoutes("CalendarWidget")
 }

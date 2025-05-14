@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen() {
     var isExpanded by remember { mutableStateOf(false) }
-    var totalWater by remember { mutableStateOf(0.5f) }
+    var totalWater by remember { mutableFloatStateOf(0.5f) }
     val maxWater = 2.25f
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -276,7 +276,6 @@ fun WaterItem(label: String, volume: String, onClick: () -> Unit) {
 }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaterSlider(
     totalWater: Float,
@@ -287,8 +286,8 @@ fun WaterSlider(
 ) {
 
     var dragging by remember { mutableStateOf(false) }
-    var dragOffset by remember { mutableStateOf(0f) }
-    var maxReachedOffset by remember { mutableStateOf(0f)}
+    var dragOffset by remember { mutableFloatStateOf(0f) }
+    var maxReachedOffset by remember { mutableFloatStateOf(0f) }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -304,9 +303,7 @@ fun WaterSlider(
         }}
 
         val fillWidth by animateDpAsState(
-            targetValue = with(LocalDensity.current) {
-                (maxReachedOffset  / componentWidthPx * componentWidth.value).dp
-            },
+            targetValue = (maxReachedOffset  / componentWidthPx * componentWidth.value).dp,
             label = "fillWidth"
         )
 
