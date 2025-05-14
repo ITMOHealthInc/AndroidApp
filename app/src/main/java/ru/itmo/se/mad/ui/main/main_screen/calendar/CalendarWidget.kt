@@ -1,4 +1,4 @@
-package ru.itmo.se.mad.ui.main.main_screen
+package ru.itmo.se.mad.ui.main.main_screen.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import ru.itmo.se.mad.ui.theme.*
 import java.util.Calendar
 import kotlin.math.ceil
@@ -269,7 +266,7 @@ fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInst
         if(calendarToday.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) && calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH))
             days.add(DayData(dayNumber = i, activityLevel = activity, if(activity == ActivityLevel.ALERT) 1.0f else Math.random().toFloat(), today = true))
         else if (calendarToday.after(calendar))
-            days.add(DayData(dayNumber = i, activityLevel = activity, Math.random().toFloat(), today = false))
+            days.add(DayData(dayNumber = i, activityLevel = activity, if(activity == ActivityLevel.ALERT) 1.0f else Math.random().toFloat(), today = false))
         else
             days.add(DayData(dayNumber = i, activityLevel = activity, 0f, today = false))
     }
