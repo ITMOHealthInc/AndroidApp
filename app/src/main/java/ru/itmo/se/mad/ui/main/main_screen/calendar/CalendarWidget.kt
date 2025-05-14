@@ -28,7 +28,6 @@ import ru.itmo.se.mad.ui.theme.*
 import java.util.Calendar
 import kotlin.math.ceil
 import ru.itmo.se.mad.R
-import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitApiService
 
 
 @Composable

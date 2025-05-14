@@ -6,7 +6,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitRepository
 
 
 class CalendarApiService{
