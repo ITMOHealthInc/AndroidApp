@@ -86,19 +86,6 @@ fun Main() {
     val calorieGoal by remember { mutableFloatStateOf(3242f) }
 
     LaunchedEffect(Unit) {
-        try {
-            val response = ApiClient.productsApi.getDailySummary()
-            currentWater = response.totalWater
-            calories = response.totalKbzhu.calories
-            proteins = response.totalKbzhu.proteins
-            fats = response.totalKbzhu.fats
-            carbohydrates = response.totalKbzhu.carbohydrates
-
-        } catch (e: Exception) {
-            Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-            AlertManager.error("Ошибка при загрузке")
-        }
-
         if (LocalStorage.hasToken()) {
             navController.navigate("home")
         }
@@ -161,277 +148,251 @@ fun Main() {
             )
         }
     }
+    Box(Modifier.fillMaxSize()) {
 
-    Scaffold(
-        containerColor = Color.White,
-        bottomBar = {
-            if (showBottomBar) {
-                BottomNavBar(
-                    onAddItemClick = { isAddItemDialogShown = true },
-                    onNavigate = { navController.navigate(it) }
-                )
+
+        Scaffold(
+            containerColor = Color.White,
+            bottomBar = {
+                if (showBottomBar) {
+                    BottomNavBar(
+                        onAddItemClick = { isAddItemDialogShown = true },
+                        onNavigate = { navController.navigate(it) }
+                    )
+                }
             }
-        }
-    ) { _ ->
-        Box {
+        ) { _ ->
+            Box {
 
-            NavHost(
+                NavHost(
 
-                navController = navController,
-                startDestination = "oauth",
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { 1000 },
-                        animationSpec = tween(300)
-                    ) + fadeIn(animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { -1000 },
-                        animationSpec = tween(300)
-                    ) + fadeOut(animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -1000 },
-                        animationSpec = tween(300)
-                    ) + fadeIn(animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { 1000 },
-                        animationSpec = tween(300)
-                    ) + fadeOut(animationSpec = tween(300))
-                }
-            ) {
-                composable("oauth") {
-
-                    OauthScreen(
-                        viewModel = oauthViewModel,
-                        onNext = { navController.navigate("home") },
-                        onSignupNext = { navController.navigate("oauthNameInput") }
-
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("oauthNameInput") {
-                    NameInputScreen (
-                        viewModel = oauthViewModel,
-                        onNext = { navController.navigate("step1") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("step1") {
-                    Step1Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step3") }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("step3") {
-                    Step3Screen(
-                        viewModel = onboardingViewModel,
-                        oauthViewModel = oauthViewModel,
-                        onNext = { navController.navigate("step4") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("step4") {
-                    Step4Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step5") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("step5") {
-                    Step5Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("step6") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("step6") {
-                    Step6Screen(
-                        viewModel = onboardingViewModel,
-                        onNext = {
-                            navController.navigate("doneOnboarding") {
-                            }
-                        },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("doneOnboarding") {
-                    DoneScreen(
-                        viewModel = onboardingViewModel,
-                        onNext = {
-                            navController.navigate("home") {
-                                popUpTo("step2") { inclusive = true }
-                            }
-                        },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-
-                composable("home") {
-
-                    Box(Modifier.fillMaxSize()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    Brush.verticalGradient(
-                                        listOf(Color.White, Color.White, Color.Transparent),
-                                        startY = 20.0f
-                                    )
-                                )
-                                .padding(16.dp, 50.dp)
-                                .align(Alignment.TopStart)
-                                .zIndex(1f)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                AsyncImage(
-                                    model = onboardingViewModel.photoUri,
-                                    placeholder = painterResource(id = R.drawable.bshvevgn),
-                                    error = painterResource(id = R.drawable.icon_user),
-                                    contentDescription = "Profile image",
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .clip(CircleShape)
-                                        .clickable(onClick = { isProfilePopupShown = true }),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Row(
-                                    Modifier
-                                        .clip(RoundedCornerShape(25.dp))
-                                        .background(ActivityOrange15)
-                                        .padding(10.dp, 5.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_activity),
-                                        contentDescription = null,
-                                        tint = ActivityOrange85,
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                    )
-                                    Text(
-                                        " 12",
-                                        color = ActivityOrange85,
-                                        fontWeight = FontWeight.W600,
-                                        fontSize = 16.sp
-                                    )
-                                }
-                            }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .fillMaxSize()
-                                .padding(top = 44.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(modifier = Modifier.height(80.dp))
-                            DateItem(onCalendarClick = {
-                                showCalendarModal = true
-                            })
-                            CalorieWidgetView(
-                                caloriesEaten = calories,
-                                caloriesBurned = caloriesBurned,
-                                calorieGoal = calorieGoal,
-                                protein = proteins,
-                                fat = fats,
-                                carbs = carbohydrates
-                            )
-                            NewWaterSlider(
-                                totalDrunk = currentWater,
-                                maxWater = maxWater,
-                                onAddWater = { added ->
-                                    currentWater = (currentWater + added).coerceAtMost(maxWater)
-                                }
-                            )
-                            StepsActivityWidget()
-                            Button(
-                                colors = ButtonColors(
-                                    containerColor = WidgetGray5,
-                                    contentColor = Color.Black,
-                                    disabledContainerColor = Color.Unspecified,
-                                    disabledContentColor = Color.Black
-                                ),
-                                onClick = {},
-                                modifier = Modifier
-                                    .padding(vertical = 40.dp)
-                            ) {
-                                Text(
-                                    "Изменить порядок", style = TextStyle(
-                                        fontFamily = SFProDisplay,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Normal,
-                                        fontStyle = FontStyle.Normal
-                                    )
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(60.dp))
-                        }
+                    navController = navController,
+                    startDestination = "oauth",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { 1000 },
+                            animationSpec = tween(300)
+                        ) + fadeIn(animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { -1000 },
+                            animationSpec = tween(300)
+                        ) + fadeOut(animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { -1000 },
+                            animationSpec = tween(300)
+                        ) + fadeIn(animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { 1000 },
+                            animationSpec = tween(300)
+                        ) + fadeOut(animationSpec = tween(300))
                     }
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
+                ) {
+                    composable("oauth") {
+
+                        OauthScreen(
+                            viewModel = oauthViewModel,
+                            onNext = { navController.navigate("home") },
+                            onSignupNext = { navController.navigate("oauthNameInput") }
+
+                        )
+                    }
+                    composable("oauthNameInput") {
+                        NameInputScreen(
+                            viewModel = oauthViewModel,
+                            onNext = { navController.navigate("step1") },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("step1") {
+                        Step1Screen(
+                            viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("step3") }
+                        )
+                    }
+                    composable("step3") {
+                        Step3Screen(
+                            viewModel = onboardingViewModel,
+                            oauthViewModel = oauthViewModel,
+                            onNext = { navController.navigate("step4") },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("step4") {
+                        Step4Screen(
+                            viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("step5") },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("step5") {
+                        Step5Screen(
+                            viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("step6") },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("step6") {
+                        Step6Screen(
+                            viewModel = onboardingViewModel,
+                            onNext = {
+                                navController.navigate("doneOnboarding") {
+                                }
+                            },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("doneOnboarding") {
+                        DoneScreen(
+                            viewModel = onboardingViewModel,
+                            onNext = {
+                                navController.navigate("home") {
+                                    popUpTo("step2") { inclusive = true }
+                                }
+                            },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable("home") {
+
+                        LaunchedEffect(Unit) {
+                            try {
+                                val response = ApiClient.productsApi.getDailySummary()
+                                currentWater = response.totalWater
+                                calories = response.totalKbzhu.calories
+                                proteins = response.totalKbzhu.proteins
+                                fats = response.totalKbzhu.fats
+                                carbohydrates = response.totalKbzhu.carbohydrates
+
+                            } catch (e: Exception) {
+                                Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+                                AlertManager.error("Ошибка при загрузке")
+                            }
+                        }
+
+
+                            Box(Modifier.fillMaxSize()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(Color.White, Color.White, Color.Transparent),
+                                            startY = 20.0f
+                                        )
+                                    )
+                                    .padding(16.dp, 50.dp)
+                                    .align(Alignment.TopStart)
+                                    .zIndex(1f)
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    AsyncImage(
+                                        model = onboardingViewModel.photoUri,
+                                        placeholder = painterResource(id = R.drawable.bshvevgn),
+                                        error = painterResource(id = R.drawable.icon_user),
+                                        contentDescription = "Profile image",
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .clip(CircleShape)
+                                            .clickable(onClick = { isProfilePopupShown = true }),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Row(
+                                        Modifier
+                                            .clip(RoundedCornerShape(25.dp))
+                                            .background(ActivityOrange15)
+                                            .padding(10.dp, 5.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_activity),
+                                            contentDescription = null,
+                                            tint = ActivityOrange85,
+                                            modifier = Modifier
+                                                .size(16.dp)
+                                        )
+                                        Text(
+                                            " 12",
+                                            color = ActivityOrange85,
+                                            fontWeight = FontWeight.W600,
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .verticalScroll(rememberScrollState())
+                                    .fillMaxSize()
+                                    .padding(top = 44.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.height(80.dp))
+                                DateItem(onCalendarClick = {
+                                    showCalendarModal = true
+                                })
+
+                                CalorieWidgetView(
+                                    caloriesEaten = calories,
+                                    caloriesBurned = caloriesBurned,
+                                    calorieGoal = calorieGoal,
+                                    protein = proteins,
+                                    fat = fats,
+                                    carbs = carbohydrates
+                                )
+                                NewWaterSlider(
+                                    totalDrunk = currentWater,
+                                    maxWater = maxWater,
+                                    onAddWater = { added ->
+                                        currentWater = (currentWater + added).coerceAtMost(maxWater)
+                                    }
+                                )
+                                StepsActivityWidget()
+                                Button(
+                                    colors = ButtonColors(
+                                        containerColor = WidgetGray5,
+                                        contentColor = Color.Black,
+                                        disabledContainerColor = Color.Unspecified,
+                                        disabledContentColor = Color.Black
+                                    ),
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .padding(vertical = 40.dp)
+                                ) {
+                                    Text(
+                                        "Изменить порядок", style = TextStyle(
+                                            fontFamily = SFProDisplay,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Normal,
+                                            fontStyle = FontStyle.Normal
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(60.dp))
+                            }
+
+                        }
+
+                    }
                 }
             }
         }
+        BottomAlert(
+            visible = AlertManager.visible,
+            message = AlertManager.message,
+            type = AlertManager.type,
+            onDismiss = { AlertManager.hide() }
+        )
     }
 }
 

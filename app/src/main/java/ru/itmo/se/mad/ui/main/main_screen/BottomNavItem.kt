@@ -53,6 +53,7 @@ fun BottomNavBar(onAddItemClick: () -> Unit, onNavigate: (String) -> Unit) {
             .height(124.dp)
 
     ) {
+
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
