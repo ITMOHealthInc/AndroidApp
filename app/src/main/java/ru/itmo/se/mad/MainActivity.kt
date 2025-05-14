@@ -123,7 +123,6 @@ fun Main() {
 
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val oauthViewModel: OauthViewModel = viewModel()
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
