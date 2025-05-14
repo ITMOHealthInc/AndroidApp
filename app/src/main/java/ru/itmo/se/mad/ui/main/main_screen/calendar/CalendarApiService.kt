@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.itmo.se.mad.storage.ApiClient
 
 
 class CalendarApiService{
@@ -24,24 +25,8 @@ class CalendarApiService{
         val goal: Int
     )
 
-    val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor { chain ->
-            val original = chain.request()
-            val requestBuilder = original.newBuilder()
-                .header("Authorization", "Bearer $token")
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json")
-                .method(original.method, original.body)
+    val retrofit = ApiClient.getApiClient()
 
-            chain.proceed(requestBuilder.build())
-        }
-        .build()
-
-    val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2/")
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
 
     val calendarApi = retrofit.create(CalendarRepository::class.java)
 
