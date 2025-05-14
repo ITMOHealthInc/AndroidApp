@@ -41,3 +41,6 @@ val CalorieGreen15 = Color(0x2600E30B)
 val ActivityOrange85 = Color(0xD9FF8401)
 val ActivityOrange15 = Color(0x26FF8401)
 val CalorieOverflow = Color(0xFFE35F00)
+
+val ProfileDarkGray = Color(0xFF5D5D5D);
+val ProfileLightGray = Color(0xFF181818);

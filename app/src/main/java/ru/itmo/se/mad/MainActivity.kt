@@ -7,8 +7,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -23,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +54,11 @@ import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
+import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.clickable
+import coil3.compose.AsyncImage
+import ru.itmo.se.mad.ui.layout.CustomDialogPosition
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +82,7 @@ fun Main() {
     var popupContent by remember {
         mutableStateOf<(@Composable () -> Unit)?>(null)
     }
+    var isProfilePopupShown by remember { mutableStateOf(false) }
 
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -145,6 +155,22 @@ fun Main() {
                         modifier = Modifier.verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Spacer(modifier = Modifier.height(44.dp)) // To avoid overlap with profile icon
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, start = 16.dp)
+                        ) {
+                            AsyncImage(
+                                model = onboardingViewModel.photoUri,
+                                placeholder = painterResource(id = R.drawable.bshvevgn),
+                                error = painterResource(id = R.drawable.icon_user),
+                                contentDescription = "Profile image",
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                                    .clickable(onClick = { isProfilePopupShown = true })
+                            )
+                        }
                         DateItem(onCalendarClick = {
                             // TODO: логика при нажатии на календарь
                         })
@@ -191,6 +217,16 @@ fun Main() {
                     popupContent?.invoke() ?: AddItem(
                         onSelect = { popupContent = it }
                     )
+                }
+            }
+            if (isProfilePopupShown) {
+                Popup(
+                    isVisible = true,
+                    onDismissRequest = { isProfilePopupShown = false },
+                    title = "",
+                    position = CustomDialogPosition.TOP
+                ) {
+                    ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
                 }
             }
         }
