@@ -25,6 +25,7 @@ import ru.itmo.se.mad.ui.theme.SFProDisplay
 @Composable
 fun Step3Screen(
     viewModel: OnboardingViewModel,
+    onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val context = LocalContext.current
@@ -40,7 +41,7 @@ fun Step3Screen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = false)
+        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = true, onBackClick = onBack)
         Spacer(Modifier.height(100.dp))
 
         PhotoPicker(
@@ -52,9 +53,9 @@ fun Step3Screen(
         Text(name, fontSize = 24.sp, fontWeight = FontWeight.Medium, fontFamily = SFProDisplay)
 
         Spacer(Modifier.weight(1f))
-        if (name !== "") PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.photoUri !== null) PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(4.dp))
-        SecondaryButton(text = "Пропустить", onClick = onNext)
+        if (viewModel.photoUri == null) SecondaryButton(text = "Пропустить", onClick = onNext)
         Spacer(Modifier.height(24.dp))
 
     }
