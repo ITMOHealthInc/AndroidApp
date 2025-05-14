@@ -78,7 +78,7 @@ fun Main() {
 
     var isAddItemDialogShown by remember { mutableStateOf(false) }
     var isProfilePopupShown by remember { mutableStateOf(false) }
-
+    
     var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
 
     var showCalendarModal by remember { mutableStateOf(false) }
@@ -96,6 +96,30 @@ fun Main() {
         onClose = { showCalendarModal = false }
     ) {
         CalendarScreen()
+    }
+
+    if (isAddItemDialogShown) {
+        Popup(
+            isVisible = true,
+            onDismissRequest = {
+                isAddItemDialogShown = false
+                popupContent = null
+            },
+            title = "Что вы хотите добавить?",
+        ) {
+            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
+        }
+    }
+    if (isProfilePopupShown) {
+        Popup(
+            isVisible = true,
+            onDismissRequest = { isProfilePopupShown = false },
+            title = "",
+            bottomOffset = 0.dp,
+            horizontalMargin = 0.dp,
+        ) {
+            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
+        }
     }
 
     Scaffold(
@@ -251,6 +275,7 @@ fun Main() {
                                     )
                                 }
                             }
+                            }
                             Column(
                                 modifier = Modifier
                                     .verticalScroll(rememberScrollState())
@@ -293,31 +318,6 @@ fun Main() {
                                 }
                                 Spacer(modifier = Modifier.height(60.dp))
                             }
-                        }
-                    }
-
-                    if (isAddItemDialogShown) {
-                        Popup(
-                            isVisible = true,
-                            onDismissRequest = {
-                                isAddItemDialogShown = false
-                                popupContent = null
-                            },
-                            title = "Что вы хотите добавить?",
-                        ) {
-                            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
-                        }
-                    }
-                    if (isProfilePopupShown) {
-                        Popup(
-                            isVisible = true,
-                            onDismissRequest = { isProfilePopupShown = false },
-                            title = "",
-                            bottomOffset = 0.dp,
-                            horizontalMargin = 0.dp,
-                        ) {
-                            ProfilePopup(onClose = { isProfilePopupShown = false }, onboardingViewModel)
-                        }
                     }
                 }
             }

@@ -32,15 +32,16 @@ class OnboardingViewModel : ViewModel() {
     var gender: Gender by mutableStateOf(Gender.NOT_SELECTED)
 }
 
-fun complete(
-    name: String,
-    photoUri: Uri,
-    goal: String,
-    height: String,
-    weight: String,
-    gender: Gender,
-    onSuccess: () -> Unit
-) {
-    // TODO: сделать запрос к бэку
-    onSuccess()
-}
+    fun complete(
+        name: String,
+        photoUri: Uri,
+        goal: String,
+        height: String,
+        weight: String,
+        gender: Gender,
+        onSuccess: () -> Unit
+    ) {
+        // TODO: сделать запрос к бэку
+        onSuccess()
+    }
+
