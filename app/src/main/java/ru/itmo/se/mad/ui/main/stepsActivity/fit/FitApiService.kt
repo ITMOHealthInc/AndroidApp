@@ -24,7 +24,7 @@ class FitApiService {
         val steps: Int
     )
 
-    val okHttpClient = OkHttpClient.Builder()
+    private val okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val original = chain.request()
             val requestBuilder = original.newBuilder()
@@ -37,13 +37,13 @@ class FitApiService {
         }
         .build()
 
-    val retrofit = Retrofit.Builder()
+    private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl("http://10.0.2.2:5013")
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val activityApi = retrofit.create(FitRepository::class.java)
+    val activityApi: FitRepository = retrofit.create(FitRepository::class.java)
 
     suspend fun getUserSteps(): Int = withContext(Dispatchers.IO) {
         val call = activityApi.getSteps()
