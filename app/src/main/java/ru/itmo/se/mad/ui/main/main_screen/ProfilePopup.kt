@@ -1,5 +1,10 @@
 package ru.itmo.se.mad.ui.main.main_screen
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -52,9 +57,33 @@ fun ProfilePopup(
         Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .clip(RoundedCornerShape(32.dp))
     ) {
-        NavHost(navController = popupNavController, startDestination = "main") {
+        NavHost(navController = popupNavController,
+            startDestination = "main",
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { 1000 },
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(300))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { -1000 },
+                    animationSpec = tween(300)
+                ) + fadeOut(animationSpec = tween(300))
+            },
+            popEnterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { -1000 },
+                    animationSpec = tween(300)
+                ) + fadeIn(animationSpec = tween(300))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { 1000 },
+                    animationSpec = tween(300)
+                ) + fadeOut(animationSpec = tween(300))
+            }) {
             composable("main") {
                 ProfileMainScreen(
                     storage = storage,
@@ -65,7 +94,7 @@ fun ProfilePopup(
                 )
             }
             composable("account") { AccountScreen(storage, oauthStorage) }
-            composable("goals") { GoalsScreen() }
+            composable("goals") { GoalsScreen(storage, oauthStorage) }
         }
     }
 }
@@ -89,11 +118,11 @@ fun ProfileMainScreen(
             error = painterResource(id = R.drawable.icon_user),
             contentDescription = "Profile image",
             modifier = Modifier
-                .size(80.dp)
+                .size(100.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(12.dp))
         Text(
             text = oauthStorage.name,
             fontSize = 24.sp,
@@ -112,7 +141,7 @@ fun ProfileMainScreen(
                     .padding(16.dp)
                     .weight(1f)
             ) {
-                Text("Дни активности", color = ActivityOrange85, fontSize = 16.sp, fontWeight = FontWeight.W500)
+                Text("Дни активности", color = ActivityOrange85, fontSize = 16.sp, fontWeight = FontWeight.W500, fontFamily = SFProDisplay)
                 Spacer(Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -122,7 +151,7 @@ fun ProfileMainScreen(
                         contentDescription = null,
                         tint = ActivityOrange85
                     )
-                    Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W500, fontSize = 24.sp)
+                    Text(" 12", color = ActivityOrange85, fontWeight = FontWeight.W500, fontSize = 24.sp, fontFamily = SFProDisplay)
                 }
             }
             Spacer(Modifier.width(12.dp))
@@ -135,7 +164,7 @@ fun ProfileMainScreen(
             ) {
                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
                     Column {
-                        Text("Награды", color = White, fontSize = 16.sp, fontWeight = FontWeight.W500)
+                        Text("Награды", color = White, fontSize = 16.sp, fontWeight = FontWeight.W500, fontFamily = SFProDisplay)
                         Spacer(Modifier.height(8.dp))
                         Text("8", color = White, fontWeight = FontWeight.W500, fontSize = 24.sp)
                     }
@@ -158,14 +187,19 @@ fun ProfileMainScreen(
                 .background(WidgetGray5)
                 .padding(16.dp)
         ) {
-            Text("Ваши данные", color = Black, fontSize = 16.sp, fontWeight = FontWeight.W500)
+            Text("Ваши данные", color = Black, fontSize = 16.sp, fontWeight = FontWeight.W500, fontFamily = SFProDisplay)
             Spacer(Modifier.height(12.dp))
-            Text("${storage.height} см · ${storage.weight} кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400)
+            Text("${storage.height} см · ${storage.weight} кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400, fontFamily = SFProDisplay)
             Spacer(Modifier.height(6.dp))
-            Text("Полный рацион", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400)
+            Text("Полный рацион", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400, fontFamily = SFProDisplay)
         }
-        Spacer(Modifier.height(16.dp))
-        Column(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(36.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
             ProfileMenuItem("Аккаунт") { onNavigate("account") }
             ProfileMenuItem("Ваши цели") { onNavigate("goals") }
         }
@@ -173,27 +207,52 @@ fun ProfileMainScreen(
 }
 
 @Composable
-fun ProfileMenuItem(title: String, onClick: () -> Unit) {
+fun ProfileMenuItem(
+    title: String,
+    subTitle: String = "",
+    onClick: () -> Unit
+) {
     Row(
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = title,
             fontSize = 18.sp,
             color = Color.Black,
             fontFamily = SFProDisplay,
-            fontWeight = FontWeight.W400,
-            modifier = Modifier.weight(1f)
+            fontWeight = FontWeight.W400
         )
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
-            contentDescription = null,
-            tint = Black,
-            modifier = Modifier.size(16.dp)
-        )
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .wrapContentSize()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (subTitle.isNotEmpty()) {
+                    Text(
+                        text = subTitle,
+                        fontSize = 18.sp,
+                        color = Gray,
+                        fontFamily = SFProDisplay,
+                        fontWeight = FontWeight.W400
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
+                    contentDescription = null,
+                    tint = Gray,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
+        }
     }
 }
+

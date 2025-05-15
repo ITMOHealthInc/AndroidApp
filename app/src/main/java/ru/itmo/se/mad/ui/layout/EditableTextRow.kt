@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun EditableTextRow(
@@ -31,7 +32,6 @@ fun EditableTextRow(
     var isEditing by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf(TextFieldValue(initialText)) }
 
-    // FocusRequester для запроса фокуса
     val focusRequester = remember { FocusRequester() }
 
     val hintColor by animateColorAsState(
@@ -39,10 +39,9 @@ fun EditableTextRow(
         label = "hintFade"
     )
 
-    // Добавляем эффект для установки фокуса при начале редактирования
     LaunchedEffect(isEditing) {
         if (isEditing) {
-            focusRequester.requestFocus() // Устанавливаем фокус, если мы начинаем редактировать
+            focusRequester.requestFocus()
         }
     }
 
@@ -58,7 +57,7 @@ fun EditableTextRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = !isEditing) {
-                    isEditing = true // Начинаем редактирование по клику
+                    isEditing = true
                 }
         ) {
             if (isEditing) {
@@ -67,11 +66,12 @@ fun EditableTextRow(
                     onValueChange = { text = it },
                     textStyle = TextStyle(
                         fontSize = 24.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.W500
                     ),
                     modifier = Modifier
                         .wrapContentWidth()
-                        .focusRequester(focusRequester) // Прикрепляем FocusRequester
+                        .focusRequester(focusRequester)
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Box(
@@ -96,7 +96,8 @@ fun EditableTextRow(
                     text = text.text,
                     fontSize = 24.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.wrapContentWidth()
+                    modifier = Modifier.wrapContentWidth(),
+                    fontWeight = FontWeight.W500
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))

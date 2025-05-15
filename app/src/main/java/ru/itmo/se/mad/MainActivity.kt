@@ -2,8 +2,10 @@ package ru.itmo.se.mad
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -17,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.itmo.se.mad.model.AuthViewModel
+import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
@@ -62,6 +65,7 @@ fun Main() {
     val authViewModel: AuthViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
     val showBottomBar = currentRoute == "home"
     val profileViewModel: ProfileViewModel = viewModel()
 
@@ -187,7 +191,23 @@ fun Main() {
                     composable("setMeasuresStep") {
                         SetMeasuresScreen(
                             viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("chooseSexStep") },
+                            onNext = { if (onboardingViewModel.goal != Goal.MAINTAIN) navController.navigate("setGoalWeightStep") else navController.navigate("chooseSexStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("setGoalWeightStep") {
+                        SetGoalWeightScreen(
+                            viewModel = onboardingViewModel,
+                            onNext = {
+                                navController.navigate("finishStep") {
+                                }
+                            },
                             onBack = { navController.popBackStack() }
                         )
                     }
