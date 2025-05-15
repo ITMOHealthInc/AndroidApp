@@ -11,9 +11,9 @@ interface FitApiService {
     @GET("activity/steps")
     suspend fun getSteps(): Response<StepsResponse>
 
-    @POST("activity/set-steps")
+    @POST("activity/update-goal")
     fun setDailyGoal(@Body goal: Int): Call<Void>
 
     @POST("activity/set-steps")
-    fun setSteps(@Body stepsData: Int): Call<Void>
+    fun setSteps(@Body steps: Int): Call<Void>
 }

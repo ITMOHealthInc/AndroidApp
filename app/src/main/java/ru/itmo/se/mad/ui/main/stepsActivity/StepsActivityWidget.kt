@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.api.fit.StepsResponse
+import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
 import ru.itmo.se.mad.ui.theme.BackgroundGray4560
@@ -79,6 +80,7 @@ fun StepsActivityWidget(
     suspend fun refreshStepsData() {
         try {
             val response: StepsResponse? = ApiClient.fitApi.getSteps().body()
+            Log.e("StepsActivityWidget", response.toString())
             val apiSteps = response?.steps
             val apiGoal = response?.goal
             if (apiSteps != null) {
@@ -90,6 +92,7 @@ fun StepsActivityWidget(
             goalInputValue = apiGoal?.toString() ?: currentDailyGoal.toString()
             stepsInputValue = apiSteps?.toString() ?: currentSteps.toString()
         } catch (e: Exception) {
+            AlertManager.error("Error refreshing data")
             Log.e("StepsActivityWidget", "Error refreshing data", e)
         }
     }
@@ -253,10 +256,13 @@ fun StepsActivityWidget(
                         val newGoal = goalInputValue.toIntOrNull() ?: currentDailyGoal
                         scope.launch {
                             try {
+                                //Log.e("StepsActivityWidget", ApiClient.fitApi.setDailyGoal(newGoal).toString())
                                 ApiClient.fitApi.setDailyGoal(newGoal)
                                 refreshStepsData()
 
                             } catch (e: Exception) {
+                                AlertManager.error("Error refreshing data")
+
                                 Log.e("StepsActivityWidget", "Error setting steps", e)
                             }
                         }
@@ -294,9 +300,12 @@ fun StepsActivityWidget(
                         val newSteps = stepsInputValue.toIntOrNull() ?: currentSteps
                         scope.launch {
                             try {
+                                //Log.e("StepsActivityWidget", newSteps.toString())
+
                                 ApiClient.fitApi.setSteps(newSteps)
                                 refreshStepsData()
                             } catch (e: Exception) {
+                                AlertManager.error("Error refreshing data")
                                 Log.e("StepsActivityWidget", "Error setting steps", e)
                             }
                         }
