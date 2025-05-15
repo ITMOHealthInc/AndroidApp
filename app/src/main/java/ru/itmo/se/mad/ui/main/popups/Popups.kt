@@ -6,41 +6,28 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
-import kotlinx.coroutines.launch
-import ru.itmo.se.mad.api.products.sendWaterMeal
 import ru.itmo.se.mad.ui.theme.Black
 import ru.itmo.se.mad.ui.theme.SFProDisplay
-import ru.itmo.se.mad.ui.theme.WaterBlue
-import ru.itmo.se.mad.ui.theme.WaterBlue40
-import ru.itmo.se.mad.ui.theme.WaterBlue70
 import ru.itmo.se.mad.ui.theme.White
 import ru.itmo.se.mad.ui.theme.WidgetGray10
 import ru.itmo.se.mad.ui.theme.WidgetGray3
 import ru.itmo.se.mad.ui.theme.WidgetGray70
-import ru.itmo.se.mad.ui.theme.WidgetGray80
-import kotlin.math.max
 import kotlin.math.round
 
 @Composable
@@ -53,14 +40,14 @@ fun GenericPopup(
 ){
     var dragAmount by remember { mutableStateOf(0f) }
     var isDragging by remember { mutableStateOf(false) }
-    var sliderHeightPx by remember { mutableStateOf(500f) }
+    var sliderHeightPx by remember { mutableStateOf(1000f) }
     val coroutineScope = rememberCoroutineScope()
 
-    val rawProgress = (0f + dragAmount / sliderHeightPx).coerceIn(minValue, maxValue)
-    val snappedValue = (round(rawProgress / 0.05f) * 0.05f).coerceIn(minValue, maxValue)
+    val rawProgress = (0f + dragAmount / sliderHeightPx).coerceIn(0.0f, 1.0f)
+    val snappedValue = (round(rawProgress * maxValue / step) * step).coerceIn(minValue, maxValue)
 
     val backgroundColor by animateColorAsState(
-        targetValue =  WaterBlue40.copy(alpha = 0.2f)
+        targetValue =  WidgetGray3
     )
     Column(modifier = Modifier.padding(horizontal = 15.dp)) {
         Box(
@@ -74,30 +61,16 @@ fun GenericPopup(
                     detectDragGestures(
                         onDragStart = { offset: Offset ->
                             isDragging = true
-                            dragAmount = offset.y
                         },
                         onDragEnd = {
                             isDragging = false
-                            val finalValue = (round(
-                                (1f + dragAmount / sliderHeightPx).coerceIn(
-                                    0f,
-                                    maxValue
-                                ) / 0.05f
-                            ) * 0.05f).coerceIn(minValue, maxValue)
-                            if (finalValue > 0f) {
-                                onChange(finalValue)
-                                coroutineScope.launch {
-                                    sendWaterMeal(finalValue * 1000f) // перевод в мл
-                                }
-                            }
 
                         },
                         onDragCancel = {
                             isDragging = false
-                            dragAmount = 0f
                         },
                         onDrag = { _, drag ->
-                            dragAmount += drag.y
+                            dragAmount += drag.y * step
                         }
                     )
                 }
@@ -125,9 +98,6 @@ fun GenericPopup(
         )}
         Button(onClick = {
             onChange(snappedValue)
-            coroutineScope.launch {
-                sendWaterMeal(snappedValue * 1000f) // перевод в мл
-            }
         }
             ,
             modifier = Modifier
@@ -179,16 +149,14 @@ private fun WaterWheelSelector(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-            , // Смещаем вверх для выхода верхнего элемента
+                .height(300.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Верхнее значение (частично выходит за границы)
             Box(modifier = Modifier){
                 Text(
                     text = "%.2f".format(nextValue),
                     fontSize = 48.sp,
-                    color = WaterBlue70,
+                    color = Black.copy(alpha=0.4f),
                     fontFamily = SFProDisplay,
                     modifier = Modifier.height(48.dp)
                 )}
@@ -198,56 +166,18 @@ private fun WaterWheelSelector(
                 text = "%.2f".format(animatedSnapped),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = WaterBlue,
+                color = Black,
                 fontFamily = SFProDisplay,
                 modifier = Modifier.height(48.dp)
             )
 
-            // Нижнее значение (полностью видимое)
             Text(
                 text = "%.2f".format(prevValue),
                 fontSize = 48.sp,
-                color = WaterBlue70,
+                color =  Black.copy(alpha=0.4f),
                 fontFamily = SFProDisplay,
                 modifier = Modifier
                     .height(48.dp)
-                    .zIndex(1f) // Гарантируем рендеринг поверх других элементов
-                    .drawWithContent { // Принудительный рендеринг
-                        drawContent()
-                    }
-            )
-        }
-    }
-}
-@Composable
-private fun ButtonRow(name: String, volume: Float, onAddWater: (Float) -> Unit){
-    Row(Modifier.padding(vertical = 8.dp)) {
-        Button(
-            onClick = {onAddWater(volume)}, shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-
-            colors = ButtonColors(
-                WidgetGray3, Black, White, White
-            ), modifier = Modifier
-                .size(38.dp)
-        ) {
-            Icon(Icons.Default.Add, "", tint = WidgetGray80)
-        }
-        Column (modifier = Modifier.padding(horizontal = 16.dp)){
-            Text(
-                text = name,
-                fontSize = 16.sp,
-                color = Black,
-                fontWeight = FontWeight.Medium,
-                fontFamily = SFProDisplay,
-                modifier = Modifier
-            )
-            Text(
-                text = "$volume л",
-                fontSize = 14.sp,
-                color = WidgetGray70,
-                fontFamily = SFProDisplay,
-                modifier = Modifier
             )
         }
     }
