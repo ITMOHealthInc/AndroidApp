@@ -129,7 +129,7 @@ fun Main() {
             Box {
                 NavHost(
                     navController = navController,
-                    startDestination = "startMessageStep",
+                    startDestination = "auth",
                     enterTransition = {
                         slideInHorizontally(
                             initialOffsetX = { 1000 },
