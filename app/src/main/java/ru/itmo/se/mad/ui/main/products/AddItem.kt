@@ -34,6 +34,7 @@ import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
+import ru.itmo.se.mad.ui.main.popups.GenericPopup
 import ru.itmo.se.mad.ui.main.water.VerticalWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
@@ -84,13 +85,15 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
             AddItemElement(
                 "Вода",
                 R.drawable.image_water,
-                onClick = { onSelect { VerticalWaterSlider(
+                onClick = { onSelect { /*VerticalWaterSlider(
                     totalDrunk = currentWater,
                     maxWater = maxWater,
                     onAddWater = { added ->
                         currentWater = (currentWater + added).coerceAtMost(maxWater)
                     }
-                ) } }
+                )*/
+                GenericPopup(onChange = {})
+                } }
             )
         }
     }
