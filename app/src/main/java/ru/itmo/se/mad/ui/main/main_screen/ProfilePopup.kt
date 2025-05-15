@@ -33,6 +33,7 @@ import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
 import ru.itmo.se.mad.model.GoalsViewModel
+import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 
 
@@ -40,7 +41,7 @@ import ru.itmo.se.mad.model.ProfileViewModel
 fun ProfilePopup(
     profileViewModel: ProfileViewModel,
     goalsViewModel: GoalsViewModel,
-    storage: OnboardingViewModel,
+    measurementsViewModel: MeasurementsViewModel,
     profilePopupTitle: MutableState<String>,
     popupNavController: NavHostController
 ) {
@@ -89,14 +90,14 @@ fun ProfilePopup(
             composable("main") {
                 ProfileMainScreen(
                     profileViewModel = profileViewModel,
-                    storage = storage,
+                    measurementsViewModel = measurementsViewModel,
                     onNavigate = { route ->
                         popupNavController.navigate(route)
                     }
                 )
             }
             composable("account") { AccountScreen(profileViewModel) }
-            composable("goals") { GoalsScreen(goalsViewModel, storage, popupNavController) }
+            composable("goals") { GoalsScreen(goalsViewModel, measurementsViewModel, popupNavController) }
             composable("macro") { MacroGoalsScreen(goalsViewModel) }
         }
     }
@@ -106,7 +107,7 @@ fun ProfilePopup(
 @Composable
 fun ProfileMainScreen(
     profileViewModel: ProfileViewModel,
-    storage: OnboardingViewModel,
+    measurementsViewModel: MeasurementsViewModel,
     onNavigate: (String) -> Unit
 ) {
     Column(
@@ -192,7 +193,7 @@ fun ProfileMainScreen(
         ) {
             Text("Ваши данные", color = Black, fontSize = 16.sp, fontWeight = FontWeight.W500, fontFamily = SFProDisplay)
             Spacer(Modifier.height(12.dp))
-            Text("${storage.height} см · ${storage.weight} кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400, fontFamily = SFProDisplay)
+            Text("${measurementsViewModel.height} см · ${measurementsViewModel.weight} кг", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400, fontFamily = SFProDisplay)
             Spacer(Modifier.height(6.dp))
             Text("Полный рацион", color = WidgetGray0060, fontSize = 16.sp, fontWeight = FontWeight.W400, fontFamily = SFProDisplay)
         }

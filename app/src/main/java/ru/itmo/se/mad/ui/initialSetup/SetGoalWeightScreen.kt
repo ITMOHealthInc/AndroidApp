@@ -9,14 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.model.Gender
 import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.LabeledTextField
 import ru.itmo.se.mad.ui.layout.PrimaryButton
-import ru.itmo.se.mad.ui.layout.SecondaryButton
-import ru.itmo.se.mad.ui.layout.SelectableOption
 
 @Composable
 fun SetGoalWeightScreen(

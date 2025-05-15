@@ -28,6 +28,7 @@ import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.model.ActivityLevel
 import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.GoalsViewModel
+import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.model.safeToDouble
@@ -76,7 +77,7 @@ fun AccountScreen(
 @Composable
 fun GoalsScreen(
     goalsViewModel: GoalsViewModel,
-    storage: OnboardingViewModel,
+    measurementsViewModel: MeasurementsViewModel,
     popupNavController: NavHostController
 ) {
     var itemChangeDialogShown by remember { mutableStateOf(false) }
@@ -91,9 +92,9 @@ fun GoalsScreen(
     var activitySelectedBefore by remember { mutableStateOf(ActivityLevel.NOT_SELECTED) }
 
     val isGoalValid = when (goalsViewModel.type) {
-        Goal.WEIGHT_LOSS -> newWeightGoal != "" && newWeightGoal.safeToDouble() < storage.weight.safeToDouble()
-        Goal.WEIGHT_MAINTENANCE -> newWeightGoal != "" && kotlin.math.abs(newWeightGoal.safeToDouble() - storage.weight.safeToDouble()) <= 1.0
-        Goal.WEIGHT_GAIN -> newWeightGoal != "" && newWeightGoal.safeToDouble() > storage.weight.safeToDouble()
+        Goal.WEIGHT_LOSS -> newWeightGoal != "" && newWeightGoal.safeToDouble() < measurementsViewModel.weight
+        Goal.WEIGHT_MAINTENANCE -> newWeightGoal != "" && kotlin.math.abs(newWeightGoal.safeToDouble() - measurementsViewModel.weight) <= 1.0
+        Goal.WEIGHT_GAIN -> newWeightGoal != "" && newWeightGoal.safeToDouble() > measurementsViewModel.weight
         else -> false
     }
 
@@ -162,7 +163,7 @@ fun GoalsScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        text = "Ваша текущая цель: " + storage.goalWeight.safeToDouble() + " кг",
+                        text = "Ваша текущая цель: " + goalsViewModel.weightGoal + " кг",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.W400,
                         fontFamily = SFProDisplay,

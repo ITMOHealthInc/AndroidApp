@@ -44,7 +44,7 @@ import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.model.GoalsViewModel
-import ru.itmo.se.mad.model.OnboardingViewModel
+import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
@@ -57,11 +57,10 @@ import ru.itmo.se.mad.ui.theme.ActivityOrange85
 fun HomeScreen(
     profileViewModel: ProfileViewModel,
     goalsViewModel: GoalsViewModel,
-    storage: OnboardingViewModel,
+    measurementsViewModel: MeasurementsViewModel,
     onProfileClick: () -> Unit,
     onCalendarClick: () -> Unit
 ) {
-
     var currentWater by remember { mutableFloatStateOf(0f) }
     var calories by remember { mutableFloatStateOf(0f) }
     var proteins by remember { mutableFloatStateOf(0f) }
@@ -75,6 +74,7 @@ fun HomeScreen(
 
     profileViewModel.load()
     goalsViewModel.load()
+    measurementsViewModel.load()
 
     LaunchedEffect(Unit) {
         try {
@@ -84,11 +84,6 @@ fun HomeScreen(
             proteins = productsResponse.totalKbzhu.proteins
             fats = productsResponse.totalKbzhu.fats
             carbohydrates = productsResponse.totalKbzhu.carbohydrates
-
-            storage.calorieGoal = calorieGoal.toString()
-            storage.proteinGoal = proteins.toString()
-            storage.fatGoal = fats.toString()
-            storage.carbohydrateGoal = carbohydrates.toString()
 
             val goalResponse = ApiClient.goalApi.getGoal()
             calorieGoal = goalResponse.calorie_goal.toFloat()

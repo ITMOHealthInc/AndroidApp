@@ -1,6 +1,7 @@
 package ru.itmo.se.mad.model
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,6 +21,9 @@ class GoalsViewModel() : ViewModel() {
     var proteins: Int by mutableIntStateOf(90)
     var fats: Int by mutableIntStateOf(65)
     var carbohydrates: Int by mutableIntStateOf(250)
+
+    // TODO implement
+    var weightGoal: Float by mutableFloatStateOf(0f)
 
     fun load() {
         viewModelScope.launch {
