@@ -47,9 +47,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.itmo.se.mad.R
-import ru.itmo.se.mad.ui.main.stepsActivity.fit.FitApiService
+import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.api.fit.StepsResponse
+import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
 import ru.itmo.se.mad.ui.theme.BackgroundGray4560
@@ -58,13 +61,12 @@ import ru.itmo.se.mad.ui.theme.Black
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
-@Preview
 @Composable
 fun StepsActivityWidget(
-    steps: Int = 0,
-    dailyGoal: Int = 10000,
     modifier: Modifier = Modifier,
-    fitApiService: FitApiService = FitApiService()
+    steps: Int = 0,
+    dailyGoal: Int = 10000
+
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     var showGoalDialog by remember { mutableStateOf(false) }
@@ -76,16 +78,22 @@ fun StepsActivityWidget(
     val scope = rememberCoroutineScope()
 
     suspend fun refreshStepsData() {
-        scope.launch {
-            try {
-                val (apiSteps, apiGoal) = fitApiService.getUserStepsAndGoal()
+        try {
+            val response: StepsResponse? = ApiClient.fitApi.getSteps().body()
+            Log.e("StepsActivityWidget", response.toString())
+            val apiSteps = response?.steps
+            val apiGoal = response?.goal
+            if (apiSteps != null) {
                 currentSteps = apiSteps
-                currentDailyGoal = apiGoal
-                goalInputValue = apiGoal.toString()
-                stepsInputValue = apiSteps.toString()
-            } catch (e: Exception) {
-                Log.e("StepsActivityWidget", "Error refreshing data", e)
             }
+            if (apiGoal != null) {
+                currentDailyGoal = apiGoal
+            }
+            goalInputValue = apiGoal?.toString() ?: currentDailyGoal.toString()
+            stepsInputValue = apiSteps?.toString() ?: currentSteps.toString()
+        } catch (e: Exception) {
+            AlertManager.error("Error refreshing data")
+            Log.e("StepsActivityWidget", "Error refreshing data", e)
         }
     }
 
@@ -96,7 +104,7 @@ fun StepsActivityWidget(
     Card(
         modifier = modifier
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = WidgetGray5),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -210,7 +218,7 @@ fun StepsActivityWidget(
             ) {
                 val width = size.width
                 val height = size.height
-                val cornerRadius = CornerRadius(height / 3, height / 3)
+                val cornerRadius = CornerRadius(height / 2, height / 2)
 
                 drawRoundRect(
                     color = ActivityOrange15,
@@ -248,11 +256,14 @@ fun StepsActivityWidget(
                         val newGoal = goalInputValue.toIntOrNull() ?: currentDailyGoal
                         scope.launch {
                             try {
-                                val success = fitApiService.setDailyGoal(newGoal)
-                                if (success) {
-                                    refreshStepsData()
-                                }
+                                //Log.e("StepsActivityWidget", ApiClient.fitApi.setDailyGoal(newGoal).toString())
+                                ApiClient.fitApi.setDailyGoal(newGoal)
+                                refreshStepsData()
+
                             } catch (e: Exception) {
+                                AlertManager.error("Error refreshing data")
+
+                                Log.e("StepsActivityWidget", "Error setting steps", e)
                             }
                         }
                         showGoalDialog = false
@@ -289,11 +300,12 @@ fun StepsActivityWidget(
                         val newSteps = stepsInputValue.toIntOrNull() ?: currentSteps
                         scope.launch {
                             try {
-                                val success = fitApiService.setSteps(newSteps)
-                                if (success) {
-                                    refreshStepsData()
-                                }
+                                //Log.e("StepsActivityWidget", newSteps.toString())
+
+                                ApiClient.fitApi.setSteps(newSteps)
+                                refreshStepsData()
                             } catch (e: Exception) {
+                                AlertManager.error("Error refreshing data")
                                 Log.e("StepsActivityWidget", "Error setting steps", e)
                             }
                         }

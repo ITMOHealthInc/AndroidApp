@@ -17,6 +17,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.itmo.se.mad.ui.theme.SFProDisplay
@@ -26,25 +28,28 @@ import ru.itmo.se.mad.ui.theme.WidgetGray5
 fun TextField(
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String
+    placeholder: String,
+    isPassword: Boolean = false,
+    regex: Regex? = null
 ) {
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .background(WidgetGray5, RoundedCornerShape(16.dp))
-            .padding(top = 10.dp, end = 20.dp, bottom = 10.dp, start = 8.dp)
+            .background(WidgetGray5, RoundedCornerShape(18.dp))
+            .padding(top = 8.dp, end = 20.dp, bottom = 8.dp, start = 8.dp)
     ) {
         TextField(
             value = value,
             onValueChange = { newValue ->
-                onValueChange(newValue)
+                if (regex == null || newValue.matches(regex)) {
+                    onValueChange(newValue)
+                }
             },
             placeholder = {
                 Text(
                     text = placeholder,
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontFamily = SFProDisplay,
                     fontWeight = FontWeight.Medium
                 )
@@ -57,15 +62,16 @@ fun TextField(
             ),
             singleLine = true,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number,
+                keyboardType = if (isPassword) KeyboardType.Password else KeyboardType.Text,
                 imeAction = ImeAction.Done
             ),
             textStyle = TextStyle(
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontFamily = SFProDisplay,
                 color = Color.Black,
                 fontWeight = FontWeight.Medium
-            )
+            ),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None
         )
     }
 }

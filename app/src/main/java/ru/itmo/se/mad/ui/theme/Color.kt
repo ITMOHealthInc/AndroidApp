@@ -8,6 +8,11 @@ val WaterBlue70 = Color(0xFF84CAFE)
 val WaterBlue40 = Color(0x66019EFF)
 val WaterBlue10 = Color(0x2601B9FF)
 
+val AlertInfo = Color(0xFF2196F3)
+val AlertSuccess = Color(0xFF4CAF50)
+val AlertWarning = Color(0xFFFFC107)
+val AlertError = Color(0xFFF44336)
+
 val WidgetGray60 = Color(0x99FFFFFF)
 val WidgetGray20 = Color(0x33FFFFFF)
 val WidgetGray80 = Color(0xCC000000)
@@ -43,3 +48,6 @@ val CalorieGreen15 = Color(0x2600E30B)
 val ActivityOrange85 = Color(0xD9FF8401)
 val ActivityOrange15 = Color(0x26FF8401)
 val CalorieOverflow = Color(0xFFE35F00)
+
+val ProfileDarkGray = Color(0xFF5D5D5D);
+val ProfileLightGray = Color(0xFF181818);

@@ -9,13 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.LabeledTextField
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 
 @Composable
-fun Step5Screen(
+fun SetMeasuresScreen(
     viewModel: OnboardingViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit
@@ -29,7 +29,7 @@ fun Step5Screen(
         HeaderWithBack(
             title = "Немного о личном",
             label = "Укажите ваш текущий рост и вес",
-            showBack = true,
+            showBack = false,
             onBackClick = onBack
         )
 
@@ -49,7 +49,7 @@ fun Step5Screen(
             labelRight = "кг"
         )
         Spacer(Modifier.height(40.dp))
-        PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.height !== "" && viewModel.height.toDouble() > 50 && viewModel.weight !== "" && viewModel.weight.toDouble() > 20) PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(24.dp))
     }
 }

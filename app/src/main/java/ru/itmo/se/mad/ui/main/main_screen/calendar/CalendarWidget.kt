@@ -1,5 +1,6 @@
-package ru.itmo.se.mad.ui.main.main_screen
+package ru.itmo.se.mad.ui.main.main_screen.calendar
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -8,8 +9,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import ru.itmo.se.mad.ui.theme.*
 import java.util.Calendar
 import kotlin.math.ceil
@@ -32,74 +31,65 @@ import ru.itmo.se.mad.R
 
 
 @Composable
-fun CalendarScreen(navController: NavController) { //TODO: take info about activity from server
+fun CalendarScreen(
+    active: Int = 13,
+    daysAmount: Int = 245,
+    calendarApiService: CalendarApiService = CalendarApiService()
+
+) {
+    val scope = rememberCoroutineScope()
+    var monthStepsData by remember { mutableStateOf<Map<Pair<Int, Int>, CalendarApiService.MonthStepsResponse>>(emptyMap()) }
+    suspend fun refreshStepsData(month: Int, year: Int) {
+        try {
+            val data = calendarApiService.getMonthSteps(month, year)
+            data?.let {
+                monthStepsData = monthStepsData + (Pair(month, year) to it)
+            }
+        } catch (e: Exception) {
+            Log.e("CalendarScreen", "Error refreshing data", e)
+        }
+    }
+    fun loadVisibleMonths(visibleMonth: Int, year: Int) {
+        scope.launch {
+            if (!monthStepsData.containsKey(Pair(visibleMonth, year))) {
+                refreshStepsData(visibleMonth, year)
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
 
     ) {
-        Column(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Календарь",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = SFProDisplay
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Button(
-                    onClick = {navController.popBackStack()},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = WidgetGrayF2F2F2
-                    ),
-                    shape = RoundedCornerShape(50),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
-                ) {
-                    Text(
-                        text = "Закрыть",
-                        color = Color.Black,
-                        fontFamily = SFProDisplay,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Закрыть",
-                        tint = Color.Black
-                    )
-                }
-            }
-            HorizontalDivider(
-                color = WidgetGray10,
-                thickness = 1.dp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            )
-        }
         val calendarT = Calendar.getInstance()
+        val currentYear = calendarT.get(Calendar.YEAR)
         val currentMonth = calendarT.get(Calendar.MONTH)
-        Box(
-            modifier = Modifier.weight(1f)
-        ) {
+
+        Box(modifier = Modifier.weight(1f)) {
             Column(
                 modifier = Modifier.height(600.dp)
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(rememberScrollState(440 * calendarT.get(Calendar.MONTH)))
+                    .verticalScroll(rememberScrollState(440 * currentMonth))
             ) {
-                calendarT.set(Calendar.MONTH, (currentMonth+12-3)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+12-2)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+12-1)%12)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, currentMonth)
-                CalendarGrid(calendarT)
-                calendarT.set(Calendar.MONTH, (currentMonth+1)%12)
-                CalendarGrid(calendarT)
+                // Отображение последних 3 месяцев и следующих 2
+                val monthsToShow = listOf(
+                    (currentMonth+12-3)%12 to currentYear,
+                    (currentMonth+12-2)%12 to currentYear,
+                    (currentMonth+12-1)%12 to currentYear,
+                    currentMonth to currentYear,
+                    (currentMonth+1)%12 to if (currentMonth == 11) currentYear+1 else currentYear
+                )
 
+                monthsToShow.forEach { (month, year) ->
+                    loadVisibleMonths(month+1, year)
+                    calendarT.set(Calendar.MONTH, month)
+                    calendarT.set(Calendar.YEAR, year)
+                    CalendarGrid(
+                        month = calendarT,
+                        stepsData = monthStepsData[Pair(month+1, year)]?.days ?: emptyList()
+                    )
+                }
             }
             Box(
                 modifier = Modifier
@@ -132,13 +122,14 @@ fun CalendarScreen(navController: NavController) { //TODO: take info about activ
 }
 
 @Composable
-fun CalendarGrid( month: Calendar) {
+fun CalendarGrid( month: Calendar,
+                  stepsData: List<CalendarApiService.DaySteps>) {
     val monthNames = arrayOf(
         "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
         "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
     )
 
-    val days: List<DayData> = generateDaysForMonth(month.getActualMaximum(Calendar.DAY_OF_MONTH), month)
+    val days: List<DayData> = generateDaysForMonth(month.getActualMaximum(Calendar.DAY_OF_MONTH), month, stepsData)
     val monthId: Int = month.get(Calendar.MONTH)
     val rows = ceil(days.size / 7f).toInt()
     month.set(Calendar.DAY_OF_MONTH, 1)
@@ -154,7 +145,7 @@ fun CalendarGrid( month: Calendar) {
         columns = GridCells.Fixed(7),
         modifier = Modifier
             .fillMaxWidth()
-            .height((48.dp * rows).coerceAtLeast(48.dp)) // Фиксированная высота для сетки в зависимости от количества строк
+            .height((48.dp * rows).coerceAtLeast(48.dp))
     ) {
         items(days) { day ->
             CalendarDay(day)
@@ -167,31 +158,27 @@ fun CalendarDay(day: DayData) {
     val progressColor = when (day.activityLevel) {
         ActivityLevel.HIGH -> CalorieGreen
         ActivityLevel.NONE -> Color.Transparent
-        ActivityLevel.ALERT -> CalorieOverflow  // Оранжевый
+        ActivityLevel.ALERT -> CalorieOverflow
     }
-    val backgroundColor = when (day.today){
-        true -> CalorieGreen15
-        false -> Color.Transparent
-    }
+    val backgroundColor = if (day.today) CalorieGreen15 else Color.Transparent
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .padding(4.dp)
-            .size(40.dp)
-            .clip(RoundedCornerShape(8.dp)) // Закругленные углы квадрата
-            .background(backgroundColor) // Фон квадрата
+            .size(44.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .padding(vertical = 4.dp)
-                .size(40.dp)
-        ) {
-            // Прогресс-бар сверху
-            if (day.dayNumber != 0) {
+        if (day.dayNumber != 0) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 LinearProgressIndicator(
-                    progress = {day.activity},
+                    progress = { day.activity },
                     color = progressColor,
                     drawStopIndicator = {},
                     gapSize = 0.dp,
@@ -209,15 +196,16 @@ fun CalendarDay(day: DayData) {
                     fontWeight = FontWeight.Normal
                 )
             }
-        }}
+        }
+    }
 }
+
 
 @Composable
 fun SummaryInfo() {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
 
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
@@ -294,7 +282,7 @@ data class DayData(
 
 )
 
-fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInstance()): List<DayData> {
+fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInstance(),  stepsData: List<CalendarApiService.DaySteps>): List<DayData> {
     val days = mutableListOf<DayData>()
     calendar.set(Calendar.DAY_OF_MONTH, 1)
     val blankDaysAtStart = if (calendar.get(Calendar.DAY_OF_WEEK) == 1) 6 else calendar.get(Calendar.DAY_OF_WEEK)-2
@@ -303,19 +291,38 @@ fun generateDaysForMonth(daysInMonth: Int, calendar: Calendar = Calendar.getInst
     for( i in 1..blankDaysAtStart) {
         days.add(DayData(dayNumber = 0, activityLevel = ActivityLevel.NONE, 0f, false))
     }
-
-    for (i in 1..daysInMonth) {
-        val activity = when {
-            i == 8 -> ActivityLevel.ALERT
+    for (day in 1..daysInMonth) {
+        val dateStr = String.format(
+            "%04d-%02d-%02d",
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1, // Месяцы в Calendar начинаются с 0
+            day,
+        )
+        val daySteps = stepsData.find { it.date == dateStr }
+        var activityLevel = when {
+            daySteps == null  -> ActivityLevel.ALERT
             else -> ActivityLevel.HIGH
         }
-        calendar.set(Calendar.DAY_OF_MONTH, i)
-        if(calendarToday.get(Calendar.DAY_OF_MONTH) == calendar.get(Calendar.DAY_OF_MONTH) && calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH))
-            days.add(DayData(dayNumber = i, activityLevel = activity, if(activity == ActivityLevel.ALERT) 1.0f else Math.random().toFloat(), today = true))
-        else if (calendarToday.after(calendar))
-            days.add(DayData(dayNumber = i, activityLevel = activity, Math.random().toFloat(), today = false))
-        else
-            days.add(DayData(dayNumber = i, activityLevel = activity, 0f, today = false))
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+
+        val progress = daySteps?.let {
+            (it.steps.toFloat() / it.goal).coerceAtMost(1f)
+        } ?: 0f
+
+        val isToday = calendarToday.get(Calendar.DAY_OF_MONTH) == day &&
+                calendarToday.get(Calendar.MONTH) == calendar.get(Calendar.MONTH) &&
+                calendarToday.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
+        val isFuture = calendarToday.before(calendar)
+        if(isFuture&&!isToday)
+            activityLevel = ActivityLevel.HIGH
+
+
+        days.add(DayData(
+            dayNumber = day,
+            activityLevel = activityLevel,
+            activity = if (activityLevel == ActivityLevel.ALERT ) 1.0f else progress,
+            today = isToday
+        ))
     }
     return days
 }

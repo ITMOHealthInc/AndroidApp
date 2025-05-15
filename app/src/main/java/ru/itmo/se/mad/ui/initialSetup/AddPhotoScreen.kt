@@ -11,11 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.itmo.se.mad.storage.OnboardingViewModel
+import ru.itmo.se.mad.model.AuthViewModel
+import ru.itmo.se.mad.model.OnboardingViewModel
+import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PhotoPicker
 import ru.itmo.se.mad.ui.layout.PrimaryButton
@@ -23,16 +24,18 @@ import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 
 @Composable
-fun Step3Screen(
+fun AddPhotoScreen(
     viewModel: OnboardingViewModel,
+    authViewModel: AuthViewModel,
+    onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         viewModel.photoUri = uri
+        LocalStorage.savePhotoUri(uri.toString())
     }
 
-    val name = viewModel.name
+    val name = authViewModel.name
 
     Column(
         modifier = Modifier
@@ -40,7 +43,7 @@ fun Step3Screen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = false)
+        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = false, onBackClick = onBack)
         Spacer(Modifier.height(100.dp))
 
         PhotoPicker(
@@ -52,9 +55,9 @@ fun Step3Screen(
         Text(name, fontSize = 24.sp, fontWeight = FontWeight.Medium, fontFamily = SFProDisplay)
 
         Spacer(Modifier.weight(1f))
-        if (name !== "") PrimaryButton(text = "Далее", onClick = onNext)
+        if (viewModel.photoUri !== null) PrimaryButton(text = "Далее", onClick = onNext)
         Spacer(Modifier.height(4.dp))
-        SecondaryButton(text = "Пропустить", onClick = onNext)
+        if (viewModel.photoUri == null) SecondaryButton(text = "Пропустить", onClick = onNext)
         Spacer(Modifier.height(24.dp))
 
     }

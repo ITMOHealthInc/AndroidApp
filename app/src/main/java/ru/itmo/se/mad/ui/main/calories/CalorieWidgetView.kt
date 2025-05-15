@@ -52,8 +52,7 @@ fun CalorieWidgetView(
     summaryMode: Boolean = false
 ) {
     val caloriesRemaining = calorieGoal - caloriesEaten + caloriesBurned
-    val progress = caloriesEaten.toFloat() / calorieGoal
-    Column() {
+    Column {
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -63,7 +62,7 @@ fun CalorieWidgetView(
         ) {
             // Калории
             LinearProgressIndicator(
-                progress = { caloriesEaten.toFloat() / calorieGoal.toFloat() },
+                progress = { caloriesEaten / calorieGoal },
                 color = CalorieGreen,
                 trackColor = CalorieGreen15,
                 gapSize = 0.dp,
@@ -121,9 +120,9 @@ fun CalorieWidgetView(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ){
-                MacronutrientBar(name = "Белки", value = protein, goal = 120)
-                MacronutrientBar(name = "Жиры", value = fat, goal = 180)
-                MacronutrientBar(name = "Углеводы", value = carbs, goal = 300)
+                MacronutrientBar(name = "Белки", value = protein.toInt(), goal = 120)
+                MacronutrientBar(name = "Жиры", value = fat.toInt(), goal = 180)
+                MacronutrientBar(name = "Углеводы", value = carbs.toInt(), goal = 300)
             }
         }
         if(!summaryMode) {
@@ -162,14 +161,6 @@ fun CalorieWidgetView(
         }
     }
 }
-data class MealData(
-    val title: String,
-    val calories: Int,
-    val goal: Int,
-    val items: List<String>
-)
-
-
 
 @Composable
 fun MealCard(
@@ -262,7 +253,6 @@ fun MealCard(
 
 @Composable
 fun MacronutrientBar(name: String, value: Int, goal: Int) {
-    val ratio = value.toFloat() / goal
     Column(modifier = Modifier) {
         LinearProgressIndicator(
             progress = { value.toFloat() / goal.toFloat() },

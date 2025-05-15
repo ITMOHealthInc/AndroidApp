@@ -1,5 +1,6 @@
 package ru.itmo.se.mad.ui.main.products
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,14 +26,47 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.model.MeasurementsViewModel
+import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
-import ru.itmo.se.mad.ui.main.water.MainScreen
+import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 @Composable
-fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
+fun AddItem(
+    measurementsViewModel: MeasurementsViewModel,
+    onSelect: (content: @Composable () -> Unit) -> Unit,
+    setTitle: (String) -> Unit
+) {
+    var currentWater by remember { mutableFloatStateOf(0f) }
+    val maxWater by remember { mutableFloatStateOf(2.25f) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = ApiClient.productsApi.getDailySummary()
+            currentWater = response.totalWater
+
+        } catch (e: Exception) {
+            Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
+            AlertManager.error("Ошибка при загрузке")
+        }
+    }
+
+    AddItemElement(
+        "Приём пищи",
+        R.drawable.image_utensils,
+        onClick = { onSelect { FoodTimeChoiceWidget() }
+            setTitle("Что вы хотите добавить?") }
+    )
+    Spacer(modifier = Modifier.height(10.dp))
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -39,30 +74,27 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
     ) {
         item {
             AddItemElement(
-                "Приём пищи",
-                R.drawable.image_utensils,
-                onClick = { onSelect { FoodTimeChoiceWidget() } }
-            )
-        }
-        item {
-            AddItemElement(
-                "Активность",
-                R.drawable.image_activity,
-                onClick = { onSelect { /* Активность */ } }
-            )
-        }
-        item {
-            AddItemElement(
                 "Измерение",
                 R.drawable.image_ruler,
-                onClick = { onSelect { MeasureWidget() } }
+                onClick = { onSelect {
+                    MeasureWidget(measurementsViewModel, onSelect, setTitle)
+                }
+                    setTitle("Что вы хотите добавить?")}
             )
         }
         item {
             AddItemElement(
                 "Вода",
                 R.drawable.image_water,
-                onClick = { onSelect { MainScreen() } }
+                onClick = { onSelect { NewWaterSlider(
+                    totalDrunk = currentWater,
+                    maxWater = maxWater,
+                    onAddWater = { added ->
+                        currentWater = (currentWater + added).coerceAtMost(maxWater)
+                    }
+                ) }
+                    setTitle("Что вы хотите добавить?")
+                }
             )
         }
     }
@@ -100,6 +132,7 @@ fun AddItemElement(
             .clip(RoundedCornerShape(16.dp))
             .background(WidgetGray5)
             .clickable(onClick = onClick)
+            .fillMaxWidth()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
