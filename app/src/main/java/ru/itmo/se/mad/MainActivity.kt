@@ -38,7 +38,6 @@ import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
 import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
-import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.initialSetup.OauthScreen
 import ru.itmo.se.mad.ui.theme.SFProDisplay
@@ -59,6 +58,7 @@ import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.BottomAlert
 import ru.itmo.se.mad.storage.LocalStorage
+import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
 
@@ -354,7 +354,7 @@ fun Main() {
                                     totalDrunk = currentWater,
                                     maxWater = maxWater,
                                     onAddWater = { added ->
-                                        currentWater = (currentWater + added).coerceAtMost(maxWater)
+                                        currentWater += added
                                     }
                                 )
                                 StepsActivityWidget()
