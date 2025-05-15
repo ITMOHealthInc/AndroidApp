@@ -6,6 +6,8 @@ import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.itmo.se.mad.api.auth.AuthApiService
+import ru.itmo.se.mad.api.goal.GoalApiService
+import ru.itmo.se.mad.api.measurements.MeasurementsApiService
 import ru.itmo.se.mad.api.fit.FitApiService
 import ru.itmo.se.mad.api.products.ProductsApiService
 import ru.itmo.se.mad.storage.LocalStorage
@@ -42,6 +44,14 @@ object ApiClient {
     val fitApi: FitApiService by lazy {
         retrofit.create(FitApiService::class.java)
     }
+
+    val measurementsApi: MeasurementsApiService by lazy {
+        retrofit.create(MeasurementsApiService::class.java)
+    }
+
+    val goalApi: GoalApiService by lazy {
+        retrofit.create(GoalApiService::class.java)
+    }
 }
 
 class AuthorizationInterceptor : Interceptor {
@@ -61,7 +71,7 @@ class AuthorizationInterceptor : Interceptor {
         val response = chain.proceed(request)
 
         if (response.code == 401) {
-            LocalStorage.clearToken()
+            LocalStorage.removeToken()
         }
 
         return response

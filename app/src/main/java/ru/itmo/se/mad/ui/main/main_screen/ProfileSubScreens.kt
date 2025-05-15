@@ -11,8 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.EditableTextRow
 import ru.itmo.se.mad.ui.layout.PhotoPicker
@@ -20,14 +19,11 @@ import ru.itmo.se.mad.ui.layout.PhotoPicker
 @Composable
 fun AccountScreen(
     storage: OnboardingViewModel,
-    oauthStorage: OauthViewModel
+    oauthStorage: AuthViewModel
 ) {
-
-
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         storage.photoUri = uri
     }
-
 
     Column(
         modifier = Modifier

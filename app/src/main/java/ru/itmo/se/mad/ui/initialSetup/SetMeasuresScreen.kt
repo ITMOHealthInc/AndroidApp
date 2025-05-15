@@ -15,7 +15,7 @@ import ru.itmo.se.mad.ui.layout.LabeledTextField
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 
 @Composable
-fun Step5Screen(
+fun SetMeasuresScreen(
     viewModel: OnboardingViewModel,
     onNext: () -> Unit,
     onBack: () -> Unit

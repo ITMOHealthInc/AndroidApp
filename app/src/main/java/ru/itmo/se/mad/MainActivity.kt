@@ -28,7 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
 import ru.itmo.se.mad.ui.layout.ModalSlideUpContainer
@@ -39,7 +39,7 @@ import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
 import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
-import ru.itmo.se.mad.ui.initialSetup.OauthScreen
+import ru.itmo.se.mad.ui.initialSetup.AuthScreen
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
@@ -104,7 +104,7 @@ fun Main() {
     var showCalendarModal by remember { mutableStateOf(false) }
 
     val onboardingViewModel: OnboardingViewModel = viewModel()
-    val oauthViewModel: OauthViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -143,121 +143,161 @@ fun Main() {
             ProfilePopup(
                 onClose = { isProfilePopupShown = false },
                 onboardingViewModel,
-                oauthViewModel,
+                authViewModel,
                 profilePopupTitle, popupNavController = popupNavController
             )
         }
     }
     Box(Modifier.fillMaxSize()) {
-
-
-        Scaffold(
-            containerColor = Color.White,
-            bottomBar = {
-                if (showBottomBar) {
-                    BottomNavBar(
-                        onAddItemClick = { isAddItemDialogShown = true },
-                        onNavigate = { navController.navigate(it) }
+    Scaffold(
+        containerColor = Color.White,
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavBar(
+                    onAddItemClick = { isAddItemDialogShown = true },
+                    onNavigate = { navController.navigate(it) }
+                )
+            }
+        }
+    ) { _ ->
+        Box {
+            NavHost(
+                navController = navController,
+                startDestination = "auth",
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 1000 },
+                        animationSpec = tween(300)
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { -1000 },
+                        animationSpec = tween(300)
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                popEnterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { -1000 },
+                        animationSpec = tween(300)
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                popExitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 1000 },
+                        animationSpec = tween(300)
+                    ) + fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                composable("auth") {
+                    AuthScreen(
+                        viewModel = authViewModel,
+                        onNext = { navController.navigate("home") },
+                        onSignupNext = { navController.navigate("nameInput") }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
                     )
                 }
-            }
-        ) { _ ->
-            Box {
-
-                NavHost(
-
-                    navController = navController,
-                    startDestination = "oauth",
-                    enterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { 1000 },
-                            animationSpec = tween(300)
-                        ) + fadeIn(animationSpec = tween(300))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { -1000 },
-                            animationSpec = tween(300)
-                        ) + fadeOut(animationSpec = tween(300))
-                    },
-                    popEnterTransition = {
-                        slideInHorizontally(
-                            initialOffsetX = { -1000 },
-                            animationSpec = tween(300)
-                        ) + fadeIn(animationSpec = tween(300))
-                    },
-                    popExitTransition = {
-                        slideOutHorizontally(
-                            targetOffsetX = { 1000 },
-                            animationSpec = tween(300)
-                        ) + fadeOut(animationSpec = tween(300))
+                composable("nameInput") {
+                    NameInputScreen (
+                        viewModel = authViewModel,
+                        onNext = { navController.navigate("startMessageStep") },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("startMessageStep") {
+                    StartMessageScreen {
+                        navController.navigate("addPhotoStep")
                     }
-                ) {
-                    composable("oauth") {
-
-                        OauthScreen(
-                            viewModel = oauthViewModel,
-                            onNext = { navController.navigate("home") },
-                            onSignupNext = { navController.navigate("oauthNameInput") }
-
-                        )
-                    }
-                    composable("oauthNameInput") {
-                        NameInputScreen(
-                            viewModel = oauthViewModel,
-                            onNext = { navController.navigate("step1") },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-                    composable("step1") {
-                        Step1Screen(
-                            viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("step3") }
-                        )
-                    }
-                    composable("step3") {
-                        Step3Screen(
-                            viewModel = onboardingViewModel,
-                            oauthViewModel = oauthViewModel,
-                            onNext = { navController.navigate("step4") },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-                    composable("step4") {
-                        Step4Screen(
-                            viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("step5") },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-                    composable("step5") {
-                        Step5Screen(
-                            viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("step6") },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-                    composable("step6") {
-                        Step6Screen(
-                            viewModel = onboardingViewModel,
-                            onNext = {
-                                navController.navigate("doneOnboarding") {
-                                }
-                            },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
-                    composable("doneOnboarding") {
-                        DoneScreen(
-                            viewModel = onboardingViewModel,
-                            onNext = {
-                                navController.navigate("home") {
-                                    popUpTo("step2") { inclusive = true }
-                                }
-                            },
-                            onBack = { navController.popBackStack() }
-                        )
-                    }
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("addPhotoStep") {
+                    AddPhotoScreen(
+                        viewModel = onboardingViewModel,
+                        authViewModel = authViewModel,
+                        onNext = { navController.navigate("chooseGoalStep") },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("chooseGoalStep") {
+                    ChooseGoalScreen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("setMeasuresStep") },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("setMeasuresStep") {
+                    SetMeasuresScreen(
+                        viewModel = onboardingViewModel,
+                        onNext = { navController.navigate("chooseSexStep") },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("chooseSexStep") {
+                    ChooseSexScreen(
+                        viewModel = onboardingViewModel,
+                        onNext = {
+                            navController.navigate("finshStep") {
+                            }
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
+                composable("finshStep") {
+                    FinishScreen(
+                        onNext = {
+                            navController.navigate("home") {
+                                popUpTo("step2") { inclusive = true }
+                            }
+                        },
+                        onBack = { navController.popBackStack() }
+                    )
+                    BottomAlert(
+                        visible = AlertManager.visible,
+                        message = AlertManager.message,
+                        type = AlertManager.type,
+                        onDismiss = { AlertManager.hide() }
+                    )
+                }
 
                     composable("home") {
 

@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.ui.alert.AlertManager
-import ru.itmo.se.mad.ui.alert.AlertType
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.SFProDisplay

@@ -9,38 +9,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
-import ru.itmo.se.mad.ui.layout.TextField
 
 @Composable
-fun NameInputScreen(
-    viewModel: AuthViewModel,
-    onBack: () -> Unit,
-    onNext: () -> Unit
+fun FinishScreen(
+    onNext: () -> Unit,
+    onBack: () -> Unit
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Давайте познакомимся", label = "Как вас зовут?", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Всё готово", label = "Мы подготовили ваш индивидуальный план.\nВы можете изменить его позже в Профиле", showBack = true, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
-
-        TextField(
-            value = viewModel.name,
-            onValueChange = { viewModel.name = it },
-            placeholder = "Имя"
-        )
-        Spacer(Modifier.height(40.dp))
-        if (viewModel.name !== "") PrimaryButton(text = "Далее", onClick = {
-            viewModel.register(onSuccess = onNext)
-        })
-        Spacer(Modifier.height(24.dp))
-
+        PrimaryButton(text = "Приступим", onClick = onNext)
+        Spacer(Modifier.height(16.dp))
     }
 }
 

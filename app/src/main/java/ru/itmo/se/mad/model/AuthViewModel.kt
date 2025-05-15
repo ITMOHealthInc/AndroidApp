@@ -8,12 +8,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.api.auth.AuthApiService
-import ru.itmo.se.mad.api.auth.AuthRequest
+import ru.itmo.se.mad.api.auth.LoginRequest
+import ru.itmo.se.mad.api.auth.RegisterRequest
 import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.AlertType
 
-class OauthViewModel(
+class AuthViewModel(
     private val authApi: AuthApiService = ApiClient.authApi
 ) : ViewModel() {
     var name: String by mutableStateOf("")
@@ -26,9 +27,14 @@ class OauthViewModel(
         }
     }
 
-    fun register(login: String = this.login, password: String = this.password, onSuccess: () -> Unit) {
+    fun register(
+        login: String = this.login,
+        password: String = this.password,
+        name: String = this.name,
+        onSuccess: () -> Unit
+    ) {
         viewModelScope.launch {
-            val regResponse = authApi.register(AuthRequest(login, password))
+            val regResponse = authApi.register(RegisterRequest(login, password, name))
             if (regResponse.isSuccessful) {
                 getAndSaveToken(login, password, onSuccess)
             } else if (regResponse.code() == 409) {
@@ -37,11 +43,6 @@ class OauthViewModel(
                 throw Exception("Strange response code on register: " + regResponse.code())
             }
         }
-    }
-
-    fun saveName(name: String = this.name, onSuccess: () -> Unit) {
-        LocalStorage.saveName(name)
-        onSuccess()
     }
 
     private suspend fun getAndSaveToken(login: String, password: String, onSuccess: () -> Unit) {
@@ -53,7 +54,7 @@ class OauthViewModel(
     }
 
     private suspend fun getToken(login: String, password: String) : String? {
-        val response = authApi.login(AuthRequest(login, password))
+        val response = authApi.login(LoginRequest(login, password))
         if (response.isSuccessful) {
             return response.body()!!.token
         } else if (response.code() == 401) {

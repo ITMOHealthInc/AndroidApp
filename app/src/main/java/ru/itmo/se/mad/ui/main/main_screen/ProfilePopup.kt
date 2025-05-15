@@ -21,11 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
-import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
@@ -35,7 +34,7 @@ import androidx.compose.runtime.getValue
 fun ProfilePopup(
     onClose: () -> Unit,
     storage: OnboardingViewModel,
-    oauthStorage: OauthViewModel,
+    oauthStorage: AuthViewModel,
     profilePopupTitle: MutableState<String>,
     popupNavController: NavHostController
 ) {
@@ -75,7 +74,7 @@ fun ProfilePopup(
 @Composable
 fun ProfileMainScreen(
     storage: OnboardingViewModel,
-    oauthStorage: OauthViewModel,
+    oauthStorage: AuthViewModel,
     onNavigate: (String) -> Unit
 ) {
     Column(
