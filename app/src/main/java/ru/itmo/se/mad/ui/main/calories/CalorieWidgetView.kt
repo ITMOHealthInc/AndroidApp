@@ -87,7 +87,7 @@ fun CalorieWidgetView(
                     label = "Съедено",
                     unit = "ккал",
                 )
-                if(summaryMode) {
+                if(!summaryMode) {
                     CalorieStatBlock(
                         value = caloriesBurned.toString(),
                         label = "Сожжено",
@@ -125,39 +125,40 @@ fun CalorieWidgetView(
                 MacronutrientBar(name = "Жиры", value = fat, goal = 180)
                 MacronutrientBar(name = "Углеводы", value = carbs, goal = 300)
             }
-
         }
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            MealCard(
-                title = "Завтрак",
-                calories = 328,
-                goal = 425,
-                items = listOf("Овсянка с клубникой", "Зелёный чай")
-            )
+        if(!summaryMode) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                MealCard(
+                    title = "Завтрак",
+                    calories = 328,
+                    goal = 425,
+                    items = listOf("Овсянка с клубникой", "Зелёный чай")
+                )
 
-            MealCard(
-                title = "Обед",
-                calories = 516,
-                goal = 630,
-                items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
-            )
+                MealCard(
+                    title = "Обед",
+                    calories = 516,
+                    goal = 630,
+                    items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
+                )
 
-            MealCard(
-                title = "Ужин",
-                calories = 320,
-                goal = 500,
-                items = listOf("Гречка с рыбой", "Салат")
-            )
+                MealCard(
+                    title = "Ужин",
+                    calories = 320,
+                    goal = 500,
+                    items = listOf("Гречка с рыбой", "Салат")
+                )
 
-            MealCard(
-                title = "Перекус",
-                calories = 180,
-                goal = 250,
-                items = listOf("Йогурт", "Орехи")
-            )
+                MealCard(
+                    title = "Перекус",
+                    calories = 180,
+                    goal = 250,
+                    items = listOf("Йогурт", "Орехи")
+                )
+            }
         }
     }
 }

@@ -140,7 +140,8 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
                         modifier = Modifier
                             .height(36.dp)
                             .clip(RoundedCornerShape(12.dp)),
-                        onClick = {}
+                        onClick = {},
+                        contentPadding = PaddingValues(horizontal = 12.dp)
                     ) {
                         Text(parameter, style = TextStyle(
                             fontFamily = SFProDisplay,
@@ -216,6 +217,7 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
                     Text(
                         text = "Добавить",
                         fontSize = 18.sp,
+                        fontFamily = SFProDisplay,
                         fontWeight = FontWeight.Medium,
                         color = Color.White,
                         letterSpacing = 0.sp,
@@ -225,6 +227,7 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
                     Text(
                         text = "236 ккал",
                         fontSize = 16.sp,
+                        fontFamily = SFProDisplay,
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.8f),
                         letterSpacing = 0.sp,
@@ -233,7 +236,6 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
                 }
             }
         }
-
     }
 }
 
