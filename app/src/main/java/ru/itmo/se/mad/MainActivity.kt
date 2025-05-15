@@ -55,9 +55,11 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.ui.initialSetup.NameInputScreen
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.BottomAlert
 import ru.itmo.se.mad.storage.LocalStorage
+import ru.itmo.se.mad.ui.main.main_screen.HomeScreen
 import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
@@ -105,6 +107,7 @@ fun Main() {
 
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val authViewModel: AuthViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -149,290 +152,171 @@ fun Main() {
         }
     }
     Box(Modifier.fillMaxSize()) {
-    Scaffold(
-        containerColor = Color.White,
-        bottomBar = {
-            if (showBottomBar) {
-                BottomNavBar(
-                    onAddItemClick = { isAddItemDialogShown = true },
-                    onNavigate = { navController.navigate(it) }
-                )
+        Scaffold(
+            containerColor = Color.White,
+            bottomBar = {
+                if (showBottomBar) {
+                    BottomNavBar(
+                        onAddItemClick = { isAddItemDialogShown = true },
+                        onNavigate = { navController.navigate(it) }
+                    )
+                }
             }
-        }
-    ) { _ ->
-        Box {
-            NavHost(
-                navController = navController,
-                startDestination = "auth",
-                enterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { 1000 },
-                        animationSpec = tween(300)
-                    ) + fadeIn(animationSpec = tween(300))
-                },
-                exitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { -1000 },
-                        animationSpec = tween(300)
-                    ) + fadeOut(animationSpec = tween(300))
-                },
-                popEnterTransition = {
-                    slideInHorizontally(
-                        initialOffsetX = { -1000 },
-                        animationSpec = tween(300)
-                    ) + fadeIn(animationSpec = tween(300))
-                },
-                popExitTransition = {
-                    slideOutHorizontally(
-                        targetOffsetX = { 1000 },
-                        animationSpec = tween(300)
-                    ) + fadeOut(animationSpec = tween(300))
-                }
-            ) {
-                composable("auth") {
-                    AuthScreen(
-                        viewModel = authViewModel,
-                        onNext = { navController.navigate("home") },
-                        onSignupNext = { navController.navigate("nameInput") }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("nameInput") {
-                    NameInputScreen (
-                        viewModel = authViewModel,
-                        onNext = { navController.navigate("startMessageStep") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("startMessageStep") {
-                    StartMessageScreen {
-                        navController.navigate("addPhotoStep")
+        ) { _ ->
+            Box {
+                NavHost(
+                    navController = navController,
+                    startDestination = "auth",
+                    enterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { 1000 },
+                            animationSpec = tween(300)
+                        ) + fadeIn(animationSpec = tween(300))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { -1000 },
+                            animationSpec = tween(300)
+                        ) + fadeOut(animationSpec = tween(300))
+                    },
+                    popEnterTransition = {
+                        slideInHorizontally(
+                            initialOffsetX = { -1000 },
+                            animationSpec = tween(300)
+                        ) + fadeIn(animationSpec = tween(300))
+                    },
+                    popExitTransition = {
+                        slideOutHorizontally(
+                            targetOffsetX = { 1000 },
+                            animationSpec = tween(300)
+                        ) + fadeOut(animationSpec = tween(300))
                     }
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("addPhotoStep") {
-                    AddPhotoScreen(
-                        viewModel = onboardingViewModel,
-                        authViewModel = authViewModel,
-                        onNext = { navController.navigate("chooseGoalStep") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("chooseGoalStep") {
-                    ChooseGoalScreen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("setMeasuresStep") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("setMeasuresStep") {
-                    SetMeasuresScreen(
-                        viewModel = onboardingViewModel,
-                        onNext = { navController.navigate("chooseSexStep") },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("chooseSexStep") {
-                    ChooseSexScreen(
-                        viewModel = onboardingViewModel,
-                        onNext = {
-                            navController.navigate("finshStep") {
-                            }
-                        },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-                composable("finshStep") {
-                    FinishScreen(
-                        onNext = {
-                            navController.navigate("home") {
-                                popUpTo("step2") { inclusive = true }
-                            }
-                        },
-                        onBack = { navController.popBackStack() }
-                    )
-                    BottomAlert(
-                        visible = AlertManager.visible,
-                        message = AlertManager.message,
-                        type = AlertManager.type,
-                        onDismiss = { AlertManager.hide() }
-                    )
-                }
-
+                ) {
+                    composable("auth") {
+                        AuthScreen(
+                            viewModel = authViewModel,
+                            onNext = { navController.navigate("home") },
+                            onSignupNext = { navController.navigate("nameInput") }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("nameInput") {
+                        NameInputScreen (
+                            viewModel = authViewModel,
+                            onNext = { navController.navigate("startMessageStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("startMessageStep") {
+                        StartMessageScreen {
+                            navController.navigate("addPhotoStep")
+                        }
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("addPhotoStep") {
+                        AddPhotoScreen(
+                            viewModel = onboardingViewModel,
+                            authViewModel = authViewModel,
+                            onNext = { navController.navigate("chooseGoalStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("chooseGoalStep") {
+                        ChooseGoalScreen(
+                            viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("setMeasuresStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("setMeasuresStep") {
+                        SetMeasuresScreen(
+                            viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("chooseSexStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("chooseSexStep") {
+                        ChooseSexScreen(
+                            viewModel = onboardingViewModel,
+                            onNext = {
+                                navController.navigate("finshStep") {
+                                }
+                            },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
+                    composable("finshStep") {
+                        FinishScreen(
+                            onNext = {
+                                navController.navigate("home") {
+                                    popUpTo("step2") { inclusive = true }
+                                }
+                            },
+                            onBack = { navController.popBackStack() }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
+                    }
                     composable("home") {
-
-                        LaunchedEffect(Unit) {
-                            try {
-                                val response = ApiClient.productsApi.getDailySummary()
-                                currentWater = response.totalWater
-                                calories = response.totalKbzhu.calories
-                                proteins = response.totalKbzhu.proteins
-                                fats = response.totalKbzhu.fats
-                                carbohydrates = response.totalKbzhu.carbohydrates
-
-                            } catch (e: Exception) {
-                                Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
-                                AlertManager.error("Ошибка при загрузке")
-                            }
-                        }
-
-
-                            Box(Modifier.fillMaxSize()) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(Color.White, Color.White, Color.Transparent),
-                                            startY = 20.0f
-                                        )
-                                    )
-                                    .padding(16.dp, 50.dp)
-                                    .align(Alignment.TopStart)
-                                    .zIndex(1f)
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    AsyncImage(
-                                        model = onboardingViewModel.photoUri,
-                                        placeholder = painterResource(id = R.drawable.bshvevgn),
-                                        error = painterResource(id = R.drawable.icon_user),
-                                        contentDescription = "Profile image",
-                                        modifier = Modifier
-                                            .size(50.dp)
-                                            .clip(CircleShape)
-                                            .clickable(onClick = { isProfilePopupShown = true }),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Row(
-                                        Modifier
-                                            .clip(RoundedCornerShape(25.dp))
-                                            .background(ActivityOrange15)
-                                            .padding(10.dp, 5.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_activity),
-                                            contentDescription = null,
-                                            tint = ActivityOrange85,
-                                            modifier = Modifier
-                                                .size(16.dp)
-                                        )
-                                        Text(
-                                            " 12",
-                                            color = ActivityOrange85,
-                                            fontWeight = FontWeight.W600,
-                                            fontSize = 16.sp
-                                        )
-                                    }
-                                }
-                            }
-                            Column(
-                                modifier = Modifier
-                                    .verticalScroll(rememberScrollState())
-                                    .fillMaxSize()
-                                    .padding(top = 44.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Spacer(modifier = Modifier.height(80.dp))
-                                DateItem(onCalendarClick = {
-                                    showCalendarModal = true
-                                })
-
-                                CalorieWidgetView(
-                                    caloriesEaten = calories,
-                                    caloriesBurned = caloriesBurned,
-                                    calorieGoal = calorieGoal,
-                                    protein = proteins,
-                                    fat = fats,
-                                    carbs = carbohydrates
-                                )
-                                NewWaterSlider(
-                                    totalDrunk = currentWater,
-                                    maxWater = maxWater,
-                                    onAddWater = { added ->
-                                        currentWater += added
-                                    }
-                                )
-                                StepsActivityWidget()
-                                Button(
-                                    colors = ButtonColors(
-                                        containerColor = WidgetGray5,
-                                        contentColor = Color.Black,
-                                        disabledContainerColor = Color.Unspecified,
-                                        disabledContentColor = Color.Black
-                                    ),
-                                    onClick = {},
-                                    modifier = Modifier
-                                        .padding(vertical = 40.dp)
-                                ) {
-                                    Text(
-                                        "Изменить порядок", style = TextStyle(
-                                            fontFamily = SFProDisplay,
-                                            fontSize = 16.sp,
-                                            fontWeight = FontWeight.Normal,
-                                            fontStyle = FontStyle.Normal
-                                        )
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(60.dp))
-                            }
-
-                        }
-
+                        HomeScreen(
+                            profileViewModel = profileViewModel,
+                            onProfileClick = { isProfilePopupShown = true },
+                            onCalendarClick = { showCalendarModal = true }
+                        )
+                        BottomAlert(
+                            visible = AlertManager.visible,
+                            message = AlertManager.message,
+                            type = AlertManager.type,
+                            onDismiss = { AlertManager.hide() }
+                        )
                     }
                 }
             }
         }
-        BottomAlert(
-            visible = AlertManager.visible,
-            message = AlertManager.message,
-            type = AlertManager.type,
-            onDismiss = { AlertManager.hide() }
-        )
     }
 }
 
