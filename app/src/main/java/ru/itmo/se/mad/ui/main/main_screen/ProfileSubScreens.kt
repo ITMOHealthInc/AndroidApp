@@ -29,6 +29,7 @@ import ru.itmo.se.mad.model.ActivityLevel
 import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
+import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.model.safeToDouble
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.layout.EditableTextRow
@@ -42,16 +43,11 @@ import ru.itmo.se.mad.ui.theme.SFProDisplay
 
 @Composable
 fun AccountScreen(
-    storage: OnboardingViewModel,
-    oauthStorage: AuthViewModel,
-    popupNavController: NavHostController
+    profileViewModel: ProfileViewModel
 ) {
-
-
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        storage.photoUri = uri
+        profileViewModel.profilePictureUrl = uri
     }
-
 
     Column(
         modifier = Modifier
@@ -60,7 +56,7 @@ fun AccountScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         PhotoPicker(
-            imageUri = storage.photoUri,
+            imageUri = profileViewModel.profilePictureUrl,
             onPickImage = {
                 launcher.launch("image/*")
                 // TODO: обновление на бэке
@@ -68,9 +64,9 @@ fun AccountScreen(
         )
         Spacer(Modifier.height(16.dp))
         EditableTextRow(
-            initialText = oauthStorage.name,
+            initialText = profileViewModel.name,
             onTextChange = { newText ->
-                storage.updateUserName(newText)
+                profileViewModel.updateName(newText)
             }
         )
 
@@ -80,7 +76,6 @@ fun AccountScreen(
 @Composable
 fun GoalsScreen(
     storage: OnboardingViewModel,
-    oauthStorage: AuthViewModel,
     popupNavController: NavHostController
 ) {
     var itemChangeDialogShown by remember { mutableStateOf(false) }
@@ -412,8 +407,6 @@ fun GoalsScreen(
 @Composable
 fun MacroGoalsScreen(
     storage: OnboardingViewModel,
-    oauthStorage: AuthViewModel,
-    popupNavController: NavHostController
 ) {
     var itemChangeDialogShown by remember { mutableStateOf(false) }
     var currentDialogType by remember { mutableStateOf<String?>(null) }

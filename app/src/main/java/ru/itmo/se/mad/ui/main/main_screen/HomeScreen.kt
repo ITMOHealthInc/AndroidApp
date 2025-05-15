@@ -51,8 +51,6 @@ import ru.itmo.se.mad.ui.main.stepsActivity.StepsActivityWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
 import ru.itmo.se.mad.ui.theme.ActivityOrange15
 import ru.itmo.se.mad.ui.theme.ActivityOrange85
-import ru.itmo.se.mad.ui.theme.SFProDisplay
-import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 @Composable
 fun HomeScreen(
@@ -74,6 +72,8 @@ fun HomeScreen(
     val maxWater = 2.25f
 
     LaunchedEffect(Unit) {
+        profileViewModel.load()
+
         try {
             val productsResponse = ApiClient.productsApi.getDailySummary()
             currentWater = productsResponse.totalWater

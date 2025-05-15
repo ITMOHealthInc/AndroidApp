@@ -33,13 +33,13 @@ import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
+import ru.itmo.se.mad.model.ProfileViewModel
 
 
 @Composable
 fun ProfilePopup(
-    onClose: () -> Unit,
+    profileViewModel: ProfileViewModel,
     storage: OnboardingViewModel,
-    oauthStorage: AuthViewModel,
     profilePopupTitle: MutableState<String>,
     popupNavController: NavHostController
 ) {
@@ -87,16 +87,16 @@ fun ProfilePopup(
             }) {
             composable("main") {
                 ProfileMainScreen(
+                    profileViewModel = profileViewModel,
                     storage = storage,
-                    oauthStorage = oauthStorage,
                     onNavigate = { route ->
                         popupNavController.navigate(route)
                     }
                 )
             }
-            composable("account") { AccountScreen(storage, oauthStorage, popupNavController) }
-            composable("goals") { GoalsScreen(storage, oauthStorage, popupNavController) }
-            composable("macro") { MacroGoalsScreen(storage, oauthStorage, popupNavController) }
+            composable("account") { AccountScreen(profileViewModel) }
+            composable("goals") { GoalsScreen(storage, popupNavController) }
+            composable("macro") { MacroGoalsScreen(storage) }
         }
     }
 }
@@ -104,8 +104,8 @@ fun ProfilePopup(
 
 @Composable
 fun ProfileMainScreen(
+    profileViewModel: ProfileViewModel,
     storage: OnboardingViewModel,
-    oauthStorage: AuthViewModel,
     onNavigate: (String) -> Unit
 ) {
     Column(
@@ -115,7 +115,7 @@ fun ProfileMainScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            model = storage.photoUri,
+            model = profileViewModel.profilePictureUrl,
             placeholder = painterResource(id = R.drawable.bshvevgn),
             error = painterResource(id = R.drawable.icon_user),
             contentDescription = "Profile image",
@@ -126,7 +126,7 @@ fun ProfileMainScreen(
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            text = oauthStorage.name,
+            text = profileViewModel.name,
             fontSize = 24.sp,
             fontWeight = FontWeight.W500,
             fontFamily = SFProDisplay,
