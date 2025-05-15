@@ -11,11 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ru.itmo.se.mad.model.ActivityLevel
-import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
@@ -29,7 +27,7 @@ fun ChooseActivityScreen(
     onNext: () -> Unit
 ) {
     val selected = viewModel.activity
-    val options = listOf(ActivityLevel.HIGH, ActivityLevel.NORMAL, ActivityLevel.LOW)
+    val options = listOf(ActivityLevel.HIGH, ActivityLevel.MEDIUM, ActivityLevel.LOW)
 
     Column(
         modifier = Modifier

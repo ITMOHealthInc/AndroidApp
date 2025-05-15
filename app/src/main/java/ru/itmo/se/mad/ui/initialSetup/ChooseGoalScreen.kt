@@ -22,7 +22,7 @@ fun ChooseGoalScreen(
     onNext: () -> Unit
 ) {
     val selected = viewModel.goal
-    val options = listOf(Goal.LOSE, Goal.MAINTAIN, Goal.GAIN)
+    val options = listOf(Goal.WEIGHT_LOSS, Goal.WEIGHT_MAINTENANCE, Goal.WEIGHT_GAIN)
 
     Column(
         modifier = Modifier
@@ -30,7 +30,7 @@ fun ChooseGoalScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Ваша цель", label = "Выберите основную цель", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Ваша цель", label = "Выберите основную цель", showBack = false, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
         options.forEach {

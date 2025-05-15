@@ -27,7 +27,6 @@ import androidx.navigation.NavHostController
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.model.ActivityLevel
 import ru.itmo.se.mad.model.Goal
-import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.model.safeToDouble
@@ -81,7 +80,7 @@ fun GoalsScreen(
     var itemChangeDialogShown by remember { mutableStateOf(false) }
     var currentDialogType by remember { mutableStateOf<String?>(null) } // тип диалога
 
-    val goalOptions = listOf(Goal.LOSE, Goal.MAINTAIN, Goal.GAIN)
+    val goalOptions = listOf(Goal.WEIGHT_LOSS, Goal.WEIGHT_MAINTENANCE, Goal.WEIGHT_GAIN)
     val selected = storage.goal
     var goalSelectedBefore by remember { mutableStateOf(Goal.NOT_SELECTED) }
     var newWeightGoal by remember { mutableStateOf("") }
@@ -92,14 +91,14 @@ fun GoalsScreen(
 
 
 
-    val activityOptions = listOf(ActivityLevel.HIGH, ActivityLevel.NORMAL, ActivityLevel.LOW)
+    val activityOptions = listOf(ActivityLevel.HIGH, ActivityLevel.MEDIUM, ActivityLevel.LOW)
     val selectedActivity = storage.activity
     var activitySelectedBefore by remember { mutableStateOf(ActivityLevel.NOT_SELECTED) }
 
     val isGoalValid = when (storage.goal) {
-        Goal.LOSE -> newWeightGoal != "" && newWeightGoal.safeToDouble() < storage.weight.safeToDouble()
-        Goal.MAINTAIN -> newWeightGoal != "" && kotlin.math.abs(newWeightGoal.safeToDouble() - storage.weight.safeToDouble()) <= 1.0
-        Goal.GAIN -> newWeightGoal != "" && newWeightGoal.safeToDouble() > storage.weight.safeToDouble()
+        Goal.WEIGHT_LOSS -> newWeightGoal != "" && newWeightGoal.safeToDouble() < storage.weight.safeToDouble()
+        Goal.WEIGHT_MAINTENANCE -> newWeightGoal != "" && kotlin.math.abs(newWeightGoal.safeToDouble() - storage.weight.safeToDouble()) <= 1.0
+        Goal.WEIGHT_GAIN -> newWeightGoal != "" && newWeightGoal.safeToDouble() > storage.weight.safeToDouble()
         else -> false
     }
 
@@ -163,7 +162,7 @@ fun GoalsScreen(
                         )
                         Spacer(Modifier.height(32.dp))
                         if (goalSelectedBefore.toString() != selected.toString()) {
-                            if(selected != Goal.MAINTAIN) {
+                            if(selected != Goal.WEIGHT_MAINTENANCE) {
                                 PrimaryButton(text = "Далее", onClick = {
                                     currentDialogType = "newWeightInput"
                                 })

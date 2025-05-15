@@ -2,10 +2,8 @@ package ru.itmo.se.mad
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -19,7 +17,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.itmo.se.mad.model.AuthViewModel
-import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
@@ -191,14 +188,20 @@ fun Main() {
                     composable("chooseActivityLevelStep") {
                         ChooseActivityScreen (
                             viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("setMeasuresStep") },
+                            onNext = {
+                                onboardingViewModel.saveGoals()
+                                navController.navigate("setMeasuresStep")
+                            },
                             onBack = { navController.popBackStack() }
                         )
                     }
                     composable("setMeasuresStep") {
                         SetMeasuresScreen(
                             viewModel = onboardingViewModel,
-                            onNext = { if (onboardingViewModel.goal != Goal.MAINTAIN) navController.navigate("setGoalWeightStep") else navController.navigate("chooseSexStep") },
+                            onNext = {
+                                onboardingViewModel.saveMeasurements()
+                                navController.navigate("chooseSexStep")
+                            },
                             onBack = { navController.popBackStack() }
                         )
                         BottomAlert(
@@ -212,8 +215,7 @@ fun Main() {
                         SetGoalWeightScreen(
                             viewModel = onboardingViewModel,
                             onNext = {
-                                navController.navigate("finishStep") {
-                                }
+                                navController.navigate("finishStep")
                             },
                             onBack = { navController.popBackStack() }
                         )
@@ -222,8 +224,8 @@ fun Main() {
                         ChooseSexScreen(
                             viewModel = onboardingViewModel,
                             onNext = {
-                                navController.navigate("finishStep") {
-                                }
+                                onboardingViewModel.saveSex()
+                                navController.navigate("finishStep")
                             },
                             onBack = { navController.popBackStack() }
                         )

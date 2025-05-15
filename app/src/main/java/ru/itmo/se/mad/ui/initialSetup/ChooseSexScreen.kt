@@ -31,7 +31,7 @@ fun ChooseSexScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Последний штрих", label = "Укажите ваш пол", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Последний штрих", label = "Укажите ваш пол", showBack = false, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
         options.forEach {

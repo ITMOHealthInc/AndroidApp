@@ -89,8 +89,6 @@ fun HomeScreen(
 
             val goalResponse = ApiClient.goalApi.getGoal()
             calorieGoal = goalResponse.calorie_goal.toFloat()
-
-            //caloriesBurned
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
             AlertManager.error("Ошибка при загрузке")

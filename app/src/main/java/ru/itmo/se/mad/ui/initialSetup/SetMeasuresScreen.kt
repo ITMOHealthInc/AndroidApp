@@ -29,7 +29,7 @@ fun SetMeasuresScreen(
         HeaderWithBack(
             title = "Немного о личном",
             label = "Укажите ваш текущий рост и вес",
-            showBack = true,
+            showBack = false,
             onBackClick = onBack
         )
 

@@ -4,14 +4,18 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface GoalApiService {
-    @POST("user_goals/goals")
-    suspend fun createGoal(@Body request: CreateGoalRequest) : GoalCreatedResponse
+    @POST("user_goals/user-goals")
+    suspend fun createGoal(@Body request: CreateUserGoalRequest) : UserGoalDto
 
-    @GET("user_goals/goals")
-    suspend fun getGoal() : UserGoal
+    @GET("user_goals/user-goals")
+    suspend fun getGoal() : UserGoalDto
 
-    @DELETE("user_goals/goals")
+    @PUT("user_goals/user-goals")
+    suspend fun updateGoal(@Body request: CreateUserGoalRequest) : UserGoalDto
+
+    @DELETE("user_goals/user-goals")
     suspend fun deleteGoal()
 }

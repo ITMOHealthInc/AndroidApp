@@ -43,7 +43,7 @@ fun AddPhotoScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Добавим фото?", label = "Героев нужно знать в лицо", showBack = false, onBackClick = onBack)
         Spacer(Modifier.height(100.dp))
 
         PhotoPicker(

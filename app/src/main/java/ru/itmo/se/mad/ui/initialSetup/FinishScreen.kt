@@ -24,7 +24,7 @@ fun FinishScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderWithBack(title = "Всё готово", label = "Мы подготовили ваш индивидуальный план.\nВы можете изменить его позже в Профиле", showBack = true, onBackClick = onBack)
+        HeaderWithBack(title = "Всё готово", label = "Мы подготовили ваш индивидуальный план.\nВы можете изменить его позже в Профиле", showBack = false, onBackClick = onBack)
 
         Spacer(Modifier.weight(1f))
         PrimaryButton(text = "Приступим", onClick = onNext)

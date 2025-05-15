@@ -27,9 +27,9 @@ fun SetGoalWeightScreen(
     val goalWeight = viewModel.goalWeight.toDoubleOrNull()
     val currentWeight = viewModel.weight.toDoubleOrNull()
     val isGoalValid = when (viewModel.goal) {
-        Goal.LOSE -> goalWeight != null && currentWeight != null && goalWeight < currentWeight
-        Goal.MAINTAIN -> goalWeight != null && currentWeight != null && kotlin.math.abs(goalWeight - currentWeight) <= 1.0
-        Goal.GAIN -> goalWeight != null && currentWeight != null && goalWeight > currentWeight
+        Goal.WEIGHT_LOSS -> goalWeight != null && currentWeight != null && goalWeight < currentWeight
+        Goal.WEIGHT_MAINTENANCE -> goalWeight != null && currentWeight != null && kotlin.math.abs(goalWeight - currentWeight) <= 1.0
+        Goal.WEIGHT_GAIN -> goalWeight != null && currentWeight != null && goalWeight > currentWeight
         else -> false
     }
 
