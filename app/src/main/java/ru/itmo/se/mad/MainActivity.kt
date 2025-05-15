@@ -55,7 +55,6 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.ui.initialSetup.NameInputScreen
 import ru.itmo.se.mad.api.ApiClient
-import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.alert.BottomAlert
 import ru.itmo.se.mad.storage.LocalStorage
