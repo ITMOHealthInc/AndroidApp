@@ -70,6 +70,27 @@ class OnboardingViewModel : ViewModel() {
         return true
     }
 
+    fun updateCaloriesGoal(
+        newCaloriesGoal: String
+    ): Boolean {
+        // TODO: сделать запрос к бэку
+        return true
+    }
+
+    fun updateWaterGoal(
+        newWaterGoal: String
+    ): Boolean {
+        // TODO: сделать запрос к бэку
+        return true
+    }
+
+    fun updateStepsGoal(
+        newStepsGoal: String
+    ): Boolean {
+        // TODO: сделать запрос к бэку
+        return true
+    }
+
     fun updateMacro(
         protein: String,
         fat: String,

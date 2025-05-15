@@ -91,6 +91,12 @@ fun GoalsScreen(
     var goalSelectedBefore by remember { mutableStateOf(Goal.NOT_SELECTED) }
     var newWeightGoal by remember { mutableStateOf("") }
 
+    var newCaloriesGoal by remember { mutableStateOf("") }
+    var newWaterGoal by remember { mutableStateOf("") }
+    var newStepsGoal by remember { mutableStateOf("") }
+
+
+
     val activityOptions = listOf(ActivityLevel.HIGH, ActivityLevel.NORMAL, ActivityLevel.LOW)
     val selectedActivity = storage.activity
     var activitySelectedBefore by remember { mutableStateOf(ActivityLevel.NOT_SELECTED) }
@@ -104,12 +110,16 @@ fun GoalsScreen(
 
     var caloriesGoal by remember { mutableStateOf("") }
     var waterGoal by remember { mutableStateOf("") }
+    var stepsGoal by remember { mutableStateOf("") }
+
 
     LaunchedEffect(Unit) {
         try {
             val goalResponse = ApiClient.goalApi.getGoal()
             caloriesGoal = goalResponse.calorie_goal.toString()
             waterGoal = goalResponse.water_goal.toString()
+            stepsGoal = goalResponse.steps_goal.toString()
+
 
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
@@ -127,6 +137,9 @@ fun GoalsScreen(
             title = when (currentDialogType) {
                 "goal" -> "Новая цель"
                 "newWeightInput" -> "Новая цель веса"
+                "newCaloriesInput" -> "Новая цель калорий"
+                "newWaterInput" -> "Новая цель воды"
+                "newStepsInput" -> "Новая цель шагов"
                 "activity" -> "Уровень активности"
                 "weekly" -> "Еженедельная цель"
                 else -> ""
@@ -200,6 +213,90 @@ fun GoalsScreen(
                         })
                     } else {
                         SecondaryButton(text = "Назад", onClick = {currentDialogType = "goal"})
+                    }
+                }
+                "newCaloriesInput" -> {
+                    LabeledTextField(
+                        value = newCaloriesGoal,
+                        onValueChange = { newCaloriesGoal = it },
+                        placeholder = "Калории",
+                        labelRight = "ккал"
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Ваша текущая цель: $caloriesGoal ккал",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W400,
+                        fontFamily = SFProDisplay,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    if (newCaloriesGoal.safeToDouble() > 0) {
+                        PrimaryButton(text = "Готово", onClick = {
+                            itemChangeDialogShown = false
+                            currentDialogType = "loading"
+                            if (storage.updateCaloriesGoal(newCaloriesGoal)) currentDialogType = null
+                        })
+                    } else {
+                        SecondaryButton(text = "Отмена", onClick = {currentDialogType = null })
+                    }
+                }
+                "newWaterInput" -> {
+                    LabeledTextField(
+                        value = newWaterGoal,
+                        onValueChange = { newWaterGoal = it },
+                        placeholder = "Вода",
+                        labelRight = "л"
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Ваша текущая цель: $waterGoal л",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W400,
+                        fontFamily = SFProDisplay,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    if (newWaterGoal.safeToDouble() > 0) {
+                        PrimaryButton(text = "Готово", onClick = {
+                            itemChangeDialogShown = false
+                            currentDialogType = "loading"
+                            if (storage.updateWaterGoal(newWaterGoal)) currentDialogType = null
+                        })
+                    } else {
+                        SecondaryButton(text = "Отмена", onClick = {currentDialogType = null })
+                    }
+                }
+                "newStepsInput" -> {
+                    LabeledTextField(
+                        value = newStepsGoal,
+                        onValueChange = { newStepsGoal = it },
+                        placeholder = "Шаги",
+                        labelRight = ""
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Ваша текущая цель: $stepsGoal шагов",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.W400,
+                        fontFamily = SFProDisplay,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                    Spacer(Modifier.height(32.dp))
+                    if (newStepsGoal.safeToDouble() > 0) {
+                        PrimaryButton(text = "Готово", onClick = {
+                            itemChangeDialogShown = false
+                            currentDialogType = "loading"
+                            if (storage.updateStepsGoal(newStepsGoal)) currentDialogType = null
+                        })
+                    } else {
+                        SecondaryButton(text = "Отмена", onClick = {currentDialogType = null })
                     }
                 }
                 "loading" -> {
@@ -279,11 +376,34 @@ fun GoalsScreen(
                 itemChangeDialogShown = true
             }
         )
-
+        ProfileMenuItem(
+            title = "Цель калорий",
+            subTitle = caloriesGoal,
+            onClick = {
+                currentDialogType = "newCaloriesInput"
+                itemChangeDialogShown = true
+            }
+        )
         ProfileMenuItem(
             title = "Цели БЖУ",
             onClick = {
                 popupNavController.navigate("macro")
+            }
+        )
+        ProfileMenuItem(
+            title = "Цель воды",
+            subTitle = waterGoal,
+            onClick = {
+                currentDialogType = "newWaterInput"
+                itemChangeDialogShown = true
+            }
+        )
+        ProfileMenuItem(
+            title = "Цель шагов",
+            subTitle = stepsGoal,
+            onClick = {
+                currentDialogType = "newStepsInput"
+                itemChangeDialogShown = true
             }
         )
     }
