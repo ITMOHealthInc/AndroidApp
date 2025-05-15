@@ -21,15 +21,6 @@ fun SetGoalWeightScreen(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    val goalWeight = viewModel.goalWeight.toDoubleOrNull()
-    val currentWeight = viewModel.weight.toDoubleOrNull()
-    val isGoalValid = when (viewModel.goal) {
-        Goal.WEIGHT_LOSS -> goalWeight != null && currentWeight != null && goalWeight < currentWeight
-        Goal.WEIGHT_MAINTENANCE -> goalWeight != null && currentWeight != null && kotlin.math.abs(goalWeight - currentWeight) <= 1.0
-        Goal.WEIGHT_GAIN -> goalWeight != null && currentWeight != null && goalWeight > currentWeight
-        else -> false
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,15 +37,15 @@ fun SetGoalWeightScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         LabeledTextField(
-            value = viewModel.goalWeight,
-            onValueChange = { viewModel.goalWeight = it },
+            value = viewModel.weightGoal,
+            onValueChange = { viewModel.weightGoal = it },
             placeholder = "Вес",
             labelRight = "кг"
         )
 
         Spacer(Modifier.height(40.dp))
 
-        if (isGoalValid) {
+        if (viewModel.weightGoal != "") {
             PrimaryButton(text = "Далее", onClick = onNext)
         }
 

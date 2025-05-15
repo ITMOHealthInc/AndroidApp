@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.model.ActivityLevel
@@ -140,6 +141,7 @@ fun GoalsScreen(
                                     currentDialogType = "newWeightInput"
                                 })
                             } else {
+                                goalsViewModel.weightGoal = measurementsViewModel.weight.toDouble()
                                 PrimaryButton(text = "Готово", onClick = {
                                     itemChangeDialogShown = false
                                     currentDialogType = "loading"
@@ -177,6 +179,7 @@ fun GoalsScreen(
                             itemChangeDialogShown = false
                             currentDialogType = "loading"
                             goalSelectedBefore = goalsViewModel.type
+                            goalsViewModel.weightGoal = newWeightGoal.safeToDouble()
                             goalsViewModel.updateGoal()
                             currentDialogType = null
                         })
@@ -254,6 +257,15 @@ fun GoalsScreen(
             onClick = {
                 currentDialogType = "activity"
                 itemChangeDialogShown = true
+            }
+        )
+        MenuItem(
+            title = "Цель веса",
+            subTitle = goalsViewModel.weightGoal.toString(),
+            hideArrow = true,
+            onClick = {
+                //currentDialogType = "newCaloriesInput"
+                //itemChangeDialogShown = true
             }
         )
         MenuItem(

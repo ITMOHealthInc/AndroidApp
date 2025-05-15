@@ -1,6 +1,7 @@
 package ru.itmo.se.mad.model
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +22,7 @@ class GoalsViewModel() : ViewModel() {
     var proteins: Int by mutableIntStateOf(90)
     var fats: Int by mutableIntStateOf(65)
     var carbohydrates: Int by mutableIntStateOf(250)
-
-    // TODO implement
-    var weightGoal: Float by mutableFloatStateOf(0f)
+    var weightGoal: Double by mutableDoubleStateOf(0.0)
 
     fun load() {
         viewModelScope.launch {
@@ -34,7 +33,7 @@ class GoalsViewModel() : ViewModel() {
 
     fun updateGoal() {
         viewModelScope.launch {
-            ApiClient.goalApi.updateGoal(CreateUserGoalRequest(type.name, activity.name))
+            ApiClient.goalApi.updateGoal(CreateUserGoalRequest(type.name, activity.name, weightGoal))
             val dto = ApiClient.goalApi.getGoal()
             fromDto(dto)
         }
@@ -49,6 +48,6 @@ class GoalsViewModel() : ViewModel() {
         this.proteins = dto.proteins_goal
         this.fats = dto.fats_goal
         this.carbohydrates = dto.carbohydrates_goal
+        this.weightGoal = dto.weight_goal
     }
-
 }

@@ -21,7 +21,6 @@ fun ChooseGoalScreen(
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val selected = viewModel.goal
     val options = listOf(Goal.WEIGHT_LOSS, Goal.WEIGHT_MAINTENANCE, Goal.WEIGHT_GAIN)
 
     Column(
@@ -36,7 +35,7 @@ fun ChooseGoalScreen(
         options.forEach {
             SelectableOption(
                 text = it.displayName,
-                selected = selected == it,
+                selected = viewModel.goal == it,
                 onClick = { viewModel.goal = it }
             )
             Spacer(Modifier.height(8.dp))

@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.itmo.se.mad.model.AuthViewModel
+import ru.itmo.se.mad.model.Goal
 import ru.itmo.se.mad.model.GoalsViewModel
 import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
@@ -200,7 +201,13 @@ fun Main() {
                     composable("chooseGoalStep") {
                         ChooseGoalScreen(
                             viewModel = onboardingViewModel,
-                            onNext = { navController.navigate("chooseActivityLevelStep") },
+                            onNext = {
+                                if (onboardingViewModel.goal == Goal.WEIGHT_MAINTENANCE) {
+                                    navController.navigate("chooseActivityLevelStep")
+                                } else {
+                                    navController.navigate("setGoalWeightStep")
+                                }
+                            },
                             onBack = { navController.popBackStack() }
                         )
                     }
@@ -234,7 +241,7 @@ fun Main() {
                         SetGoalWeightScreen(
                             viewModel = onboardingViewModel,
                             onNext = {
-                                navController.navigate("finishStep")
+                                navController.navigate("chooseActivityLevelStep")
                             },
                             onBack = { navController.popBackStack() }
                         )

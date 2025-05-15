@@ -50,19 +50,17 @@ class OnboardingViewModel : ViewModel() {
 
     var gender: Gender by mutableStateOf(Gender.NOT_SELECTED)
 
-    // Useles. To remove
-    var goalWeight: String by mutableStateOf("")
-    var calorieGoal: String by mutableStateOf("")
-    var weeklyGoal: String by mutableStateOf("")
-    var proteinGoal: String by mutableStateOf("")
-    var fatGoal: String by mutableStateOf("")
-    var carbohydrateGoal: String by mutableStateOf("")
-    var waterGoal: String by mutableStateOf("")
-    var stepsGoal: String by mutableStateOf("")
+    var weightGoal: String by mutableStateOf("")
 
     fun saveGoals() {
         viewModelScope.launch {
-            ApiClient.goalApi.createGoal(CreateUserGoalRequest(goal.name, activity.name))
+            ApiClient.goalApi.createGoal(
+                CreateUserGoalRequest(
+                    goal.name,
+                    activity.name,
+                    weightGoal.safeToDouble()
+                )
+            )
         }
     }
 
@@ -70,6 +68,17 @@ class OnboardingViewModel : ViewModel() {
         viewModelScope.launch {
             ApiClient.measurementsApi.updateHeight(UpdateHeightRequest(height.toFloat()))
             ApiClient.measurementsApi.updateWeight(UpdateWeightRequest(weight.toFloat()))
+
+            if (goal == Goal.WEIGHT_MAINTENANCE) {
+                weightGoal = weight;
+                ApiClient.goalApi.updateGoal(
+                    CreateUserGoalRequest(
+                        goal.name,
+                        activity.name,
+                        weightGoal.safeToDouble()
+                    )
+                )
+            }
         }
     }
 
@@ -79,69 +88,6 @@ class OnboardingViewModel : ViewModel() {
         }
     }
 
-    fun updateUserName(
-        name: String
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateUserProfileImage(
-        profilePictureUri: Uri?,
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateGoal(
-        goal: Goal,
-        newWeightGoal: String
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateCaloriesGoal(
-        newCaloriesGoal: String
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateWaterGoal(
-        newWaterGoal: String
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateStepsGoal(
-        newStepsGoal: String
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun updateMacro(
-        protein: String,
-        fat: String,
-        carbohydrate: String,
-    ): Boolean {
-        // TODO: сделать запрос к бэку
-        return true
-    }
-
-    fun complete(
-        photoUri: Uri,
-        goal: String,
-        height: String,
-        weight: String,
-        gender: Gender,
-        onSuccess: () -> Unit
-    ) {
-        // TODO: сделать запрос к бэку
-        onSuccess()
-    }
 }
 
 fun String.safeToDouble(): Double {

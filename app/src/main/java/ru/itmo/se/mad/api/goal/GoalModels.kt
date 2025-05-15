@@ -5,7 +5,8 @@ import ru.itmo.se.mad.model.Goal
 
 data class CreateUserGoalRequest(
     val goal_type: String,
-    val activity_level: String
+    val activity_level: String,
+    val weight_goal: Double
 )
 
 data class UserGoalDto(
@@ -17,5 +18,6 @@ data class UserGoalDto(
     val steps_goal: Int,
     val proteins_goal: Int,
     val fats_goal: Int,
-    val carbohydrates_goal: Int
+    val carbohydrates_goal: Int,
+    val weight_goal: Double
 )
