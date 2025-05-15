@@ -78,22 +78,6 @@ class MainActivity : ComponentActivity() {
 fun Main() {
     val navController = rememberNavController()
 
-    var currentWater by remember { mutableFloatStateOf(0f) }
-    var calories by remember { mutableFloatStateOf(0f) }
-    var proteins by remember { mutableFloatStateOf(0f) }
-    var fats by remember { mutableFloatStateOf(0f) }
-    var carbohydrates by remember { mutableFloatStateOf(0f) }
-
-    val caloriesBurned by remember { mutableFloatStateOf(0f) }
-    val calorieGoal by remember { mutableFloatStateOf(3242f) }
-
-    LaunchedEffect(Unit) {
-        if (LocalStorage.hasToken()) {
-            navController.navigate("home")
-        }
-    }
-    val maxWater = 2.25f
-
     var isAddItemDialogShown by remember { mutableStateOf(false) }
 
     var isProfilePopupShown by remember { mutableStateOf(false) }
@@ -112,6 +96,12 @@ fun Main() {
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomBar = currentRoute == "home"
+
+    LaunchedEffect(Unit) {
+        if (LocalStorage.hasToken()) {
+            navController.navigate("home")
+        }
+    }
 
     ModalSlideUpContainer(
         isVisible = showCalendarModal,
