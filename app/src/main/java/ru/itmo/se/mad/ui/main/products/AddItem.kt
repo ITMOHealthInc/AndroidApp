@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.main.measure.MeasureWidget
 import ru.itmo.se.mad.ui.main.water.NewWaterSlider
@@ -39,7 +40,11 @@ import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 @Composable
-fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle: (String) -> Unit) {
+fun AddItem(
+    measurementsViewModel: MeasurementsViewModel,
+    onSelect: (content: @Composable () -> Unit) -> Unit,
+    setTitle: (String) -> Unit
+) {
     var currentWater by remember { mutableFloatStateOf(0f) }
     val maxWater by remember { mutableFloatStateOf(2.25f) }
 
@@ -67,18 +72,13 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle: (Stri
                     setTitle("Что вы хотите добавить?") }
             )
         }
-//        item {
-//            AddItemElement(
-//                "Активность",
-//                R.drawable.image_activity,
-//                onClick = { onSelect { /* Активность */ } }
-//            )
-//        }
         item {
             AddItemElement(
                 "Измерение",
                 R.drawable.image_ruler,
-                onClick = { onSelect { MeasureWidget(onSelect, setTitle) }
+                onClick = { onSelect {
+                    MeasureWidget(measurementsViewModel, onSelect, setTitle)
+                }
                     setTitle("Что вы хотите добавить?")}
             )
         }

@@ -101,6 +101,7 @@ fun Main() {
             title = popupTitle,
         ) {
             popupContent?.invoke() ?: AddItem(
+                measurementsViewModel,
                 onSelect = { newContent ->
                     popupContent = newContent
                 },

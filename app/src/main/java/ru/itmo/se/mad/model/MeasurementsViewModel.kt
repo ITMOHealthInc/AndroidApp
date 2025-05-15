@@ -10,7 +10,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.itmo.se.mad.api.ApiClient
 import ru.itmo.se.mad.api.measurements.MeasurementResponse
+import ru.itmo.se.mad.api.measurements.UpdateArmsRequest
+import ru.itmo.se.mad.api.measurements.UpdateBodyFatRequest
+import ru.itmo.se.mad.api.measurements.UpdateChestRequest
 import ru.itmo.se.mad.api.measurements.UpdateHeightRequest
+import ru.itmo.se.mad.api.measurements.UpdateHipsRequest
+import ru.itmo.se.mad.api.measurements.UpdateMuscleMassRequest
+import ru.itmo.se.mad.api.measurements.UpdateWaistRequest
 import ru.itmo.se.mad.api.measurements.UpdateWeightRequest
 
 class MeasurementsViewModel() : ViewModel() {
@@ -45,6 +51,48 @@ class MeasurementsViewModel() : ViewModel() {
     fun updateHeight() {
         viewModelScope.launch {
             val dto = ApiClient.measurementsApi.updateHeight(UpdateHeightRequest(height))
+            fromDto(dto)
+        }
+    }
+
+    fun updateWaist() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateWaist(UpdateWaistRequest(waist))
+            fromDto(dto)
+        }
+    }
+
+    fun updateHips() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateHips(UpdateHipsRequest(hips))
+            fromDto(dto)
+        }
+    }
+
+    fun updateChest() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateChest(UpdateChestRequest(chest))
+            fromDto(dto)
+        }
+    }
+
+    fun updateArms() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateArms(UpdateArmsRequest(arms))
+            fromDto(dto)
+        }
+    }
+
+    fun updateBodyFat() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateBodyFat(UpdateBodyFatRequest(bodyFat))
+            fromDto(dto)
+        }
+    }
+
+    fun updateMuscleMass() {
+        viewModelScope.launch {
+            val dto = ApiClient.measurementsApi.updateMuscleMass(UpdateMuscleMassRequest(muscleMass))
             fromDto(dto)
         }
     }

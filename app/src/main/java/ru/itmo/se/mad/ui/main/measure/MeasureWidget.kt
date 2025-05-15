@@ -1,64 +1,37 @@
 package ru.itmo.se.mad.ui.main.measure
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
-import ru.itmo.se.mad.api.ApiClient
-import ru.itmo.se.mad.api.measurements.UpdateArmsRequest
-import ru.itmo.se.mad.api.measurements.UpdateBodyFatRequest
-import ru.itmo.se.mad.api.measurements.UpdateChestRequest
-import ru.itmo.se.mad.api.measurements.UpdateHipsRequest
-import ru.itmo.se.mad.api.measurements.UpdateMuscleMassRequest
-import ru.itmo.se.mad.api.measurements.UpdateWaistRequest
-import ru.itmo.se.mad.api.measurements.UpdateWeightRequest
+import ru.itmo.se.mad.model.MeasurementsViewModel
 import ru.itmo.se.mad.ui.layout.LabeledTextField
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.main.main_screen.MenuItem
 import ru.itmo.se.mad.ui.main.products.AddItem
-import ru.itmo.se.mad.ui.theme.Black
-import ru.itmo.se.mad.ui.theme.SFProDisplay
-import ru.itmo.se.mad.ui.theme.White
-import ru.itmo.se.mad.ui.theme.WidgetGray80
-
 
 
 //@Preview
 @Composable
-fun MeasureWidget(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle: (String) -> Unit) {
+fun MeasureWidget(
+    measurementsViewModel: MeasurementsViewModel,
+    onSelect: (content: @Composable () -> Unit) -> Unit,
+    setTitle: (String) -> Unit
+) {
     val parameters = listOf(
         "Вес",
+        "Рост",
         "Талия",
         "Бёдра",
         "Грудь",
@@ -68,36 +41,45 @@ fun MeasureWidget(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle:
     )
 
     val parameterValues = remember { mutableStateMapOf<String, String>() }
-    val coroutineScope = rememberCoroutineScope()
 
-    var selectedParam by remember { mutableStateOf<String?>(null) }
-
-    val updateFunctions = mapOf<String, suspend (String) -> Unit>(
+    val updateFunctions = mapOf<String, (String) -> Unit>(
         "Вес" to { value ->
-            ApiClient.measurementsApi.updateWeight(UpdateWeightRequest(value.toFloat()))
+            measurementsViewModel.weight = value.toFloat()
+            measurementsViewModel.updateWeight()
+        },
+        "Рост" to { value ->
+            measurementsViewModel.height = value.toFloat()
+            measurementsViewModel.updateHeight()
         },
         "Талия" to { value ->
-            ApiClient.measurementsApi.updateWaist(UpdateWaistRequest(value.toFloat()))
+            measurementsViewModel.waist = value.toFloat()
+            measurementsViewModel.updateWaist()
         },
         "Бёдра" to { value ->
-            ApiClient.measurementsApi.updateHips(UpdateHipsRequest(value.toFloat()))
+            measurementsViewModel.hips = value.toFloat()
+            measurementsViewModel.updateHips()
         },
         "Грудь" to { value ->
-            ApiClient.measurementsApi.updateChest(UpdateChestRequest(value.toFloat()))
+            measurementsViewModel.chest = value.toFloat()
+            measurementsViewModel.updateChest()
         },
         "Руки" to { value ->
-            ApiClient.measurementsApi.updateArms(UpdateArmsRequest(value.toFloat()))
+            measurementsViewModel.arms = value.toFloat()
+            measurementsViewModel.updateArms()
         },
         "Объём жира" to { value ->
-            ApiClient.measurementsApi.updateBodyFat(UpdateBodyFatRequest(value.toFloat()))
+            measurementsViewModel.bodyFat = value.toFloat()
+            measurementsViewModel.updateBodyFat()
         },
         "Мышечная масса" to { value ->
-            ApiClient.measurementsApi.updateMuscleMass(UpdateMuscleMassRequest(value.toFloat()))
+            measurementsViewModel.muscleMass = value.toFloat()
+            measurementsViewModel.updateMuscleMass()
         }
     )
 
     val labels = mapOf(
         "Вес" to "кг",
+        "Рост" to "см",
         "Талия" to "см",
         "Бёдра" to "см",
         "Грудь" to "см",
@@ -106,21 +88,14 @@ fun MeasureWidget(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle:
         "Мышечная масса" to "кг"
     )
 
-
-    LaunchedEffect(Unit) {
-        try {
-            val goalResponse = ApiClient.measurementsApi.getMeasurements()
-            parameterValues["Вес"] = goalResponse.weight.toString().orEmpty()
-            parameterValues["Талия"] = goalResponse.waist.toString().orEmpty()
-            parameterValues["Бёдра"] = goalResponse.hips.toString().orEmpty()
-            parameterValues["Грудь"] = goalResponse.chest.toString().orEmpty()
-            parameterValues["Руки"] = goalResponse.arms.toString().orEmpty()
-            parameterValues["Объём жира"] = goalResponse.bodyFat.toString().orEmpty()
-            parameterValues["Мышечная масса"] = goalResponse.muscleMass.toString().orEmpty()
-        } catch (e: Exception) {
-            Log.e("dbg", "Ошибка при загрузке измерений: ${e.localizedMessage}", e)
-        }
-    }
+    parameterValues["Вес"] = measurementsViewModel.weight.toString()
+    parameterValues["Рост"] = measurementsViewModel.height.toString()
+    parameterValues["Талия"] = measurementsViewModel.waist.toString()
+    parameterValues["Бёдра"] = measurementsViewModel.hips.toString()
+    parameterValues["Грудь"] = measurementsViewModel.chest.toString()
+    parameterValues["Руки"] = measurementsViewModel.arms.toString()
+    parameterValues["Объём жира"] = measurementsViewModel.bodyFat.toString()
+    parameterValues["Мышечная масса"] = measurementsViewModel.muscleMass.toString()
 
     LazyColumn(
         modifier = Modifier.padding(bottom = 6.dp),
@@ -146,19 +121,14 @@ fun MeasureWidget(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle:
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 PrimaryButton(text = "Готово") {
                                     parameterValues[param] = inputValueState.value
-                                    coroutineScope.launch {
-                                        try {
-                                            updateFunctions[param]?.invoke(inputValueState.value)
-                                        } catch (e: Exception) {
-                                            Log.e("dbg", "Ошибка при обновлении $param: ${e.localizedMessage}", e)
-                                        }
-                                    }
+                                    val func = updateFunctions[param];
+                                    func?.invoke(inputValueState.value)
                                     setTitle("Что вы хотите добавить?")
-                                    onSelect { AddItem(onSelect, setTitle) }
+                                    onSelect { AddItem(measurementsViewModel, onSelect, setTitle) }
                                 }
                                 SecondaryButton(text = "Отмена") {
                                     setTitle("Что вы хотите добавить?")
-                                    onSelect { AddItem(onSelect, setTitle) }
+                                    onSelect { AddItem(measurementsViewModel, onSelect, setTitle) }
                                 }
                             }
                         }
@@ -166,36 +136,6 @@ fun MeasureWidget(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle:
                 }
 
             )
-        }
-    }
-}
-
-
-
-@Composable
-fun ParameterElement(parameterName: String = "Вес") {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-    ){
-        Text(
-            text = parameterName,
-            fontSize = 18.sp,
-            color = Color.Black,
-            fontFamily = SFProDisplay,
-            fontWeight = FontWeight.Normal,
-        )
-        Button(onClick = {}, shape = CircleShape,
-            contentPadding = PaddingValues(0.dp),
-
-            colors = ButtonColors(
-            White, Black, White, White
-        ), modifier = Modifier
-            .size(32.dp)
-        ) {
-            Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, "", tint = WidgetGray80)
         }
     }
 }
