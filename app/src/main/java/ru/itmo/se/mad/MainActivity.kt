@@ -26,7 +26,8 @@ import ru.itmo.se.mad.ui.initialSetup.*
 import ru.itmo.se.mad.ui.layout.ModalSlideUpContainer
 import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.main.main_screen.BottomNavBar
-import ru.itmo.se.mad.ui.main.main_screen.CalendarScreen
+import ru.itmo.se.mad.ui.main.main_screen.calendar.CalendarScreen
+import ru.itmo.se.mad.ui.main.main_screen.DateItem
 import ru.itmo.se.mad.ui.main.products.AddItem
 import ru.itmo.se.mad.ui.initialSetup.AuthScreen
 import ru.itmo.se.mad.ui.main.main_screen.ProfilePopup
