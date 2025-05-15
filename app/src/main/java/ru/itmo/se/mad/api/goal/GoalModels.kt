@@ -5,9 +5,11 @@ data class CreateGoalRequest(
     val activity_level: String,
     val weekly_target: Double,
     val calorie_goal: Int,
-    val water_goal: Int,
+    val water_goal: Double,
     val steps_goal: Int,
-    val bju_goal: String
+    val proteins_goal: Int,
+    val fats_goal: Int,
+    val carbohydrates_goal: Int,
 )
 
 data class UserGoal(
@@ -16,9 +18,11 @@ data class UserGoal(
     val activity_level: String,
     val weekly_target: Double,
     val calorie_goal: Int,
-    val water_goal: Int,
+    val water_goal: Double,
     val steps_goal: Int,
-    val bju_goal: String
+    val proteins_goal: Int,
+    val fats_goal: Int,
+    val carbohydrates_goal: Int,
 )
 
 data class GoalCreatedResponse(val message: String, val goal: UserGoal)

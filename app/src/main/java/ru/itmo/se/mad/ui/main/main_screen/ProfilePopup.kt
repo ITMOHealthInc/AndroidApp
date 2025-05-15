@@ -49,6 +49,7 @@ fun ProfilePopup(
         profilePopupTitle.value = when (navBackStackEntry?.destination?.route) {
             "account" -> "Аккаунт"
             "goals" -> "Ваши цели"
+            "macro" -> "Цели БЖУ"
             else -> ""
         }
     }
@@ -93,8 +94,9 @@ fun ProfilePopup(
                     }
                 )
             }
-            composable("account") { AccountScreen(storage, oauthStorage) }
-            composable("goals") { GoalsScreen(storage, oauthStorage) }
+            composable("account") { AccountScreen(storage, oauthStorage, popupNavController) }
+            composable("goals") { GoalsScreen(storage, oauthStorage, popupNavController) }
+            composable("macro") { MacroGoalsScreen(storage, oauthStorage, popupNavController) }
         }
     }
 }

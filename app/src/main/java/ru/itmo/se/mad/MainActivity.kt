@@ -128,7 +128,7 @@ fun Main() {
             Box {
                 NavHost(
                     navController = navController,
-                    startDestination = "auth",
+                    startDestination = "startMessageStep",
                     enterTransition = {
                         slideInHorizontally(
                             initialOffsetX = { 1000 },
@@ -184,6 +184,13 @@ fun Main() {
                     composable("chooseGoalStep") {
                         ChooseGoalScreen(
                             viewModel = onboardingViewModel,
+                            onNext = { navController.navigate("chooseActivityLevelStep") },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+                    composable("chooseActivityLevelStep") {
+                        ChooseActivityScreen (
+                            viewModel = onboardingViewModel,
                             onNext = { navController.navigate("setMeasuresStep") },
                             onBack = { navController.popBackStack() }
                         )
@@ -215,13 +222,13 @@ fun Main() {
                         ChooseSexScreen(
                             viewModel = onboardingViewModel,
                             onNext = {
-                                navController.navigate("finshStep") {
+                                navController.navigate("finishStep") {
                                 }
                             },
                             onBack = { navController.popBackStack() }
                         )
                     }
-                    composable("finshStep") {
+                    composable("finishStep") {
                         FinishScreen(
                             onNext = {
                                 navController.navigate("home") {
@@ -233,6 +240,7 @@ fun Main() {
                     }
                     composable("home") {
                         HomeScreen(
+                            storage = onboardingViewModel,
                             profileViewModel = profileViewModel,
                             onProfileClick = { isProfilePopupShown = true },
                             onCalendarClick = { showCalendarModal = true }

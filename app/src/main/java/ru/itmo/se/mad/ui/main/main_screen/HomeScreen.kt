@@ -43,6 +43,7 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
 import ru.itmo.se.mad.ui.main.calories.CalorieWidgetView
@@ -56,6 +57,7 @@ import ru.itmo.se.mad.ui.theme.WidgetGray5
 @Composable
 fun HomeScreen(
     profileViewModel: ProfileViewModel,
+    storage: OnboardingViewModel,
     onProfileClick: () -> Unit,
     onCalendarClick: () -> Unit
 ) {
@@ -79,6 +81,11 @@ fun HomeScreen(
             proteins = productsResponse.totalKbzhu.proteins
             fats = productsResponse.totalKbzhu.fats
             carbohydrates = productsResponse.totalKbzhu.carbohydrates
+
+            storage.calorieGoal = calorieGoal.toString()
+            storage.proteinGoal = proteins.toString()
+            storage.fatGoal = fats.toString()
+            storage.carbohydrateGoal = carbohydrates.toString()
 
             val goalResponse = ApiClient.goalApi.getGoal()
             calorieGoal = goalResponse.calorie_goal.toFloat()
@@ -170,27 +177,7 @@ fun HomeScreen(
                 }
             )
             StepsActivityWidget()
-            Button(
-                colors = ButtonColors(
-                    containerColor = WidgetGray5,
-                    contentColor = Color.Black,
-                    disabledContainerColor = Color.Unspecified,
-                    disabledContentColor = Color.Black
-                ),
-                onClick = {},
-                modifier = Modifier
-                    .padding(vertical = 40.dp)
-            ) {
-                Text(
-                    "Изменить порядок", style = TextStyle(
-                        fontFamily = SFProDisplay,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        fontStyle = FontStyle.Normal
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(140.dp))
         }
     }
 }
