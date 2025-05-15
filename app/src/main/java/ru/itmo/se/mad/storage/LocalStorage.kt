@@ -8,7 +8,7 @@ import androidx.security.crypto.MasterKey
 object LocalStorage {
     private const val PREFS_NAME = "secure_storage"
     private const val TOKEN_KEY = "auth_token"
-    private const val NAME_KEY = "profile_name"
+    private const val PHOTO_KEY = "photo_uri"
 
     private lateinit var encryptedPrefs: EncryptedSharedPreferences
 
@@ -29,32 +29,42 @@ object LocalStorage {
     }
 
     fun saveToken(token: String) {
-        encryptedPrefs.edit()
-            .putString(TOKEN_KEY, token)
-            .apply()
+        save(TOKEN_KEY, token)
     }
 
     fun getToken(): String? {
-        return encryptedPrefs.getString(TOKEN_KEY, null)
+        return get(TOKEN_KEY)
     }
 
     fun hasToken(): Boolean {
         return getToken() != null
     }
 
-    fun clearToken() {
+    fun removeToken() {
+        remove(TOKEN_KEY)
+    }
+
+    fun savePhotoUri(uri: String) {
+        save(PHOTO_KEY, uri)
+    }
+
+    fun getPhotoUri(): String? {
+        return get(PHOTO_KEY)
+    }
+
+    private fun save(key: String, value: String) {
         encryptedPrefs.edit()
-            .remove(TOKEN_KEY)
+            .putString(key, value)
             .apply()
     }
 
-    fun saveName(name: String) {
-        encryptedPrefs.edit()
-            .putString(NAME_KEY, name)
-            .apply()
+    private fun get(key: String): String? {
+        return encryptedPrefs.getString(key, null)
     }
 
-    fun getName(): String? {
-        return encryptedPrefs.getString(NAME_KEY, null)
+    private fun remove(key: String) {
+        encryptedPrefs.edit()
+            .remove(key)
+            .apply()
     }
 }

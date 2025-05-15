@@ -11,12 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
+import ru.itmo.se.mad.storage.LocalStorage
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PhotoPicker
 import ru.itmo.se.mad.ui.layout.PrimaryButton
@@ -24,18 +24,18 @@ import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 
 @Composable
-fun Step3Screen(
+fun AddPhotoScreen(
     viewModel: OnboardingViewModel,
-    oauthViewModel: OauthViewModel,
+    authViewModel: AuthViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         viewModel.photoUri = uri
+        LocalStorage.savePhotoUri(uri.toString())
     }
 
-    val name = oauthViewModel.name
+    val name = authViewModel.name
 
     Column(
         modifier = Modifier

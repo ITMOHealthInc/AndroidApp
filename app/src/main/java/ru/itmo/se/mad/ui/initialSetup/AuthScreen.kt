@@ -11,19 +11,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.itmo.se.mad.model.OauthViewModel
+import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.ui.layout.HeaderWithBack
 import ru.itmo.se.mad.ui.layout.PrimaryButton
 import ru.itmo.se.mad.ui.layout.SecondaryButton
 import ru.itmo.se.mad.ui.layout.TextField
 
 @Composable
-fun OauthScreen(
-    viewModel: OauthViewModel,
+fun AuthScreen(
+    viewModel: AuthViewModel,
     onNext: () -> Unit,
     onSignupNext: () -> Unit
 ) {
-    var isRegisterMode by remember { mutableStateOf(false) }
+    var isRegisterMode by remember { mutableStateOf(true) }
 
     val title = if (isRegisterMode) "Добро пожаловать" else "Здравствуйте"
     val label = if (isRegisterMode) "Создайте Reova ID" else "Войдите со своим Reova ID"
@@ -65,7 +65,7 @@ fun OauthScreen(
                 text = if (isRegisterMode) "Зарегистрироваться" else "Войти",
                 onClick = {
                     if (isRegisterMode) {
-                        viewModel.register(onSuccess = onSignupNext)
+                        onSignupNext()
                     } else {
                         viewModel.login(onSuccess = onNext)
                     }
