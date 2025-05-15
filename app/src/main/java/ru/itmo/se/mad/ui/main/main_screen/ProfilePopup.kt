@@ -213,6 +213,7 @@ fun ProfileMainScreen(
 @Composable
 fun MenuItem(
     title: String,
+    hideArrow: Boolean = false,
     subTitle: String = "",
     onClick: () -> Unit
 ) {
@@ -249,12 +250,15 @@ fun MenuItem(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
-                    contentDescription = null,
-                    tint = Gray,
-                    modifier = Modifier.size(16.dp)
-                )
+
+                if(!hideArrow) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_arrow_forward_ios_24),
+                        contentDescription = null,
+                        tint = Gray,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
         }
     }

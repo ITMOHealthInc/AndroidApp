@@ -259,6 +259,7 @@ fun GoalsScreen(
         MenuItem(
             title = "Цель калорий",
             subTitle = goalsViewModel.calories.toString(),
+            hideArrow = true,
             onClick = {
                 //currentDialogType = "newCaloriesInput"
                 //itemChangeDialogShown = true
@@ -272,6 +273,7 @@ fun GoalsScreen(
         )
         MenuItem(
             title = "Цель воды",
+            hideArrow = true,
             subTitle = goalsViewModel.water.toString(),
             onClick = {
                 //currentDialogType = "newWaterInput"
@@ -280,6 +282,7 @@ fun GoalsScreen(
         )
         MenuItem(
             title = "Цель шагов",
+            hideArrow = true,
             subTitle = goalsViewModel.steps.toString(),
             onClick = {
                 //currentDialogType = "newStepsInput"
@@ -301,6 +304,7 @@ fun MacroGoalsScreen(
         MenuItem(
             title = "Белки",
             subTitle = goalsViewModel.proteins.toString(),
+            hideArrow = true,
             onClick = {
                 //currentDialogType = "newPInput"
                 //itemChangeDialogShown = true
@@ -309,6 +313,7 @@ fun MacroGoalsScreen(
         MenuItem(
             title = "Жиры",
             subTitle = goalsViewModel.fats.toString(),
+            hideArrow = true,
             onClick = {
                 //currentDialogType = "newFInput"
                 //itemChangeDialogShown = true
@@ -317,6 +322,7 @@ fun MacroGoalsScreen(
         MenuItem(
             title = "Углеводы",
             subTitle = goalsViewModel.carbohydrates.toString(),
+
             onClick = {
                 //currentDialogType = "newCInput"
                 //itemChangeDialogShown = true
