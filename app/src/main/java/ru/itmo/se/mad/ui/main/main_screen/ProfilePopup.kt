@@ -33,12 +33,14 @@ import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
+import ru.itmo.se.mad.model.GoalsViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 
 
 @Composable
 fun ProfilePopup(
     profileViewModel: ProfileViewModel,
+    goalsViewModel: GoalsViewModel,
     storage: OnboardingViewModel,
     profilePopupTitle: MutableState<String>,
     popupNavController: NavHostController
@@ -95,8 +97,8 @@ fun ProfilePopup(
                 )
             }
             composable("account") { AccountScreen(profileViewModel) }
-            composable("goals") { GoalsScreen(storage, popupNavController) }
-            composable("macro") { MacroGoalsScreen(storage) }
+            composable("goals") { GoalsScreen(goalsViewModel, storage, popupNavController) }
+            composable("macro") { MacroGoalsScreen(goalsViewModel) }
         }
     }
 }

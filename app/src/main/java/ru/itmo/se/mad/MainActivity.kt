@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.itmo.se.mad.model.AuthViewModel
+import ru.itmo.se.mad.model.GoalsViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.initialSetup.*
@@ -65,6 +66,7 @@ fun Main() {
 
     val showBottomBar = currentRoute == "home"
     val profileViewModel: ProfileViewModel = viewModel()
+    val goalsViewModel: GoalsViewModel = viewModel()
 
     LaunchedEffect(Unit) {
         if (LocalStorage.hasToken()) {
@@ -104,6 +106,7 @@ fun Main() {
         ) {
             ProfilePopup(
                 profileViewModel,
+                goalsViewModel,
                 onboardingViewModel,
                 profilePopupTitle,
                 popupNavController = popupNavController
@@ -244,6 +247,7 @@ fun Main() {
                         HomeScreen(
                             storage = onboardingViewModel,
                             profileViewModel = profileViewModel,
+                            goalsViewModel = goalsViewModel,
                             onProfileClick = { isProfilePopupShown = true },
                             onCalendarClick = { showCalendarModal = true }
                         )

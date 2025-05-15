@@ -43,6 +43,7 @@ import androidx.compose.ui.zIndex
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
 import ru.itmo.se.mad.api.ApiClient
+import ru.itmo.se.mad.model.GoalsViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.model.ProfileViewModel
 import ru.itmo.se.mad.ui.alert.AlertManager
@@ -55,6 +56,7 @@ import ru.itmo.se.mad.ui.theme.ActivityOrange85
 @Composable
 fun HomeScreen(
     profileViewModel: ProfileViewModel,
+    goalsViewModel: GoalsViewModel,
     storage: OnboardingViewModel,
     onProfileClick: () -> Unit,
     onCalendarClick: () -> Unit
@@ -71,9 +73,10 @@ fun HomeScreen(
 
     val maxWater = 2.25f
 
-    LaunchedEffect(Unit) {
-        profileViewModel.load()
+    profileViewModel.load()
+    goalsViewModel.load()
 
+    LaunchedEffect(Unit) {
         try {
             val productsResponse = ApiClient.productsApi.getDailySummary()
             currentWater = productsResponse.totalWater
