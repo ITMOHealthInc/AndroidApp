@@ -43,12 +43,13 @@ import ru.itmo.se.mad.ui.theme.WidgetGray80
 
 @Composable
 fun CalorieWidgetView(
-    caloriesEaten: Float,
-    caloriesBurned: Float,
-    calorieGoal: Float,
-    protein: Float,
-    fat: Float,
-    carbs: Float
+    caloriesEaten: Int = 1820,
+    caloriesBurned: Int = 618,
+    calorieGoal: Int = 2366,
+    protein: Int = 50,
+    fat: Int = 6,
+    carbs: Int = 38,
+    summaryMode: Boolean = false
 ) {
     val caloriesRemaining = calorieGoal - caloriesEaten + caloriesBurned
     Column {
@@ -85,22 +86,28 @@ fun CalorieWidgetView(
                     label = "Съедено",
                     unit = "ккал",
                 )
+                if(!summaryMode) {
+                    CalorieStatBlock(
+                        value = caloriesBurned.toString(),
+                        label = "Сожжено",
+                        unit = "",
+                        hAlignment = Alignment.End
+                    )
+                    CalorieStatBlock(
+                        value = caloriesRemaining.toString(),
+                        label = "Остаток",
+                        unit = "",
+                        hAlignment = Alignment.End
+                    )
+                } else {
+                    CalorieStatBlock(
+                        value = caloriesRemaining.toString(),
+                        label = "Остаток",
+                        unit = "ккал",
+                        hAlignment = Alignment.End
+                    )
+                }
 
-                // Сожжено
-                CalorieStatBlock(
-                    value = caloriesBurned.toString(),
-                    label = "Сожжено",
-                    unit = "",
-                    hAlignment = Alignment.End
-                )
-
-                // Остаток
-                CalorieStatBlock(
-                    value = caloriesRemaining.toString(),
-                    label = "Остаток",
-                    unit = "",
-                    hAlignment = Alignment.End
-                )
             }
             HorizontalDivider(
                 color = WidgetGray10,
@@ -117,39 +124,40 @@ fun CalorieWidgetView(
                 MacronutrientBar(name = "Жиры", value = fat.toInt(), goal = 180)
                 MacronutrientBar(name = "Углеводы", value = carbs.toInt(), goal = 300)
             }
-
         }
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            MealCard(
-                title = "Завтрак",
-                calories = 328,
-                goal = 425,
-                items = listOf("Овсянка с клубникой", "Зелёный чай")
-            )
+        if(!summaryMode) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp).horizontalScroll(ScrollState(0)),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                MealCard(
+                    title = "Завтрак",
+                    calories = 328,
+                    goal = 425,
+                    items = listOf("Овсянка с клубникой", "Зелёный чай")
+                )
 
-            MealCard(
-                title = "Обед",
-                calories = 516,
-                goal = 630,
-                items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
-            )
+                MealCard(
+                    title = "Обед",
+                    calories = 516,
+                    goal = 630,
+                    items = listOf("Суп с фрикадельками", "Паста с курицей", "Морс")
+                )
 
-            MealCard(
-                title = "Ужин",
-                calories = 320,
-                goal = 500,
-                items = listOf("Гречка с рыбой", "Салат")
-            )
+                MealCard(
+                    title = "Ужин",
+                    calories = 320,
+                    goal = 500,
+                    items = listOf("Гречка с рыбой", "Салат")
+                )
 
-            MealCard(
-                title = "Перекус",
-                calories = 180,
-                goal = 250,
-                items = listOf("Йогурт", "Орехи")
-            )
+                MealCard(
+                    title = "Перекус",
+                    calories = 180,
+                    goal = 250,
+                    items = listOf("Йогурт", "Орехи")
+                )
+            }
         }
     }
 }
@@ -326,7 +334,7 @@ fun CalorieStatBlock(
             fontFamily = SFProDisplay
         )
         Text(
-            text = "$label$unit",
+            text = "$label $unit",
             fontSize = 12.sp,
             color = WidgetGray0060,
             fontFamily = SFProDisplay,

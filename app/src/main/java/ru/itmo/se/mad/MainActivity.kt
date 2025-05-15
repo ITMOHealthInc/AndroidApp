@@ -289,5 +289,8 @@ fun Main() {
 
 sealed class NavRoutes(val route: String) {
     data object AddItem : NavRoutes("AddItem")
+    data object ItemSummary : NavRoutes("ItemSummary")
+    data object AddWaterWidget : NavRoutes("AddWaterWidget")
+    data object MeasureWidget : NavRoutes("MeasureWidget")
     data object AchievementDetails : NavRoutes("AchievementDetails")
 }
