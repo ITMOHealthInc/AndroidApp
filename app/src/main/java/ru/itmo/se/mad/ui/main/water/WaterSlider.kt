@@ -84,7 +84,7 @@ fun NewWaterSlider(
                             if (finalValue > 0f) {
                                 onAddWater(finalValue)
                                 coroutineScope.launch {
-                                    sendWaterMeal(finalValue * 1000f) // перевод в мл
+                                    sendWaterMeal(finalValue * 1000f)
                                 }
                             }
                             dragAmount = 0f

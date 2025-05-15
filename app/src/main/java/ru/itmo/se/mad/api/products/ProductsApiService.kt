@@ -8,6 +8,6 @@ interface ProductsApiService {
     @GET("products/meals/daily-summary")
     suspend fun getDailySummary(): DailySummaryResponse
 
-    @POST("products/meals")
-    suspend fun sendWaterMeal(@Body request: MealRequest)
+    @POST("products/meals/water")
+    suspend fun sendWaterMeal(@Body request: WaterRequest)
 }

@@ -67,19 +67,23 @@ fun HomeScreen(
     var carbohydrates by remember { mutableFloatStateOf(0f) }
 
     val caloriesBurned by remember { mutableFloatStateOf(0f) }
-    val calorieGoal by remember { mutableFloatStateOf(3242f) }
+    var calorieGoal by remember { mutableFloatStateOf(3242f) }
 
     val maxWater = 2.25f
 
     LaunchedEffect(Unit) {
         try {
-            val response = ApiClient.productsApi.getDailySummary()
-            currentWater = response.totalWater
-            calories = response.totalKbzhu.calories
-            proteins = response.totalKbzhu.proteins
-            fats = response.totalKbzhu.fats
-            carbohydrates = response.totalKbzhu.carbohydrates
+            val productsResponse = ApiClient.productsApi.getDailySummary()
+            currentWater = productsResponse.totalWater
+            calories = productsResponse.totalKbzhu.calories
+            proteins = productsResponse.totalKbzhu.proteins
+            fats = productsResponse.totalKbzhu.fats
+            carbohydrates = productsResponse.totalKbzhu.carbohydrates
 
+            val goalResponse = ApiClient.goalApi.getGoal()
+            calorieGoal = goalResponse.calorie_goal.toFloat()
+
+            //caloriesBurned
         } catch (e: Exception) {
             Log.e("dbg", "Ошибка при загрузке: ${e.localizedMessage}", e)
             AlertManager.error("Ошибка при загрузке")
