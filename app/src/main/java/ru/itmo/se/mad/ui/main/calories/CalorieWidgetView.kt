@@ -48,7 +48,8 @@ fun CalorieWidgetView(
     calorieGoal: Int = 2366,
     protein: Int = 50,
     fat: Int = 6,
-    carbs: Int = 38
+    carbs: Int = 38,
+    summaryMode: Boolean = false
 ) {
     val caloriesRemaining = calorieGoal - caloriesEaten + caloriesBurned
     val progress = caloriesEaten.toFloat() / calorieGoal
@@ -86,22 +87,28 @@ fun CalorieWidgetView(
                     label = "Съедено",
                     unit = "ккал",
                 )
+                if(summaryMode) {
+                    CalorieStatBlock(
+                        value = caloriesBurned.toString(),
+                        label = "Сожжено",
+                        unit = "",
+                        hAlignment = Alignment.End
+                    )
+                    CalorieStatBlock(
+                        value = caloriesRemaining.toString(),
+                        label = "Остаток",
+                        unit = "",
+                        hAlignment = Alignment.End
+                    )
+                } else {
+                    CalorieStatBlock(
+                        value = caloriesRemaining.toString(),
+                        label = "Остаток",
+                        unit = "ккал",
+                        hAlignment = Alignment.End
+                    )
+                }
 
-                // Сожжено
-                CalorieStatBlock(
-                    value = caloriesBurned.toString(),
-                    label = "Сожжено",
-                    unit = "",
-                    hAlignment = Alignment.End
-                )
-
-                // Остаток
-                CalorieStatBlock(
-                    value = caloriesRemaining.toString(),
-                    label = "Остаток",
-                    unit = "",
-                    hAlignment = Alignment.End
-                )
             }
             HorizontalDivider(
                 color = WidgetGray10,
@@ -336,7 +343,7 @@ fun CalorieStatBlock(
             fontFamily = SFProDisplay
         )
         Text(
-            text = "$label$unit",
+            text = "$label $unit",
             fontSize = 12.sp,
             color = WidgetGray0060,
             fontFamily = SFProDisplay,

@@ -28,6 +28,8 @@ import java.util.Locale
 @Preview
 @Composable
 fun DateItem(
+    caption: String = "Сегодня",
+    summaryMode: Boolean = false,
     onCalendarClick: () -> Unit = {}
 ) {
     val today = LocalDate.now()
@@ -58,7 +60,7 @@ fun DateItem(
 
                 )
                 Text(
-                    text = "Сегодня",
+                    text = caption,
                     fontSize = 32.sp,
                     lineHeight = 38.sp,
                     fontFamily = SFProDisplay,
@@ -66,14 +68,18 @@ fun DateItem(
                     color = Color.Black
                 )
             }
+            if(summaryMode) {
+                IconButton(onClick = onCalendarClick) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.image_calendar),
+                        contentDescription = "Открыть календарь",
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            } else {
 
-            IconButton(onClick = onCalendarClick) {
-                Icon(
-                    painter = painterResource(id = R.drawable.image_calendar),
-                    contentDescription = "Открыть календарь",
-                    modifier = Modifier.size(24.dp),
-                )
             }
+
         }
     }
 }

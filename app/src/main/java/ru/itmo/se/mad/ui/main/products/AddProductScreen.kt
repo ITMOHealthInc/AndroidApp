@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -55,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import ru.itmo.se.mad.R
+import ru.itmo.se.mad.ui.layout.Popup
 import ru.itmo.se.mad.ui.theme.Black
 import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WaterBlue
@@ -152,26 +154,31 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
             }
         }
 
-        LazyColumn(
+        Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
         ) {
-            item {
-                MealCell()
-                ProductCell()
+            LazyColumn(
+                modifier = Modifier
+                    .height(580.dp)
+            ) {
+                item {
+                    MealCell()
+                    ProductCell()
+                }
             }
         }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
                 .background(Color.White),
             contentAlignment = Alignment.TopCenter
         ) {
             Surface(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(vertical = 45.dp)
+                    .padding(bottom = 30.dp)
                     .fillMaxWidth()
                     .height(54.dp),
                 color = Color.Black,
@@ -216,7 +223,7 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
                     )
 
                     Text(
-                        text = "234 ккал",
+                        text = "236 ккал",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.8f),
@@ -227,35 +234,6 @@ fun AddProductScreen(/*navController: NavController = NavController(), */caption
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(124.dp)
-
-        ) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-                onClick = { }
-            ) {
-                Box(modifier = Modifier.background(Color.Black))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    Text(
-                        "Добавить", style = TextStyle(
-                            fontFamily = SFProDisplay,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Normal,
-                            fontStyle = FontStyle.Normal
-                        )
-                    )
-                    Text("234" + " ккал")
-                }
-
-            }
-        }
     }
 }
 
