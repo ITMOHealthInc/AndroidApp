@@ -104,7 +104,7 @@ fun StepsActivityWidget(
     Card(
         modifier = modifier
             .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = WidgetGray5),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -218,7 +218,7 @@ fun StepsActivityWidget(
             ) {
                 val width = size.width
                 val height = size.height
-                val cornerRadius = CornerRadius(height / 3, height / 3)
+                val cornerRadius = CornerRadius(height / 2, height / 2)
 
                 drawRoundRect(
                     color = ActivityOrange15,

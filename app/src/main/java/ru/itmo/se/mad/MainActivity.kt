@@ -53,11 +53,10 @@ fun Main() {
             navController.navigate("home")
         }
     }
-    var isAddItemDialogShown by remember { mutableStateOf(false) }
+
     var isProfilePopupShown by remember { mutableStateOf(false) }
     val profilePopupTitle = remember { mutableStateOf("") }
     val popupNavController = rememberNavController()
-    var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
     var showCalendarModal by remember { mutableStateOf(false) }
     val onboardingViewModel: OnboardingViewModel = viewModel()
     val authViewModel: AuthViewModel = viewModel()
@@ -84,18 +83,31 @@ fun Main() {
         CalendarScreen()
     }
 
+    var isAddItemDialogShown by remember { mutableStateOf(false) }
+    var popupContent by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
+    var popupTitle by remember { mutableStateOf("Что вы хотите добавить?") }
+
     if (isAddItemDialogShown) {
         Popup(
             isVisible = true,
             onDismissRequest = {
                 isAddItemDialogShown = false
                 popupContent = null
+                popupTitle = "Что вы хотите добавить?"
             },
-            title = "Что вы хотите добавить?",
+            title = popupTitle,
         ) {
-            popupContent?.invoke() ?: AddItem(onSelect = { popupContent = it })
+            popupContent?.invoke() ?: AddItem(
+                onSelect = { newContent ->
+                    popupContent = newContent
+                },
+                setTitle = { newTitle ->
+                    popupTitle = newTitle
+                }
+            )
         }
     }
+
     if (isProfilePopupShown) {
         ModalSlideUpContainer(
             isVisible = isProfilePopupShown,

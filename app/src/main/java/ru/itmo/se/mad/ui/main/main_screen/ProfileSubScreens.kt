@@ -238,7 +238,7 @@ fun GoalsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        ProfileMenuItem(
+        MenuItem(
             title = "Цель",
             subTitle = goalsViewModel.type.toString(),
             onClick = {
@@ -247,7 +247,7 @@ fun GoalsScreen(
                 itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Уровень активности",
             subTitle = goalsViewModel.activity.toString(),
             onClick = {
@@ -255,7 +255,7 @@ fun GoalsScreen(
                 itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Цель калорий",
             subTitle = goalsViewModel.calories.toString(),
             onClick = {
@@ -263,13 +263,13 @@ fun GoalsScreen(
                 //itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Цели БЖУ",
             onClick = {
                 popupNavController.navigate("macro")
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Цель воды",
             subTitle = goalsViewModel.water.toString(),
             onClick = {
@@ -277,7 +277,7 @@ fun GoalsScreen(
                 //itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Цель шагов",
             subTitle = goalsViewModel.steps.toString(),
             onClick = {
@@ -297,7 +297,7 @@ fun MacroGoalsScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        ProfileMenuItem(
+        MenuItem(
             title = "Белки",
             subTitle = goalsViewModel.proteins.toString(),
             onClick = {
@@ -305,7 +305,7 @@ fun MacroGoalsScreen(
                 //itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Жиры",
             subTitle = goalsViewModel.fats.toString(),
             onClick = {
@@ -313,7 +313,7 @@ fun MacroGoalsScreen(
                 //itemChangeDialogShown = true
             }
         )
-        ProfileMenuItem(
+        MenuItem(
             title = "Углеводы",
             subTitle = goalsViewModel.carbohydrates.toString(),
             onClick = {

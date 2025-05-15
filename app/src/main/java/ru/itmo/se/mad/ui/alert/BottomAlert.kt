@@ -52,16 +52,15 @@ fun BottomAlert(
 
     val transition = updateTransition(targetState = visible, label = "AlertTransition")
     val offsetY by transition.animateDp(
-        transitionSpec = { tween(1000) },
+        transitionSpec = { tween(600) },
         label = "OffsetY"
     ) { isVisible -> if (isVisible) 0.dp else 150.dp }
 
     val alpha by transition.animateFloat(
-        transitionSpec = { tween(1000) },
+        transitionSpec = { tween(600) },
         label = "Alpha"
     ) { isVisible -> if (isVisible) 1f else 0f }
 
-    // Автоматическое закрытие через timeout
     LaunchedEffect(visible) {
         if (visible) {
             delay(durationMillis.toLong())
@@ -73,12 +72,12 @@ fun BottomAlert(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
+                .padding(0.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Surface(
                 color = backgroundColor,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(0.dp),
                 modifier = Modifier
                     .offset(y = offsetY)
                     .alpha(alpha)

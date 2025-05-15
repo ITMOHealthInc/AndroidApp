@@ -29,7 +29,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import coil3.compose.AsyncImage
 import ru.itmo.se.mad.R
-import ru.itmo.se.mad.model.AuthViewModel
 import ru.itmo.se.mad.model.OnboardingViewModel
 import ru.itmo.se.mad.ui.theme.*
 import androidx.compose.runtime.getValue
@@ -204,14 +203,14 @@ fun ProfileMainScreen(
                 .padding(horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            ProfileMenuItem("Аккаунт") { onNavigate("account") }
-            ProfileMenuItem("Ваши цели") { onNavigate("goals") }
+            MenuItem("Аккаунт") { onNavigate("account") }
+            MenuItem("Ваши цели") { onNavigate("goals") }
         }
     }
 }
 
 @Composable
-fun ProfileMenuItem(
+fun MenuItem(
     title: String,
     subTitle: String = "",
     onClick: () -> Unit

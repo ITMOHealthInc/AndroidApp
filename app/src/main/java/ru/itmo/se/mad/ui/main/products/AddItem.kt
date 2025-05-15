@@ -39,7 +39,7 @@ import ru.itmo.se.mad.ui.theme.SFProDisplay
 import ru.itmo.se.mad.ui.theme.WidgetGray5
 
 @Composable
-fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
+fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit, setTitle: (String) -> Unit) {
     var currentWater by remember { mutableFloatStateOf(0f) }
     val maxWater by remember { mutableFloatStateOf(2.25f) }
 
@@ -63,21 +63,23 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
             AddItemElement(
                 "Приём пищи",
                 R.drawable.image_utensils,
-                onClick = { onSelect { FoodTimeChoiceWidget() } }
+                onClick = { onSelect { FoodTimeChoiceWidget() }
+                    setTitle("Что вы хотите добавить?") }
             )
         }
-        item {
-            AddItemElement(
-                "Активность",
-                R.drawable.image_activity,
-                onClick = { onSelect { /* Активность */ } }
-            )
-        }
+//        item {
+//            AddItemElement(
+//                "Активность",
+//                R.drawable.image_activity,
+//                onClick = { onSelect { /* Активность */ } }
+//            )
+//        }
         item {
             AddItemElement(
                 "Измерение",
                 R.drawable.image_ruler,
-                onClick = { onSelect { MeasureWidget() } }
+                onClick = { onSelect { MeasureWidget(onSelect, setTitle) }
+                    setTitle("Что вы хотите добавить?")}
             )
         }
         item {
@@ -90,7 +92,9 @@ fun AddItem(onSelect: (content: @Composable () -> Unit) -> Unit) {
                     onAddWater = { added ->
                         currentWater = (currentWater + added).coerceAtMost(maxWater)
                     }
-                ) } }
+                ) }
+                    setTitle("Что вы хотите добавить?")
+                }
             )
         }
     }
