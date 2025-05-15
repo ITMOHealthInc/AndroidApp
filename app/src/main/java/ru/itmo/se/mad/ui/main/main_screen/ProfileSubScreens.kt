@@ -322,7 +322,7 @@ fun MacroGoalsScreen(
         MenuItem(
             title = "Углеводы",
             subTitle = goalsViewModel.carbohydrates.toString(),
-
+            hideArrow = true,
             onClick = {
                 //currentDialogType = "newCInput"
                 //itemChangeDialogShown = true
